@@ -20,10 +20,10 @@ import { LocationStrategy, PlatformLocation, Location } from '@angular/common';
 })
 export class AppComponent implements OnInit {
   didScroll: boolean;
-  lastScrollTop: number = 0;
-  delta: number = 5;
-  navbarHeight: number = 0;
-  private _router: Subscription;
+  lastScrollTop = 0;
+  delta = 5;
+  navbarHeight = 0;
+  private subscription: Subscription;
 
   constructor(
     private renderer: Renderer2,
@@ -34,19 +34,19 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    var navbar: HTMLElement = this.element.nativeElement.children[0]
+    const navbar: HTMLElement = this.element.nativeElement.children[0]
       .children[0];
-    this._router = this.router.events
+    this.subscription = this.router.events
       .filter((event) => event instanceof NavigationEnd)
-      .subscribe((event: NavigationEnd) => {
+      .subscribe((_: NavigationEnd) => {
         if (window.outerWidth > 991) {
           window.document.children[0].scrollTop = 0;
         } else {
           window.document.activeElement.scrollTop = 0;
         }
-        this.renderer.listen('window', 'scroll', (event) => {
-          const number = window.scrollY;
-          if (number > 150 || window.pageYOffset > 150) {
+        this.renderer.listen('window', 'scroll', (scrollEvent: any) => {
+          const num = window.scrollY;
+          if (num > 150 || window.pageYOffset > 150) {
             // add logic
             navbar.classList.add('headroom--not-top');
           } else {
@@ -60,11 +60,13 @@ export class AppComponent implements OnInit {
 
   @HostListener('window:scroll', ['$event'])
   hasScrolled() {
-    var st = window.pageYOffset;
+    const st = window.pageYOffset;
     // Make sure they scroll more than delta
-    if (Math.abs(this.lastScrollTop - st) <= this.delta) return;
+    if (Math.abs(this.lastScrollTop - st) <= this.delta) {
+      return;
+    }
 
-    var navbar = document.getElementsByTagName('nav')[0];
+    const navbar = document.getElementsByTagName('nav')[0];
 
     // If they scrolled down and are past the navbar, add class .headroom--unpinned.
     // This is necessary so you never see what is "behind" the navbar.

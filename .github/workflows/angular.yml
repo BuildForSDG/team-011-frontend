@@ -25,6 +25,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run angular test scripts
         run: |
+          npm run lint,
           npm test,
           npm run e2e
       # - name: Angular run unit tests
