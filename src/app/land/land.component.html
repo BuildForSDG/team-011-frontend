@@ -1,0 +1,46 @@
+<main>
+  <section class="section border-bottom-1 border-color-gray p-200px-tb" *ngIf="land">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 m-auto">
+          <div class="row border white-bg border-radius-5 m-30px-b">
+            <div class="col-lg-4 p-0">
+              <img src="./assets/img/land_sales.jpg" />
+            </div>
+            <div class="col-lg-8">
+              <div class="p-40px md-p-25px">
+                <div class="row justify-content-between">
+                  <h3 class="font-w-700 dark-color p-10px-b">Farmland for {{land.auctionType}}</h3>
+                  <h4 class="font-w-700">{{land.price|currency:'₦':'symbol':'4.2-2'}}</h4>
+                </div>
+                <div class="row">
+                  <p>{{land.description}}</p>
+                </div>
+                <div class="row">
+                  <div class="col-lg-4">
+                    <p class="lead font-w-700">Province</p>
+                    <p>{{land.province}}</p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="lead font-w-700">Size</p>
+                    <p>{{land.acres}} Acres</p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="lead font-w-700">Status</p>
+                    <p>{{land.isAvailable?'Available':'Unavailable'}}</p>
+                  </div>
+                </div>
+                <div class="row mt-3 justify-content-end">
+                  <a class="m-btn btn-md m-btn-light m-btn-radius" routerLink="/login">Purchase</a>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>

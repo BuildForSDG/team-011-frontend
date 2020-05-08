@@ -5,7 +5,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
 import { HomeModule } from './home/home.module';
-import { LandingComponent } from './landing/landing.component';
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { FooterComponent } from './shared/footer/footer.component';
@@ -18,7 +17,6 @@ import { SignupComponent } from './signup/signup.component';
     FooterComponent,
     NavbarComponent,
     SignupComponent,
-    LandingComponent,
     ProfileComponent,
     LoginComponent,
   ],
