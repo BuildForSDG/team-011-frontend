@@ -22,9 +22,11 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Deploy to Zeit
-    - name: ZEIT Now Deployment
-      uses: amondnet/now-deployment@v2
+    # Deploy to Netlify
+    - name: Deploy to Netlify
+      uses: nwtgck/actions-netlify@v1.1
       with:
-        zeit-token: ${{ secrets.ZEIT_TOKEN }} # Required
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        publish-dir: './dist'
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
