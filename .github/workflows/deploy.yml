@@ -29,4 +29,3 @@ jobs:
         zeit-token: ${{ secrets.ZEIT_TOKEN }} # Required
         now-project-id: ${{ secrets.PROJECT_ID}} #Required
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        now-org-id: ${{ secrets.NOW_ORG_ID }}
