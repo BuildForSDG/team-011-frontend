@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { LandComponent } from '../land/land.component';
+import { LandSectionComponent } from './land-section/land-section.component';
 import { SectionsComponent } from './sections.component';
-import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 
 describe('SectionsComponent', () => {
   let component: SectionsComponent;
@@ -9,8 +10,7 @@ describe('SectionsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SectionsComponent],
-      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [SectionsComponent, LandSectionComponent, LandComponent],
     }).compileComponents();
   }));
 
