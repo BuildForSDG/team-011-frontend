@@ -6,6 +6,7 @@ import { NgxTrimDirectiveModule } from 'ngx-trim-directive';
 
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
+import { ErrorHandlerService } from '../shared/handlers/error-handler.service';
 
 @NgModule({
   declarations: [LoginComponent, SignupComponent],
@@ -15,6 +16,6 @@ import { SignupComponent } from './signup/signup.component';
     ReactiveFormsModule,
     NgxTrimDirectiveModule,
   ],
-  providers: [],
+  providers: [ErrorHandlerService],
 })
 export class AuthModule {}

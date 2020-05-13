@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import Notiflix from 'notiflix-angular';
 
 import { SignupInput } from '../auth.dto';
 import { AuthService } from '../auth.service';
+import { authConstants } from '../constants';
 
 @Component({
   selector: 'app-signup',
@@ -11,9 +14,11 @@ import { AuthService } from '../auth.service';
 })
 export class SignupComponent implements OnInit {
   signupForm: FormGroup;
+
   constructor(
     private fb: FormBuilder,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -41,7 +46,14 @@ export class SignupComponent implements OnInit {
   }
 
   onSubmit() {
+    Notiflix.Loading.Pulse();
     const input: SignupInput = this.signupForm.value;
-    this.authService.register(input).subscribe((res) => console.log(res));
+    this.authService.register(input).subscribe((res) => {
+      const { freshSignupSuccessKey } = authConstants;
+      this.router.navigate(['/login'], {
+        queryParams: { [freshSignupSuccessKey]: true },
+      });
+      Notiflix.Loading.Remove();
+    });
   }
 }

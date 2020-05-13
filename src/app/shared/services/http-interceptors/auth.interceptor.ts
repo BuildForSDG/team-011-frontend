@@ -6,22 +6,20 @@ import {
 import { Injectable } from '@angular/core';
 
 import { environment } from '../../../../environments/environment';
-import { AuthService } from '../../../auth/auth.service';
+import { localStoreKeys } from '../../constants/local-store.keys';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private auth: AuthService) {}
-
+  // Removes trailing slashes in urls and also
+  // sets auth headers
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    const authToken = this.auth.getAuthToken();
+    const authToken = localStorage.getItem(localStoreKeys.accessToken);
     const baseUrl = environment.apiUrl.replace(/\/$/, '');
     const endpoint = req.url.replace(/^\//, '');
     const authReq = req.clone({
       setHeaders: { Authorization: authToken },
       url: `${baseUrl}/${endpoint}`,
     });
-    console.log(authReq);
-    // send cloned request with header to the next handler.
     return next.handle(authReq);
   }
 }

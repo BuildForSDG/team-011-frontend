@@ -7,3 +7,12 @@ export interface SignupInput extends LoginInput {
   firstName: string;
   lastName: string;
 }
+
+export interface LoginResp {
+  accessToken: string;
+  expiresInMins: number;
+}
+
+export interface SignupResp {
+  canLogin: boolean;
+}
