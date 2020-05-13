@@ -32,6 +32,7 @@
     "moment": "^2.25.3",
     "ng2-nouislider": "^1.8.2",
     "ngx-trim-directive": "^1.0.11",
+    "notiflix-angular": "^1.1.0",
     "nouislider": "^14.5.0",
     "rxjs": "~6.5.5",
     "rxjs-compat": "^6.5.5",

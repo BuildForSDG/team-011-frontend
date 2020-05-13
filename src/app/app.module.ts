@@ -24,11 +24,11 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     BrowserModule,
     HttpClientModule,
-    NgbModule,
     AppRoutingModule,
     HomeModule,
     AuthModule,
     FormsModule,
+    NgbModule,
     SharedModule,
   ],
   providers: [httpInterceptorProviders],

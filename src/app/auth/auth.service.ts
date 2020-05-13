@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
 
-import { LoginInput, SignupInput } from './auth.dto';
+import { LoginInput, SignupInput, LoginResp, SignupResp } from './auth.dto';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  endpoint = '/api/auth';
   constructor(private readonly http: HttpClient) {}
-  getAuthToken = () => 'access_token';
-  register = (input: SignupInput) => {
-    return this.http.post(this.url('register'), input);
-  };
-  login = async (input: LoginInput) => {};
-  private url = (action: string) => `${this.endpoint}/${action}`;
+  register = (input: SignupInput) =>
+    this.http.post<SignupResp>(this.url('register'), input);
+  login = (input: LoginInput) =>
+    this.http.post<LoginResp>(this.url('login'), input);
+  private url = (action: string) => `/api/auth/${action}`;
 }
