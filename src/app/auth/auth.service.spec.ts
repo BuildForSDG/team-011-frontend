@@ -10,14 +10,17 @@ import { AuthService } from './auth.service';
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-  let signupInput: SignupInput = {
+  const signupInput: SignupInput = {
     email: 'test@mail.com',
     firstName: 'First',
     lastName: 'Last',
     password: '123qwE!',
     role: 'Landowner',
   };
-
+  const loginInput: LoginInput = {
+    password: signupInput.password,
+    email: signupInput.email,
+  };
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -49,11 +52,6 @@ describe('AuthService', () => {
   });
 
   it('should sign user in', () => {
-    const loginInput: LoginInput = {
-      password: signupInput.password,
-      email: signupInput.email,
-    };
-
     const expected: LoginResp = {
       accessToken: 'access_token',
       expiresInMins: 1,
