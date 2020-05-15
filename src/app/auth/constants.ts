@@ -1,3 +1,3 @@
 export const authConstants = {
-  freshSignupSuccessKey: 'isFreshSignupSuccessful',
+  emailConfirmKey: 'isEmailConfirmationRequired',
 };

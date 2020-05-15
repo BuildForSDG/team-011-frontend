@@ -18,7 +18,7 @@ export class ErrorHandlerService {
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      if (err.status > 500) {
+      if (err.status >= 500) {
         errorMsg =
           'This is not your fault, it our fault; please try again later';
         errorMsg = error ? error.message || errorMsg : errorMsg;
@@ -31,7 +31,6 @@ export class ErrorHandlerService {
         errorMsg =
           'You might be doing something wrong; please check and try again';
         errorMsg = error ? error.message || errorMsg : errorMsg;
-        console.log(errorMsg);
         Notiflix.Report.Info(errorTitle, errorMsg, okStr);
       }
 

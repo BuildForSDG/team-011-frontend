@@ -3,12 +3,10 @@ import {
   HttpHandler,
   HttpInterceptor,
   HttpRequest,
-  HttpErrorResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
-
+import { catchError } from 'rxjs/operators';
 import { ErrorHandlerService } from '../../handlers/error-handler.service';
 
 @Injectable()
