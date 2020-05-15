@@ -49,9 +49,10 @@ export class SignupComponent implements OnInit {
     Notiflix.Loading.Pulse();
     const input: SignupInput = this.signupForm.value;
     this.authService.register(input).subscribe((res) => {
-      const { freshSignupSuccessKey } = authConstants;
+      const { emailConfirmKey } = authConstants;
+
       this.router.navigate(['/login'], {
-        queryParams: { [freshSignupSuccessKey]: true },
+        queryParams: { [emailConfirmKey]: !res.canLogin },
       });
       Notiflix.Loading.Remove();
     });

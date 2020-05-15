@@ -8,9 +8,10 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AuthService {
   constructor(private readonly http: HttpClient) {}
+
   register = (input: SignupInput) =>
-    this.http.post<SignupResp>(this.url('register'), input);
+    this.http.post<SignupResp>(this.endpoint('register'), input);
   login = (input: LoginInput) =>
-    this.http.post<LoginResp>(this.url('login'), input);
-  private url = (action: string) => `/api/auth/${action}`;
+    this.http.post<LoginResp>(this.endpoint('login'), input);
+  endpoint = (action: string) => `/api/auth/${action}`;
 }

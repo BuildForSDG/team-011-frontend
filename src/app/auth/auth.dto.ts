@@ -1,9 +1,10 @@
+export type UserRole = 'Farmer' | 'Landowner' | 'Admin';
 export interface LoginInput {
   email: string;
   password: string;
 }
 export interface SignupInput extends LoginInput {
-  role: 'Farmer' | 'Landowner';
+  role: UserRole;
   firstName: string;
   lastName: string;
 }

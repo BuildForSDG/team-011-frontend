@@ -16,9 +16,10 @@ export class AuthInterceptor implements HttpInterceptor {
     const authToken = localStorage.getItem(localStoreKeys.accessToken);
     const baseUrl = environment.apiUrl.replace(/\/$/, '');
     const endpoint = req.url.replace(/^\//, '');
+    const url = `${baseUrl}/${endpoint}`;
     const authReq = req.clone({
       setHeaders: { Authorization: authToken },
-      url: `${baseUrl}/${endpoint}`,
+      url,
     });
     return next.handle(authReq);
   }

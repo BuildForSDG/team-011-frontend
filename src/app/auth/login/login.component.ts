@@ -47,9 +47,9 @@ export class LoginComponent implements OnInit {
   }
 
   private notifyFreshSignup() {
-    const { freshSignupSuccessKey } = authConstants;
+    const { emailConfirmKey } = authConstants;
     this.route.queryParams.subscribe((params) => {
-      if (params[freshSignupSuccessKey] === 'true') {
+      if (params[emailConfirmKey] === 'true') {
         Notiflix.Report.Success(
           'Thank you for onboarding',
           "We've sent a confirmation email to you. Please confirm your email to proceed.",
