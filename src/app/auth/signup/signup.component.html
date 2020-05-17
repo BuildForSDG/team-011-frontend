@@ -4,55 +4,28 @@
       <div class="row justify-content-center">
         <div class="col-md-5 col-lg-4">
           <div class="p-50px-tb">
-            <a [routerLink]="['/']"
-              ><img
-                src="./assets/img/logo.png"
-                class="light-logo"
-                alt="Farm"
-                title=""
-            /></a>
+            <a [routerLink]="['/']"><img src="./assets/img/logo.png" class="light-logo" alt="Farm" title="" /></a>
           </div>
-
           <form (ngSubmit)="onSubmit()" [formGroup]="signupForm">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
                   <label class="dark-color font-w-700 mb-0">First name</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="firstName"
-                    formControlName="firstName"
-                    trim
-                  />
+                  <input type="text" class="form-control" name="firstName" formControlName="firstName" trim required />
                 </div>
               </div>
               <div class="col-md-12">
                 <div class="form-group">
                   <label class="dark-color font-w-700 mb-0">Last name</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="lastName"
-                    formControlName="lastName"
-                    trim
-                  />
-                  <div
-                    *ngIf="
-                      signupForm.controls['lastName'].invalid &&
-                      (signupForm.controls['lastName'].dirty ||
-                        signupForm.controls['lastName'].touched)
-                    "
-                    class="alert alert-danger"
-                  >
-                    <div
-                      *ngIf="signupForm.controls['lastName'].errors.required"
-                    >
+                  <input type="text" class="form-control" name="lastName" formControlName="lastName" trim required />
+                  <div *ngIf="signupForm.controls['lastName'].invalid &&
+                    (signupForm.controls['lastName'].dirty ||
+                    signupForm.controls['lastName'].touched)" class="alert
+                    alert-danger">
+                    <div *ngIf="signupForm.controls['lastName'].errors.required">
                       last name is required.
                     </div>
-                    <div
-                      *ngIf="signupForm.controls['lastName'].errors.maxLength"
-                    >
+                    <div *ngIf="signupForm.controls['lastName'].errors.maxLength">
                       last name must be at most 24 characters long.
                     </div>
                   </div>
@@ -61,45 +34,44 @@
               <div class="col-md-12">
                 <div class="form-group">
                   <label class="dark-color font-w-700 mb-0">Email</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    name="email"
-                    formControlName="email"
-                  />
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label class="dark-color font-w-700 mb-0">Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    name="password"
-                    formControlName="password"
-                  />
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label class="dark-color font-w-700 mb-0"
-                    >Confirm Password</label
-                  >
-                  <input
-                    type="password"
-                    class="form-control"
-                    name="confirmPassword"
-                    formControlName="confirmPassword"
-                  />
+                  <input type="email" class="form-control" name="email" formControlName="email" required />
                 </div>
               </div>
 
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="dark-color font-w-700 mb-0">Password</label>
+                  <input type="password" class="form-control" name="password" formControlName="password" required />
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="dark-color font-w-700 mb-0">Confirm Password</label>
+                  <input type="password" class="form-control" name="confirmPassword" formControlName="confirmPassword"
+                    required />
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="role" value="Farmer" formControlName="role"
+                      required />
+                    <label class="form-check-label">
+                      I'm a Farmer looking for a farmland
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="role" value="Landowner" formControlName="role" />
+                    <label class="form-check-label">
+                      I'm a farmland owner looking for tenants
+                    </label>
+                  </div>
+                </div>
+
+              </div>
               <div class="col-md-12 text-center p-15px-t">
-                <button
-                  class="m-btn btn-block w-100 m-btn-radius m-btn-theme"
-                  type="submit"
-                  [disabled]="signupForm.invalid"
-                >
+                <button class="m-btn btn-block w-100 m-btn-radius m-btn-theme" type="submit"
+                  [disabled]="signupForm.invalid">
                   Sign Up
                 </button>
                 <p class="mt-3 mb-0">
