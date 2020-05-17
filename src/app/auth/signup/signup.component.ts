@@ -42,15 +42,16 @@ export class SignupComponent implements OnInit {
           Validators.maxLength(24),
         ],
       ],
+      role: ['', Validators.required],
     });
   }
 
   onSubmit() {
     Notiflix.Loading.Pulse();
-    const input: SignupInput = this.signupForm.value;
+    const input = new SignupInput(this.signupForm.value);
+    console.log(input);
     this.authService.register(input).subscribe((res) => {
       const { emailConfirmKey } = authConstants;
-
       this.router.navigate(['/login'], {
         queryParams: { [emailConfirmKey]: !res.canLogin },
       });

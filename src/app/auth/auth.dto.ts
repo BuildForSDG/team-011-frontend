@@ -1,19 +1,30 @@
 export type UserRole = 'Farmer' | 'Landowner' | 'Admin';
-export interface LoginInput {
+export class LoginInput {
   email: string;
   password: string;
+
+  constructor(input?: Partial<LoginInput>) {
+    Object.assign(this, input);
+  }
 }
-export interface SignupInput extends LoginInput {
+export class SignupInput extends LoginInput {
   role: UserRole;
   firstName: string;
   lastName: string;
+  /**
+   *
+   */
+  constructor(input?: Partial<SignupInput>) {
+    super(input);
+    Object.assign(this, input);
+  }
 }
 
-export interface LoginResp {
+export class LoginResp {
   accessToken: string;
   expiresInMins: number;
 }
 
-export interface SignupResp {
+export class SignupResp {
   canLogin: boolean;
 }
