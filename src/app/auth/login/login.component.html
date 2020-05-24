@@ -1,1 +1,34 @@
-<p>login works!</p>
+<div class="card card-login">
+  <form class="form" [formGroup]="form">
+    <div class="card-header card-header-primary text-center">
+      <h4 class="card-title">Sign In</h4>
+      <span></span>
+    </div>
+    <br />
+    <div class="card-body">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">
+            <i class="material-icons">mail</i>
+          </span>
+        </div>
+        <input formControlName="email" type="email" class="form-control" placeholder="Email...">
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">
+            <i class="material-icons">lock_outline</i>
+          </span>
+        </div>
+        <input formControlName="password" type="password" class="form-control" placeholder="Password...">
+      </div>
+    </div>
+
+    <div class="footer text-center">
+      <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Login</button>
+      <p class="description text-center">don't have an account?
+        <a [routerLink]="['/signup']">Sign Up</a>
+      </p>
+    </div>
+  </form>
+</div>
