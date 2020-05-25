@@ -1,23 +1,47 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { LoginComponent } from './auth/login/login.component';
-import { SignupComponent } from './auth/signup/signup.component';
+import { AuthGuard } from './auth.guard';
+import { AuthComponent } from './auth/auth.component';
 import { HomeComponent } from './home/home.component';
-import { LandComponent } from './land/land.component';
-import { ProfileComponent } from './profile/profile.component';
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'user-profile', component: ProfileComponent },
-  { path: 'register', component: SignupComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'land-detail/:id', component: LandComponent },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '', component: HomeComponent },
+  {
+    path: '',
+    component: AuthComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./auth/auth.module').then((m) => m.AuthModule),
+      },
+    ],
+  },
+  {
+    path: 'dashboard',
+    component: AdminLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./layouts/admin-layout/admin-layout.module').then(
+            (m) => m.AdminLayoutModule
+          ),
+      },
+    ],
+  },
+  { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, {
+      useHash: false,
+    }),
+  ],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRouting {}

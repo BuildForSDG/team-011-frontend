@@ -46,4 +46,3 @@ jobs:
         run: |
           npm ci
           npm run test:ci
-          npm run test:e2e-ci

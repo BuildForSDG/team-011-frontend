@@ -13,7 +13,7 @@ import { authConstants } from '../constants';
   styleUrls: ['./signup.component.css'],
 })
 export class SignupComponent implements OnInit {
-  signupForm: FormGroup;
+  form: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -22,7 +22,7 @@ export class SignupComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.signupForm = this.fb.group({
+    this.form = this.fb.group({
       firstName: ['', [Validators.required, Validators.maxLength(24)]],
       lastName: ['', [Validators.required, Validators.maxLength(24)]],
       email: ['', [Validators.email, Validators.required]],
@@ -34,21 +34,14 @@ export class SignupComponent implements OnInit {
           Validators.maxLength(24),
         ],
       ],
-      confirmPassword: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(6),
-          Validators.maxLength(24),
-        ],
-      ],
+
       role: ['', Validators.required],
     });
   }
 
   onSubmit() {
     Notiflix.Loading.Pulse();
-    const input = new SignupInput(this.signupForm.value);
+    const input = new SignupInput(this.form.value);
     console.log(input);
     this.authService.register(input).subscribe((res) => {
       const { emailConfirmKey } = authConstants;
