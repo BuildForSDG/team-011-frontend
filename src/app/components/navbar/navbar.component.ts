@@ -7,7 +7,7 @@ import { ROUTES } from '../sidebar/sidebar.component';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css'],
+  styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
   private listTitles: any[];
@@ -16,20 +16,16 @@ export class NavbarComponent implements OnInit {
   private toggleButton: any;
   private sidebarVisible: boolean;
 
-  constructor(
-    location: Location,
-    private element: ElementRef,
-    private router: Router
-  ) {
+  constructor(location: Location, private element: ElementRef, private router: Router) {
     this.location = location;
     this.sidebarVisible = false;
   }
 
   ngOnInit() {
-    this.listTitles = ROUTES.filter((listTitle) => listTitle);
+    this.listTitles = ROUTES.filter(listTitle => listTitle);
     const navbar: HTMLElement = this.element.nativeElement;
     this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];
-    this.router.events.subscribe((event) => {
+    this.router.events.subscribe(event => {
       this.sidebarClose();
       var $layer: any = document.getElementsByClassName('close-layer')[0];
       if ($layer) {
@@ -90,9 +86,7 @@ export class NavbarComponent implements OnInit {
       if (body.querySelectorAll('.main-panel')) {
         document.getElementsByClassName('main-panel')[0].appendChild($layer);
       } else if (body.classList.contains('off-canvas-sidebar')) {
-        document
-          .getElementsByClassName('wrapper-full-page')[0]
-          .appendChild($layer);
+        document.getElementsByClassName('wrapper-full-page')[0].appendChild($layer);
       }
 
       setTimeout(function () {

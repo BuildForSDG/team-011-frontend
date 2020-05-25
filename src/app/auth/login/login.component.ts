@@ -11,7 +11,7 @@ import { authConstants } from '../constants';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
@@ -27,20 +27,13 @@ export class LoginComponent implements OnInit {
     this.notifyFreshSignup();
     this.form = this.fb.group({
       email: ['', [Validators.email, Validators.required]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(6),
-          Validators.maxLength(24),
-        ],
-      ],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(24)]]
     });
   }
   onSubmit() {
     Notiflix.Loading.Pulse();
     const input: LoginInput = this.form.value;
-    this.authService.login(input).subscribe((res) => {
+    this.authService.login(input).subscribe(res => {
       this.localStore.storeAccessToken(res.accessToken);
       this.router.navigate(['/dashboard']);
       Notiflix.Loading.Remove();
@@ -49,7 +42,7 @@ export class LoginComponent implements OnInit {
 
   private notifyFreshSignup() {
     const { emailConfirmKey } = authConstants;
-    this.route.queryParams.subscribe((params) => {
+    this.route.queryParams.subscribe(params => {
       if (params[emailConfirmKey] === 'true') {
         Notiflix.Report.Success(
           'Thank you for onboarding',
