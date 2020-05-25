@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import Notiflix from 'notiflix-angular';
+import { LocalStoreService } from 'src/app/shared/services/local-store.service';
 
-import { LoginInput, LoginResp } from '../auth.dto';
+import { LoginInput } from '../auth.dto';
 import { AuthService } from '../auth.service';
 import { authConstants } from '../constants';
-import { localStoreKeys } from 'src/app/shared/constants/local-store.keys';
 
 @Component({
   selector: 'app-login',
@@ -14,17 +14,18 @@ import { localStoreKeys } from 'src/app/shared/constants/local-store.keys';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
+  form: FormGroup;
   isUserRegistered: boolean;
   constructor(
     private fb: FormBuilder,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly localStore: LocalStoreService
   ) {}
   ngOnInit(): void {
     this.notifyFreshSignup();
-    this.loginForm = this.fb.group({
+    this.form = this.fb.group({
       email: ['', [Validators.email, Validators.required]],
       password: [
         '',
@@ -38,10 +39,10 @@ export class LoginComponent implements OnInit {
   }
   onSubmit() {
     Notiflix.Loading.Pulse();
-    const input: LoginInput = this.loginForm.value;
-    this.authService.login(input).subscribe((res: LoginResp) => {
-      localStorage.setItem(localStoreKeys.accessToken, res.accessToken);
-      // TODO: route to dashboard
+    const input: LoginInput = this.form.value;
+    this.authService.login(input).subscribe((res) => {
+      this.localStore.storeAccessToken(res.accessToken);
+      this.router.navigate(['/dashboard']);
       Notiflix.Loading.Remove();
     });
   }
@@ -53,7 +54,7 @@ export class LoginComponent implements OnInit {
         Notiflix.Report.Success(
           'Thank you for onboarding',
           "We've sent a confirmation email to you. Please confirm your email to proceed.",
-          '<br><br>Okay'
+          'Okay'
         );
       }
     });

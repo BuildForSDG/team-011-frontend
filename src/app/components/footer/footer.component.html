@@ -1,0 +1,23 @@
+<footer class="footer">
+  <div class="container">
+    <nav class="float-left">
+      <ul>
+        <li>
+          <a href="https://www.andela.com" target="_blank">
+            Andela
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['']">
+            About Us
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div class="copyright float-right">
+      &copy;
+      {{date | date: 'yyyy'}}, Powered by
+      <a href="https://www.andela.com" target="_blank">Andela</a>
+    </div>
+  </div>
+</footer>

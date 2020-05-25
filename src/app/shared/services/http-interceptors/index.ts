@@ -1,9 +1,9 @@
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AuthInterceptor } from './auth.interceptor';
+import { CacheInterceptor } from './cache.interceptor';
 import { EnsureHttpsInterceptor } from './ensure-https.interceptor';
 import { ErrorHandlerInterceptor } from './error-handler.interceptor';
-import { CacheInterceptor } from './cache.interceptor';
 
 /** Http interceptor providers in outside-in order */
 export const httpInterceptorProviders = [
