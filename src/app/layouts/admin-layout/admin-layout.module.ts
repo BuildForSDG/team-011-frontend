@@ -9,12 +9,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { DashboardComponent } from '../../../app/dashboard/dashboard.component';
-import { MapsComponent } from '../../../app/maps/maps.component';
 import { UserProfileComponent } from '../../../app/user-profile/user-profile.component';
 import { AdminLayoutRouting } from './admin.routing';
 
 @NgModule({
-  declarations: [DashboardComponent, UserProfileComponent, MapsComponent],
+  declarations: [DashboardComponent, UserProfileComponent],
   imports: [
     CommonModule,
     AdminLayoutRouting,
