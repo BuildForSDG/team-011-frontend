@@ -6,11 +6,11 @@ import { UserProfileComponent } from 'src/app/user-profile/user-profile.componen
 const routes: Routes = [
   { path: 'home', component: DashboardComponent },
   { path: 'user-profile', component: UserProfileComponent },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class AdminLayoutRouting {}

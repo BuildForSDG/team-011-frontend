@@ -19,18 +19,13 @@ export interface DecodedAccessToken {
   expirationDate: Date;
 }
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
-  constructor(
-    private readonly http: HttpClient,
-    private localStore: LocalStoreService
-  ) {}
+  constructor(private readonly http: HttpClient, private localStore: LocalStoreService) {}
 
-  register = (input: SignupInput) =>
-    this.http.post<SignupResp>(this.endpoint('register'), input);
-  login = (input: LoginInput) =>
-    this.http.post<LoginResp>(this.endpoint('login'), input);
+  register = (input: SignupInput) => this.http.post<SignupResp>(this.endpoint('register'), input);
+  login = (input: LoginInput) => this.http.post<LoginResp>(this.endpoint('login'), input);
   logout = () => of(localStorage.clear());
   endpoint = (action: string) => `/api/auth/${action}`;
 
