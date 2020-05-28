@@ -1,3 +1,4 @@
+import { AuthService, DecodedAccessToken } from '../../auth/auth.service';
 import { Location } from '@angular/common';
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -15,13 +16,19 @@ export class NavbarComponent implements OnInit {
   mobile_menu_visible: any = 0;
   private toggleButton: any;
   private sidebarVisible: boolean;
-
-  constructor(location: Location, private element: ElementRef, private router: Router) {
+  jwt: DecodedAccessToken;
+  constructor(
+    location: Location,
+    private element: ElementRef,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.location = location;
     this.sidebarVisible = false;
   }
 
   ngOnInit() {
+    this.jwt = this.authService.getDecodedAccessToken();
     this.listTitles = ROUTES.filter(listTitle => listTitle);
     const navbar: HTMLElement = this.element.nativeElement;
     this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];
@@ -108,15 +115,19 @@ export class NavbarComponent implements OnInit {
       this.mobile_menu_visible = 1;
     }
   }
-
+  onClickLogout() {
+    this.authService.logout().subscribe(() => {
+      this.router.navigate(['/account/login']);
+    });
+  }
   getTitle() {
-    var titlee = this.location.prepareExternalUrl(this.location.path());
-    if (titlee.charAt(0) === '#') {
-      titlee = titlee.slice(1);
+    var title = this.location.prepareExternalUrl(this.location.path());
+    if (title.charAt(0) === '#') {
+      title = title.slice(1);
     }
 
     for (var item = 0; item < this.listTitles.length; item++) {
-      if (this.listTitles[item].path === titlee) {
+      if (this.listTitles[item].path === title) {
         return this.listTitles[item].title;
       }
     }

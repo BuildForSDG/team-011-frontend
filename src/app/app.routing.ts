@@ -9,7 +9,7 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 const routes: Routes = [
   { path: '', component: HomeComponent },
   {
-    path: '',
+    path: 'account',
     component: AuthComponent,
     children: [
       {

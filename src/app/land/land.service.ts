@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { LandDto, CreateLandDto } from './land.dto';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LandService {
+  constructor(private http: HttpClient) {}
   lands: LandDto[] = [
     {
       id: '0',
