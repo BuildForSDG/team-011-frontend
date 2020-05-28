@@ -2,7 +2,6 @@ import { async, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { AppComponent } from './app.component';
-import { ProfileComponent } from './profile/profile.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 
@@ -10,12 +9,7 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [
-        AppComponent,
-        FooterComponent,
-        NavbarComponent,
-        ProfileComponent,
-      ],
+      declarations: [AppComponent, FooterComponent, NavbarComponent],
     }).compileComponents();
   }));
 

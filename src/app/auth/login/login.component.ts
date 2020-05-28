@@ -7,6 +7,7 @@ import { LocalStoreService } from 'src/app/shared/services/local-store.service';
 import { LoginInput } from '../auth.dto';
 import { AuthService } from '../auth.service';
 import { authConstants } from '../constants';
+import { NotifyService } from 'src/app/shared/services/notify.service';
 
 @Component({
   selector: 'app-login',
@@ -42,6 +43,7 @@ export class LoginComponent implements OnInit {
     const input: LoginInput = this.form.value;
     this.authService.login(input).subscribe((res) => {
       this.localStore.storeAccessToken(res.accessToken);
+      NotifyService.dismissAll();
       this.router.navigate(['/dashboard']);
       Notiflix.Loading.Remove();
     });
@@ -51,11 +53,15 @@ export class LoginComponent implements OnInit {
     const { emailConfirmKey } = authConstants;
     this.route.queryParams.subscribe((params) => {
       if (params[emailConfirmKey] === 'true') {
-        Notiflix.Report.Success(
-          'Thank you for onboarding',
-          "We've sent a confirmation email to you. Please confirm your email to proceed.",
-          'Okay'
-        );
+        NotifyService.notify({
+          message:
+            "We've sent a confirmation email to you. Please confirm your email to proceed.",
+          title: '<strong>Welcome Aboard</strong>',
+          icon: 'done_outline',
+          delay: 10,
+          showProgressBar: true,
+          notifyType: 'success',
+        });
       }
     });
   }
