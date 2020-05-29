@@ -14,9 +14,15 @@ export class LandService extends BaseService {
   }
 
   getLands(skip: number, limit: number) {
-    return this.find<LandDto>(this.endpoint('/land'), { limit, skip });
+    return this.find<LandDto>('/land', { limit, skip });
+  }
+  getLand(id: string) {
+    return this.find<LandDto>('/land', { query: { id }, limit: 1, skip: 0 });
   }
   createLand(input: CreateLandDto | FormData) {
-    return this.create(input, '/land');
+    return this.create<CreateLandDto | FormData, LandDto>(input, '/land');
+  }
+  deleteLand(id: string) {
+    return this.delete(`/land/${id}`);
   }
 }

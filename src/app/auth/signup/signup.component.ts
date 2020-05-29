@@ -10,43 +10,31 @@ import { authConstants } from '../constants';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css'],
+  styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit {
   form: FormGroup;
 
-  constructor(
-    private fb: FormBuilder,
-    private readonly authService: AuthService,
-    private readonly router: Router
-  ) {}
+  constructor(private fb: FormBuilder, private readonly authService: AuthService, private readonly router: Router) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
       firstName: ['', [Validators.required, Validators.maxLength(24)]],
       lastName: ['', [Validators.required, Validators.maxLength(24)]],
       email: ['', [Validators.email, Validators.required]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(6),
-          Validators.maxLength(24),
-        ],
-      ],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(24)]],
 
-      role: ['', Validators.required],
+      role: ['', Validators.required]
     });
   }
 
   onSubmit() {
     Notiflix.Loading.Pulse();
     const input = new SignupInput(this.form.value);
-    console.log(input);
-    this.authService.register(input).subscribe((res) => {
+    this.authService.register(input).subscribe(res => {
       const { emailConfirmKey } = authConstants;
-      this.router.navigate(['/login'], {
-        queryParams: { [emailConfirmKey]: !res.canLogin },
+      this.router.navigate(['/account/login'], {
+        queryParams: { [emailConfirmKey]: !res.canLogin }
       });
       Notiflix.Loading.Remove();
     });

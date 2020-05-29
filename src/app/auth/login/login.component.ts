@@ -47,13 +47,12 @@ export class LoginComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       if (params[emailConfirmKey] === 'true') {
         NotifyService.notify({
-          message:
-            "We've sent a confirmation email to you. Please confirm your email to proceed.",
+          message: "We've sent a confirmation email to you. Please confirm your email to proceed.",
           title: '<strong>Welcome Aboard</strong>',
-          icon: 'done_outline',
+          icon: 'forward_to_inbox',
           delay: 10,
           showProgressBar: true,
-          notifyType: 'success',
+          notifyType: 'success'
         });
       }
     });
