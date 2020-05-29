@@ -149,9 +149,10 @@
                 <input type="file" id="file" formControlName="photo" enctype="multipart/form-data" multiple=""
                   class="inputFileHidden">
                 <div class="input-group">
-                  <input type="text" class="form-control inputFileVisible" placeholder="land photo...">
+                  <input type="text" class="form-control inputFileVisible" placeholder="land photo..."
+                    [(ngModel)]="fileName" [ngModelOptions]="{standalone: true}" readonly>
                   <span class="input-group-btn">
-                    <button type="button" class="btn btn-fab btn-round btn-primary">
+                    <button type="submit" class="btn btn-fab btn-round btn-primary" style="z-index: 10;">
                       <i class="material-icons">attach_file</i>
                     </button>
                   </span>
@@ -159,11 +160,11 @@
               </div>
 
             </div>
+            <div class="modal-footer justify-content-center">
+              <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Create
+              </button>
+            </div>
           </form>
-        </div>
-        <div class="modal-footer justify-content-center">
-          <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Create
-          </button>
         </div>
       </div>
     </div>

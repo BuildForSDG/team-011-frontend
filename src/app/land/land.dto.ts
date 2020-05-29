@@ -5,7 +5,7 @@ export interface CreateLandDto {
   shortLocation: string;
   fullLocation: string;
   price: number;
-  photo?: string;
+  photo?: File;
   auctionType: 'Lease' | 'Rent';
   installmentType: string;
   currency: string;

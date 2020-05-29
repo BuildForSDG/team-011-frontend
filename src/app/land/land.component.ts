@@ -1,18 +1,27 @@
 import Notiflix from 'notiflix-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { LandService } from './land.service';
 import { LandDto, CreateLandDto } from './land.dto';
-import { FormBuilder, FormGroup, Validators, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidationErrors, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import * as $ from 'jquery';
 import { NotifyService } from '../shared/services/notify.service';
 @Component({
   selector: 'app-land',
   templateUrl: './land.component.html',
-  styleUrls: ['./land.component.css']
+  styleUrls: ['./land.component.css'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: LandComponent,
+      multi: true
+    }
+  ]
 })
 export class LandComponent implements OnInit {
   lands: LandDto[];
   createLandForm: FormGroup;
+  private file: File | null = null;
+  fileName: string;
   constructor(private landService: LandService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
@@ -22,12 +31,21 @@ export class LandComponent implements OnInit {
     this.initForm();
   }
 
+  @HostListener('change', ['$event.target.files']) emitFiles(event: FileList) {
+    const file = event && event.item(0);
+    this.file = file;
+    this.fileName = file?.name;
+  }
   onClickCreate() {
     console.log(this.getFormValidationErrors());
+
     if (this.createLandForm.invalid) return;
     Notiflix.Loading.Pulse();
     const input: CreateLandDto = this.createLandForm.value;
-    this.landService.createLand(input).subscribe((res: LandDto) => {
+    input.photo = this.file;
+    const fd = this.toFormData(input);
+    console.log(fd);
+    this.landService.createLand(fd).subscribe((res: LandDto) => {
       $('#landModalCloseBtn').click();
       this.lands.push(res);
       Notiflix.Loading.Remove();
@@ -41,6 +59,7 @@ export class LandComponent implements OnInit {
       });
     });
   }
+
   getFormValidationErrors() {
     Object.keys(this.createLandForm.controls).forEach(key => {
       const controlErrors: ValidationErrors = this.createLandForm.get(key).errors;
@@ -51,8 +70,35 @@ export class LandComponent implements OnInit {
       }
     });
   }
+  requiredFileType(...types: string[]) {
+    return (control: FormControl) => {
+      const file = control.value;
+      if (file) {
+        const extension = file.split('.')[1].toLowerCase();
+        if (!types.find(v => v.toLowerCase() === extension.toLowerCase())) {
+          return {
+            requiredFileType: true
+          };
+        }
+
+        return null;
+      }
+
+      return null;
+    };
+  }
   onClickFileUpload() {
     $('#file').click();
+  }
+  toFormData<T>(formValue: T) {
+    const formData = new FormData();
+
+    for (const key of Object.keys(formValue)) {
+      const value = formValue[key];
+      formData.append(key, value);
+    }
+
+    return formData;
   }
   initForm() {
     this.createLandForm = this.fb.group({
@@ -65,7 +111,7 @@ export class LandComponent implements OnInit {
       auctionType: [null, Validators.required],
       installmentType: [null, Validators.required],
       currency: [null, Validators.required],
-      photo: [null]
+      photo: [null, [Validators.required, this.requiredFileType('png', 'jpg', 'jpeg')]]
     });
   }
 }
