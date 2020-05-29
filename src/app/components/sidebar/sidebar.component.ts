@@ -9,19 +9,21 @@ declare interface RouteInfo {
 }
 export const ROUTES: RouteInfo[] = [
   { path: '/dashboard/home', title: 'Dashboard', icon: 'dashboard', class: '' },
+  { path: '/dashboard/land', title: 'Manage Lands', icon: 'landscape', class: '' },
+
   {
     path: '/dashboard/user-profile',
     title: 'User Profile',
     icon: 'person',
-    class: '',
+    class: ''
   },
-  { path: '/dashboard/maps', title: 'Maps', icon: 'location_on', class: '' },
+  { path: '/dashboard/maps', title: 'Maps', icon: 'location_on', class: '' }
 ];
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css'],
+  styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
   menuItems: any[];
@@ -29,7 +31,7 @@ export class SidebarComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.menuItems = ROUTES.filter((menuItem) => menuItem);
+    this.menuItems = ROUTES.filter(menuItem => menuItem);
   }
   isMobileMenu() {
     if ($(window).width() > 991) {
