@@ -16,7 +16,7 @@ export class LandService extends BaseService {
   getLands(skip: number, limit: number) {
     return this.find<LandDto>(this.endpoint('/land'), { limit, skip });
   }
-  createLand(input: CreateLandDto) {
+  createLand(input: CreateLandDto | FormData) {
     return this.create(input, '/land');
   }
 }

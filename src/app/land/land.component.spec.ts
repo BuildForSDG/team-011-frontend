@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { LandComponent } from './land.component';
@@ -13,7 +13,7 @@ describe('LandComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [LandComponent],
-      imports: [ReactiveFormsModule, HttpClientTestingModule],
+      imports: [ReactiveFormsModule, HttpClientTestingModule, FormsModule],
       providers: [LandService]
     }).compileComponents();
   }));
