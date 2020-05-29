@@ -17,7 +17,7 @@
 
 var big_image;
 
-$(document).ready(function() {
+$(document).ready(function () {
   BrowserDetect.init();
 
   // Init Material scripts for buttons ripples, inputs animations etc, more info on the next link https://github.com/FezVrasta/bootstrap-material-design#materialjs
@@ -47,43 +47,77 @@ $(document).ready(function() {
     if (big_image.length != 0) {
       $(window).on('scroll', materialKit.checkScrollForParallax);
     }
-
   }
+  // FileInput
+  $('.form-file-simple .inputFileVisible').click(function () {
+    $(this).siblings('.inputFileHidden').trigger('click');
+  });
 
+  $('.form-file-simple .inputFileHidden').change(function () {
+    var filename = $(this)
+      .val()
+      .replace(/C:\\fakepath\\/i, '');
+    $(this).siblings('.inputFileVisible').val(filename);
+  });
 
+  $('.form-file-multiple .inputFileVisible, .form-file-multiple .input-group-btn').click(function () {
+    $(this).parent().parent().find('.inputFileHidden').trigger('click');
+    $(this).parent().parent().addClass('is-focused');
+  });
+
+  $('.form-file-multiple .inputFileHidden').change(function () {
+    var names = '';
+    for (var i = 0; i < $(this).get(0).files.length; ++i) {
+      if (i < $(this).get(0).files.length - 1) {
+        names += $(this).get(0).files.item(i).name + ',';
+      } else {
+        names += $(this).get(0).files.item(i).name;
+      }
+    }
+    $(this).siblings('.input-group').find('.inputFileVisible').val(names);
+  });
+
+  $('.form-file-multiple .btn').on('focus', function () {
+    $(this).parent().siblings().trigger('focus');
+  });
+
+  $('.form-file-multiple .btn').on('focusout', function () {
+    $(this).parent().siblings().trigger('focusout');
+  });
 });
 
-$(document).on('click', '.navbar-toggler', function() {
+$(document).on('click', '.navbar-toggler', function () {
   $toggle = $(this);
 
   if (materialKit.misc.navbar_menu_visible == 1) {
     $('html').removeClass('nav-open');
     materialKit.misc.navbar_menu_visible = 0;
     $('#bodyClick').remove();
-    setTimeout(function() {
+    setTimeout(function () {
       $toggle.removeClass('toggled');
     }, 550);
 
     $('html').removeClass('nav-open-absolute');
   } else {
-    setTimeout(function() {
+    setTimeout(function () {
       $toggle.addClass('toggled');
     }, 580);
 
-
     div = '<div id="bodyClick"></div>';
-    $(div).appendTo("body").click(function() {
-      $('html').removeClass('nav-open');
+    $(div)
+      .appendTo('body')
+      .click(function () {
+        $('html').removeClass('nav-open');
 
-      if ($('nav').hasClass('navbar-absolute')) {
-        $('html').removeClass('nav-open-absolute');
-      }
-      materialKit.misc.navbar_menu_visible = 0;
-      $('#bodyClick').remove();
-      setTimeout(function() {
-        $toggle.removeClass('toggled');
-      }, 550);
-    });
+        if ($('nav').hasClass('navbar-absolute')) {
+          $('html').removeClass('nav-open-absolute');
+        }
+        materialKit.misc.navbar_menu_visible = 0;
+        $('#bodyClick').remove();
+        setTimeout(function () {
+          $toggle.removeClass('toggled');
+        }, 550);
+      });
 
     if ($('nav').hasClass('navbar-absolute')) {
       $('html').addClass('nav-open-absolute');
@@ -104,13 +138,13 @@ materialKit = {
     isWindow: document.documentMode || /Edge/.test(navigator.userAgent)
   },
 
-  initFormExtendedDatetimepickers: function() {
+  initFormExtendedDatetimepickers: function () {
     $('.datetimepicker').datetimepicker({
       icons: {
-        time: "fa fa-clock-o",
-        date: "fa fa-calendar",
-        up: "fa fa-chevron-up",
-        down: "fa fa-chevron-down",
+        time: 'fa fa-clock-o',
+        date: 'fa fa-calendar',
+        up: 'fa fa-chevron-up',
+        down: 'fa fa-chevron-down',
         previous: 'fa fa-chevron-left',
         next: 'fa fa-chevron-right',
         today: 'fa fa-screenshot',
@@ -120,7 +154,7 @@ materialKit = {
     });
   },
 
-  initSliders: function() {
+  initSliders: function () {
     // Sliders for demo purpose
     var slider = document.getElementById('sliderRegular');
 
@@ -145,17 +179,17 @@ materialKit = {
     });
   },
 
-  checkScrollForParallax: function() {
-    oVal = ($(window).scrollTop() / 3);
+  checkScrollForParallax: function () {
+    oVal = $(window).scrollTop() / 3;
     big_image.css({
-      'transform': 'translate3d(0,' + oVal + 'px,0)',
+      transform: 'translate3d(0,' + oVal + 'px,0)',
       '-webkit-transform': 'translate3d(0,' + oVal + 'px,0)',
       '-ms-transform': 'translate3d(0,' + oVal + 'px,0)',
       '-o-transform': 'translate3d(0,' + oVal + 'px,0)'
     });
   },
 
-  checkScrollForTransparentNavbar: debounce(function() {
+  checkScrollForTransparentNavbar: debounce(function () {
     if ($(document).scrollTop() > scroll_distance) {
       if (materialKit.misc.transparent) {
         materialKit.misc.transparent = false;
@@ -177,24 +211,24 @@ materialKit = {
 
 function debounce(func, wait, immediate) {
   var timeout;
-  return function() {
+  return function () {
     var context = this,
       args = arguments;
     clearTimeout(timeout);
-    timeout = setTimeout(function() {
+    timeout = setTimeout(function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     }, wait);
     if (immediate && !timeout) func.apply(context, args);
   };
-};
+}
 
 var BrowserDetect = {
-  init: function() {
-    this.browser = this.searchString(this.dataBrowser) || "Other";
-    this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "Unknown";
+  init: function () {
+    this.browser = this.searchString(this.dataBrowser) || 'Other';
+    this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || 'Unknown';
   },
-  searchString: function(data) {
+  searchString: function (data) {
     for (var i = 0; i < data.length; i++) {
       var dataString = data[i].string;
       this.versionSearchString = data[i].subString;
@@ -204,52 +238,53 @@ var BrowserDetect = {
       }
     }
   },
-  searchVersion: function(dataString) {
+  searchVersion: function (dataString) {
     var index = dataString.indexOf(this.versionSearchString);
     if (index === -1) {
       return;
     }
 
-    var rv = dataString.indexOf("rv:");
-    if (this.versionSearchString === "Trident" && rv !== -1) {
+    var rv = dataString.indexOf('rv:');
+    if (this.versionSearchString === 'Trident' && rv !== -1) {
       return parseFloat(dataString.substring(rv + 3));
     } else {
       return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
     }
   },
 
-  dataBrowser: [{
+  dataBrowser: [
+    {
       string: navigator.userAgent,
-      subString: "Chrome",
-      identity: "Chrome"
+      subString: 'Chrome',
+      identity: 'Chrome'
     },
     {
       string: navigator.userAgent,
-      subString: "MSIE",
-      identity: "Explorer"
+      subString: 'MSIE',
+      identity: 'Explorer'
     },
     {
       string: navigator.userAgent,
-      subString: "Trident",
-      identity: "Explorer"
+      subString: 'Trident',
+      identity: 'Explorer'
     },
     {
       string: navigator.userAgent,
-      subString: "Firefox",
-      identity: "Firefox"
+      subString: 'Firefox',
+      identity: 'Firefox'
     },
     {
       string: navigator.userAgent,
-      subString: "Safari",
-      identity: "Safari"
+      subString: 'Safari',
+      identity: 'Safari'
     },
     {
       string: navigator.userAgent,
-      subString: "Opera",
-      identity: "Opera"
+      subString: 'Opera',
+      identity: 'Opera'
     }
   ]
-
 };
 
-var better_browser = '<div class="container"><div class="better-browser row"><div class="col-md-2"></div><div class="col-md-8"><h3>We are sorry but it looks like your Browser doesn\'t support our website Features. In order to get the full experience please download a new version of your favourite browser.</h3></div><div class="col-md-2"></div><br><div class="col-md-4"><a href="https://www.mozilla.org/ro/firefox/new/" class="btn btn-warning">Mozilla</a><br></div><div class="col-md-4"><a href="https://www.google.com/chrome/browser/desktop/index.html" class="btn ">Chrome</a><br></div><div class="col-md-4"><a href="http://windows.microsoft.com/en-us/internet-explorer/ie-11-worldwide-languages" class="btn">Internet Explorer</a><br></div><br><br><h4>Thank you!</h4></div></div>';
+var better_browser =
+  '<div class="container"><div class="better-browser row"><div class="col-md-2"></div><div class="col-md-8"><h3>We are sorry but it looks like your Browser doesn\'t support our website Features. In order to get the full experience please download a new version of your favourite browser.</h3></div><div class="col-md-2"></div><br><div class="col-md-4"><a href="https://www.mozilla.org/ro/firefox/new/" class="btn btn-warning">Mozilla</a><br></div><div class="col-md-4"><a href="https://www.google.com/chrome/browser/desktop/index.html" class="btn ">Chrome</a><br></div><div class="col-md-4"><a href="http://windows.microsoft.com/en-us/internet-explorer/ie-11-worldwide-languages" class="btn">Internet Explorer</a><br></div><br><br><h4>Thank you!</h4></div></div>';

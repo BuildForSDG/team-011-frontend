@@ -11,9 +11,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DashboardComponent } from '../../../app/dashboard/dashboard.component';
 import { UserProfileComponent } from '../../../app/user-profile/user-profile.component';
 import { AdminLayoutRouting } from './admin.routing';
+import { LandComponent } from 'src/app/land/land.component';
 
 @NgModule({
-  declarations: [DashboardComponent, UserProfileComponent],
+  declarations: [DashboardComponent, UserProfileComponent, LandComponent],
   imports: [
     CommonModule,
     AdminLayoutRouting,
@@ -24,7 +25,7 @@ import { AdminLayoutRouting } from './admin.routing';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatTooltipModule,
-  ],
+    MatTooltipModule
+  ]
 })
 export class AdminLayoutModule {}

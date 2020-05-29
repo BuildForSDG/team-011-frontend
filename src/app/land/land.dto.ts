@@ -1,12 +1,14 @@
 export interface CreateLandDto {
-  location: string;
-  province: string;
-  price: number;
-  auctionType: 'Rent' | 'Lease';
-  acres: number;
-  isAvailable: boolean;
+  title: string;
   description: string;
-  imageStr?: string;
+  acres: number;
+  shortLocation: string;
+  fullLocation: string;
+  price: number;
+  photo?: string;
+  auctionType: 'Lease' | 'Rent';
+  installmentType: string;
+  currency: string;
 }
 export interface LandDto extends CreateLandDto {
   id: string;

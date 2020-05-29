@@ -1,8 +1,4 @@
-import {
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest,
-} from '@angular/common/http';
+import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '../../../../environments/environment';
@@ -18,7 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
     const endpoint = req.url.replace(/^\//, '');
     const url = `${baseUrl}/${endpoint}`;
     const authReq = authToken
-      ? req.clone({ setHeaders: { Authorization: authToken }, url })
+      ? req.clone({ setHeaders: { Authorization: `Bearer ${authToken}` }, url })
       : req.clone({ url });
     return next.handle(authReq);
   }
