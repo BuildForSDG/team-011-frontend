@@ -26,7 +26,10 @@ export class AuthService {
 
   register = (input: SignupInput) => this.http.post<SignupResp>(this.endpoint('register'), input);
   login = (input: LoginInput) => this.http.post<LoginResp>(this.endpoint('login'), input);
-  logout = () => of(localStorage.clear());
+  logout = () => {
+    this.localStore.disableCaching();
+    return of(localStorage.clear());
+  };
   endpoint = (action: string) => `/api/auth/${action}`;
 
   getDecodedAccessToken(): DecodedAccessToken {
