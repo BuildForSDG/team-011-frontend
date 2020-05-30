@@ -22,6 +22,7 @@ import { LandService } from './land.service';
 })
 export class LandComponent implements OnInit {
   lands: LandDto[];
+  landInfo: LandDto;
   createLandForm: FormGroup;
   updateLandForm: FormGroup;
   private file: File | null = null;
@@ -71,8 +72,8 @@ export class LandComponent implements OnInit {
     const fd = this.toFormData(input);
 
     this.landService.updateLand(input.id, fd).subscribe((res: any) => {
-      const index = this.lands.findIndex(v => v.id === res.id);
-      this.lands.splice(index, 1, res.land);
+      const index = this.lands.findIndex(v => v.id === res.land.id);
+      this.lands[index] = res.land;
       this.modalService.dismissAll();
       Notiflix.Loading.Remove();
       NotifyService.notify({
@@ -84,6 +85,10 @@ export class LandComponent implements OnInit {
         delay: 3
       });
     });
+  }
+  onClickLandInfoBtn(landInfo: TemplateRef<any>, land: LandDto) {
+    this.landInfo = land;
+    this.modalService.open(landInfo, { centered: true });
   }
   onClickAddBtn(createLandModal: TemplateRef<any>) {
     this.createLandForm.reset();
