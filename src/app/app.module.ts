@@ -20,9 +20,9 @@ import { httpInterceptorProviders } from './shared/services/http-interceptors';
     ComponentsModule,
     RouterModule,
     AppRouting,
-    AuthModule,
+    AuthModule
   ],
   providers: [httpInterceptorProviders],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

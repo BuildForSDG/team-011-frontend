@@ -7,19 +7,23 @@ import urlJoin from 'url-join';
 export abstract class BaseService {
   constructor(protected http: HttpClient) {}
 
-  endpoint = (...url: string[]) => urlJoin('/api/', ...url);
-  create<TInput, TRes>(input: TInput, url: string) {
-    return this.http.post<TRes>(this.endpoint(url), input);
+  private endpoint = (...paths: string[]) => urlJoin('/api/', ...paths);
+  create<TInput, TRes>(input: TInput, path: string) {
+    return this.http.post<TRes>(this.endpoint(path), input);
   }
-  find<TRes>(url: string, { query = {}, skip = 0, limit = 5 }: { query?: {} | any; skip?: number; limit?: number }) {
+  update<TInput, TRes>(input: TInput, path: string) {
+    return this.http.put<TRes>(this.endpoint(path), input);
+  }
+  find<TRes>(path: string, { query = {}, skip = 0, limit = 5 }: { query?: {} | any; skip?: number; limit?: number }) {
     delete query?.skip;
     delete query?.limit;
     const queryStr = JSON.stringify(query);
     const params = { params: new HttpParams({ fromObject: { query: queryStr, skip: `${skip}`, limit: `${limit}` } }) };
 
-    return this.http.get<TRes[]>(url, params);
+    return this.http.get<TRes[]>(this.endpoint(path), params);
   }
-  delete(url: string) {
-    return this.http.delete(url);
+
+  delete(path: string) {
+    return this.http.delete(this.endpoint(path));
   }
 }
