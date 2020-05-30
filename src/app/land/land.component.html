@@ -39,7 +39,7 @@
             </h6>
             <p class="card-text">{{land.description}}</p>
             <a role="button" (click)="onClickLandInfoBtn(landInfoModal,land)">
-              <i class="fas fa-info-circle fa-2x"></i></a>
+              <i class="fas fa-info-circle fa-2x text-primary"></i></a>
 
             <div class="row float-right">
               <div class="col-6">
@@ -294,27 +294,56 @@
   <div class="modal-content">
     <div class="card card-plain">
       <div class="modal-header">
-        <h4 class="modal-title">Land Information</h4>
+        <h4 class="modal-title">Full Farmland Information</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="modal.dismiss()">
           <i class="material-icons text-primary" style="font-size:larger;">clear</i></button>
+      </div>
+      <div class="info info-horizontal">
+        <div class="icon">
+          <i class="fab fa-pagelines fa-4x text-success"></i>
+        </div>
+        <div class="description">
+          <h4 class="info-title">Farmland</h4>
+          <p>{{landInfo.description}}</p>
+        </div>
+      </div>
+      <div class="info info-horizontal">
+        <div class="icon ">
+          <i class="fas fa-map-marked-alt fa-4x text-rose"></i>
+        </div>
+        <div class="description">
+          <h4 class="info-title">Full Address</h4>
+          <p>{{landInfo.fullLocation}}, {{landInfo.shortLocation}}</p>
+        </div>
+      </div>
+
+      <div class="info info-horizontal">
+        <div class="icon ">
+          <i class="fas fa-comment-dollar fa-4x text-info"></i>
+        </div>
+        <div class="description">
+          <h4 class="info-title">How Much?</h4>
+          <p *ngIf="landInfo.auctionType === 'Lease'">We are talking about a mere
+            <strong style="color: black;">{{landInfo.price|currency:landInfo.currency}}
+              {{landInfo.installmentType}}</strong> payment for
+            a lease to own</p>
+          <p *ngIf="landInfo.auctionType === 'Rent'">Renting this farmland goes for about
+            <strong style="color: black;">{{landInfo.price | currency:landInfo.currency}}
+              {{landInfo.installmentType}}</strong>
+            payment</p>
+        </div>
 
       </div>
-      <div class="info">
-        <i class="fas fa-map-marked-alt fa-4x text-rose"></i>
-        <h4 class="info-title">Full Address</h4>
-        <p>{{landInfo.fullLocation}}, {{landInfo.shortLocation}}</p>
-      </div>
-      <div class="info">
-        <i class="fas fa-comment-dollar fa-4x text-info"></i>
-        <h4 class="info-title">How Much?</h4>
-        <p *ngIf="landInfo.auctionType === 'Lease'">We are talking about a mere
-          <strong style="color: black;">{{landInfo.price|currency:landInfo.currency}}
-            {{landInfo.installmentType}}</strong> payment for
-          a lease to own</p>
-        <p *ngIf="landInfo.auctionType === 'Rent'">Renting this farmland goes for about
-          <strong style="color: black;">{{landInfo.price | currency:landInfo.currency}}
-            {{landInfo.installmentType}}</strong>
-          payment</p>
+      <div class="info info-horizontal">
+        <div class="icon">
+          <i class="fas fa-fingerprint fa-4x text-danger"></i>
+        </div>
+        <div class="description">
+          <h4 class="info-title">Secure Payment</h4>
+          <p>If this farmland suites what you are looking for, you can proceed to make secure payment and immediately
+            start utilizing the land for your next harvest</p>
+          <a href="#pablo">Make payment...</a>
+        </div>
       </div>
     </div>
   </div>
