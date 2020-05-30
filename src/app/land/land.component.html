@@ -20,8 +20,8 @@
   </ul>
   <div class="container-fluid">
     <hr />
-    <button class="btn btn-outline-primary btn-lg btn-fab btn-fab-mini btn-round" data-toggle="modal"
-      data-target="#landModal">
+    <button class="btn btn-outline-primary btn-lg btn-fab btn-fab-mini btn-round"
+      (click)="onClickAddBtn(createLandModal)">
       <i class="material-icons">add</i>
     </button>
     <div class="row">
@@ -29,18 +29,19 @@
       <div class="col-md-3" *ngFor="let land of lands;">
         <div class="card">
 
-          <img class="card-img-top" [src]="land.photo" rel="nofollow" alt="land image">
+          <img class="card-img-top" [src]="land.photo||''" rel="nofollow" alt="land image">
           <div class="card-body">
-            <h4 class="card-title">{{land.shortLocation}}</h4>
+            <h4 class="card-title">
+              <small><i class="fas fa-map-marker-alt text-warning"></i></small> {{land.shortLocation}}
+            </h4>
             <h6 class="card-subtitle mb-2 text-monospace text-capitalize">For {{land.auctionType}} |
               {{land.price|currency:land.currency}}
             </h6>
             <p class="card-text">{{land.description}}</p>
-            <a href="javascript:;" class="card-link">Card link</a>
             <a href="javascript:;" class="card-link">More...</a>
             <div class="row float-right">
               <div class="col-6">
-                <button class="btn btn-sm btn-fab btn-fab-mini" (click)="onClickEdit(land.id)">
+                <button class="btn btn-sm btn-fab btn-fab-mini" (click)="onClickEditBtn(land.id,updateLandModal)">
                   <i class="material-icons">edit</i>
                 </button>
               </div>
@@ -77,128 +78,212 @@
 
 </div>
 
-<div class="modal fade" id="landModal" tabindex="-1" role="">
-  <div class="modal-dialog modal-login" role="document">
-    <div class="modal-content">
-      <div class="card card-signup card-plain">
-        <div class="modal-header">
-          <div class="card-header card-header-primary text-center">
-            <button type="button" id="landModalCloseBtn" class="close" data-dismiss="modal" aria-hidden="true"><i
-                class="material-icons">clear</i></button>
-            <h4 class="card-title">New Land</h4>
 
-          </div>
-        </div>
-        <div class="modal-body">
-          <form class="form" [formGroup]="createLandForm" (ngSubmit)="onClickCreate()">
-            <p class="description text-center">Add a new land for rent or lease</p>
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="title">Land title</label>
-                  <input type="text" class="form-control" name="title" formControlName="title">
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="description">Short description</label>
-                  <input type="text" class="form-control" name="description" formControlName="description">
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="auctionType">Auction type</label>
-                  <select class="form-control selectpicker" data-style="btn btn-link" name="auctionType"
-                    formControlName="auctionType">
-                    <option></option>
-                    <option>Lease</option>
-                    <option>Rent</option>
-                  </select>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="installmentType">Installment type</label>
-                  <select class="form-control selectpicker" data-style="btn btn-link" name="installmentType"
-                    formControlName="installmentType">
-                    <option></option>
-                    <option>Daily</option>
-                    <option>Weekly</option>
-                    <option>Monthly</option>
-                    <option>Annual</option>
-                    <option>Biannual</option>
-                  </select>
-                </div>
-
-              </div>
-
-
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="acres">No. acres</label>
-                  <input type="text" class="form-control" name="acres" formControlName="acres">
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="price">Price</label>
-                  <input type="text" class="form-control" name="price" formControlName="price">
-                </div>
-              </div>
-              <label for="currency">Price currency</label>
-              <select class="form-control selectpicker" data-style="btn btn-link" name="currency"
-                formControlName="currency">
-                <option></option>
-                <option>NGN</option>
-                <option>USD</option>
-                <option>EUR</option>
-              </select>
-
-              <div class="form-group"><input type="text" placeholder="province..." class="form-control"
-                  formControlName="shortLocation"></div>
-
-              <input type="text" placeholder="full address..." class="form-control" formControlName="fullLocation">
-
-              <div class="form-group form-file-upload form-file-multiple" (click)="onClickFileUpload()">
-                <input type="file" id="file" formControlName="photo" enctype="multipart/form-data" multiple=""
-                  class="inputFileHidden">
-                <div class="input-group">
-                  <input type="text" class="form-control inputFileVisible" placeholder="land photo..."
-                    [(ngModel)]="fileName" [ngModelOptions]="{standalone: true}" readonly>
-                  <span class="input-group-btn">
-                    <button type="submit" class="btn btn-fab btn-round btn-primary" style="z-index: 10;">
-                      <i class="material-icons">attach_file</i>
-                    </button>
-                  </span>
-                </div>
-              </div>
-
-            </div>
-            <div class="modal-footer justify-content-center">
-              <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Create
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!--Delete Modal -->
-<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
+<!-- Create Land Modal -->
+<ng-template #createLandModal let-modal>
+  <div class="modal-content">
+    <div class="card card-signup card-plain">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Confirm Delete</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <div class="card-header card-header-icon card-header-primary text-center">
+          <div class="card-icon">
+            <i class="material-icons">add</i>
+          </div>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="modal.dismiss()"><i
+              class="material-icons">clear</i></button>
+          <h4 class="card-title text-white">Create New Farmland</h4>
+        </div>
       </div>
       <div class="modal-body">
-        Are you sure you want to delete this land?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger">Delete</button>
+        <form class="form" [formGroup]="createLandForm" (ngSubmit)="onClickCreate()">
+          <span></span>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="title">Land title</label>
+                <input type="text" class="form-control" name="title" formControlName="title">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="description">Short description</label>
+                <input type="text" class="form-control" name="description" formControlName="description">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="auctionType">Auction type</label>
+                <select class="form-control selectpicker" data-style="btn btn-link" name="auctionType"
+                  formControlName="auctionType">
+                  <option></option>
+                  <option>Lease</option>
+                  <option>Rent</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="installmentType">Installment type</label>
+                <select class="form-control selectpicker" data-style="btn btn-link" name="installmentType"
+                  formControlName="installmentType">
+                  <option></option>
+                  <option>Daily</option>
+                  <option>Weekly</option>
+                  <option>Monthly</option>
+                  <option>Annual</option>
+                  <option>Biannual</option>
+                </select>
+              </div>
+
+            </div>
+
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="acres">No. acres</label>
+                <input type="text" class="form-control" name="acres" formControlName="acres">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="price">Price</label>
+                <input type="text" class="form-control" name="price" formControlName="price">
+              </div>
+            </div>
+            <label for="currency">Price currency</label>
+            <select class="form-control selectpicker" data-style="btn btn-link" name="currency"
+              formControlName="currency">
+              <option></option>
+              <option>NGN</option>
+              <option>USD</option>
+              <option>EUR</option>
+            </select>
+
+            <div class="form-group"><input type="text" placeholder="province..." class="form-control"
+                formControlName="shortLocation"></div>
+
+            <input type="text" placeholder="full address..." class="form-control" formControlName="fullLocation">
+
+            <div class="form-group form-file-upload form-file-multiple" (click)="onClickFileUpload()">
+              <input type="file" id="file" formControlName="photo" enctype="multipart/form-data" multiple=""
+                class="inputFileHidden" (change)="onFileSelect($event.target.files)">
+              <div class="input-group">
+                <input type="text" class="form-control inputFileVisible" placeholder="land photo..."
+                  [(ngModel)]="fileName" [ngModelOptions]="{standalone: true}" readonly>
+                <span class="input-group-btn">
+                  <button type="submit" class="btn btn-fab btn-round btn-primary" style="z-index: 10;">
+                    <i class="material-icons">attach_file</i>
+                  </button>
+                </span>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Create
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-</div>
+</ng-template>
+
+<!-- Update Land Modal -->
+<ng-template #updateLandModal let-modal>
+  <div class="modal-content">
+    <div class="card card-signup card-plain">
+      <div class="modal-header">
+        <div class="card-header card-header-icon card-header-primary text-center">
+          <div class="card-icon">
+            <i class="material-icons">edit</i>
+          </div>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="modal.dismiss()"><i
+              class="material-icons">clear</i></button>
+          <h4 class="card-title text-white">Update Farmland Details</h4>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form class="form" [formGroup]="updateLandForm" (ngSubmit)="onClickUpdate()">
+          <span></span>
+          <input type="text" class="form-control d-none" name="id" formControlName="id">
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="title">Land title</label>
+                <input type="text" class="form-control" name="title" formControlName="title">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="description">Short description</label>
+                <input type="text" class="form-control" name="description" formControlName="description">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="auctionType">Auction type</label>
+                <select class="form-control selectpicker" data-style="btn btn-link" name="auctionType"
+                  formControlName="auctionType">
+                  <option></option>
+                  <option>Lease</option>
+                  <option>Rent</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="installmentType">Installment type</label>
+                <select class="form-control selectpicker" data-style="btn btn-link" name="installmentType"
+                  formControlName="installmentType">
+                  <option></option>
+                  <option>Daily</option>
+                  <option>Weekly</option>
+                  <option>Monthly</option>
+                  <option>Annual</option>
+                  <option>Biannual</option>
+                </select>
+              </div>
+
+            </div>
+
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="acres">No. acres</label>
+                <input type="text" class="form-control" name="acres" formControlName="acres">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="price">Price</label>
+                <input type="text" class="form-control" name="price" formControlName="price">
+              </div>
+            </div>
+            <label for="currency">Price currency</label>
+            <select class="form-control selectpicker" data-style="btn btn-link" name="currency"
+              formControlName="currency">
+              <option></option>
+              <option>NGN</option>
+              <option>USD</option>
+              <option>EUR</option>
+            </select>
+
+            <div class="form-group"><input type="text" placeholder="province..." class="form-control"
+                formControlName="shortLocation"></div>
+
+            <input type="text" placeholder="full address..." class="form-control" formControlName="fullLocation">
+
+            <div class="form-group form-file-upload form-file-multiple" (click)="onClickFileUpload()">
+              <input type="file" id="file" formControlName="photo" enctype="multipart/form-data" multiple=""
+                class="inputFileHidden" (change)="onFileSelect($event.target.files)">
+              <div class="input-group">
+                <input type="text" class="form-control inputFileVisible" placeholder="land photo..."
+                  [(ngModel)]="fileName" [ngModelOptions]="{standalone: true}" readonly>
+                <span class="input-group-btn">
+                  <button type="submit" class="btn btn-fab btn-round btn-primary" style="z-index: 10;">
+                    <i class="material-icons">attach_file</i>
+                  </button>
+                </span>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Update
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>

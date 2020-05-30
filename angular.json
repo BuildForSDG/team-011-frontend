@@ -22,6 +22,7 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/assets/scss/main.scss",
               "src/assets/css/material-kit.css"
             ],
@@ -96,6 +97,7 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/assets/scss/main.scss",
               "src/assets/css/material-kit.css"
             ],

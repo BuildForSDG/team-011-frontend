@@ -11,6 +11,9 @@ export abstract class BaseService {
   create<TInput, TRes>(input: TInput, path: string) {
     return this.http.post<TRes>(this.endpoint(path), input);
   }
+  update<TInput, TRes>(input: TInput, path: string) {
+    return this.http.put<TRes>(this.endpoint(path), input);
+  }
   find<TRes>(path: string, { query = {}, skip = 0, limit = 5 }: { query?: {} | any; skip?: number; limit?: number }) {
     delete query?.skip;
     delete query?.limit;

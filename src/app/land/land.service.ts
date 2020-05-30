@@ -8,6 +8,9 @@ import { LandDto, CreateLandDto } from './land.dto';
   providedIn: 'root'
 })
 export class LandService extends BaseService {
+  updateLand(id: string, input: LandDto | FormData) {
+    return this.update<LandDto | FormData, LandDto>(input, `/land/${id}`);
+  }
   land: LandDto;
   constructor(protected http: HttpClient) {
     super(http);
