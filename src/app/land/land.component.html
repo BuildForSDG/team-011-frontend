@@ -5,13 +5,13 @@
                   color-classes: "nav-pills-primary", "nav-pills-info", "nav-pills-success", "nav-pills-warning","nav-pills-danger"
               -->
     <li class="nav-item">
-      <a class="nav-link active" href="#dashboard-1" role="tab" data-toggle="tab">
+      <a class="nav-link active" href="#dashboard-1" role="tab" data-toggle="tab" (click)="onClickTab('Rent')">
         <i class="material-icons">account_balance</i>
         Rent
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#schedule-1" role="tab" data-toggle="tab">
+      <a class="nav-link" href="#schedule-1" role="tab" data-toggle="tab" (click)="onClickTab('Lease')">
         <i class="material-icons">attach_money</i>
         Lease
       </a>
