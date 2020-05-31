@@ -8,6 +8,7 @@ import Notiflix from 'notiflix-angular';
 import { NotifyService } from '../shared/services/notify.service';
 import { CreateLandDto, LandDto } from './land.dto';
 import { LandService } from './land.service';
+import { LocalStoreService } from '../shared/services/local-store.service';
 
 @Component({
   selector: 'app-land',
@@ -28,19 +29,22 @@ export class LandComponent implements OnInit {
   updateLandForm: FormGroup;
   private file: File | null = null;
   fileName: string;
-  pageOfItems: LandDto[];
 
   pageConfig: PaginationInstance = {
-    itemsPerPage: 8,
+    itemsPerPage: 3,
     currentPage: 1,
     // totalItems: 0,
     id: 'custom'
   };
 
-  constructor(private landService: LandService, private fb: FormBuilder, private modalService: NgbModal) {}
+  constructor(
+    private landService: LandService,
+    private fb: FormBuilder,
+    private modalService: NgbModal,
+    private localStore: LocalStoreService
+  ) {}
   ngOnInit(): void {
-    this.landService.getUserLands({ skip: 0, limit: 100 }).subscribe(res => {
-      // this.pageConfig.totalItems = res.totalCount;
+    this.landService.getUserLands({ skip: 0, limit: 100, auctionType: 'Rent' }).subscribe(res => {
       this.lands = res.items;
     });
     this.initForm();
@@ -50,6 +54,15 @@ export class LandComponent implements OnInit {
     const file = event && event.item(0);
     this.file = file;
     this.fileName = file.name;
+  };
+  onClickTab = (auctionType: 'Rent' | 'Lease') => {
+    Notiflix.Loading.Pulse();
+    this.pageConfig.currentPage = 1;
+    this.localStore.disableCaching();
+    this.landService.getUserLands({ skip: 0, limit: 100, auctionType }).subscribe(res => {
+      this.lands = res.items;
+      Notiflix.Loading.Remove();
+    });
   };
   onClickCreate = () => {
     // console.log(this.getFormValidationErrors(this.createLandForm));
