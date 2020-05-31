@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { LandComponent } from './land.component';
 import { LandService } from './land.service';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 describe('LandComponent', () => {
   let component: LandComponent;
@@ -13,7 +14,7 @@ describe('LandComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [LandComponent],
-      imports: [ReactiveFormsModule, HttpClientTestingModule, FormsModule],
+      imports: [ReactiveFormsModule, HttpClientTestingModule, FormsModule, NgxPaginationModule],
       providers: [LandService]
     }).compileComponents();
   }));

@@ -15,7 +15,7 @@ export class LandService extends BaseService {
   }
 
   getUserLands(q: { skip: number; limit: number; auctionType?: 'Lease' | 'Rent'; sortPrice?: 1 | -1 }) {
-    return this.find<PagedRes<LandDto>>(`/users/${this.authService.getDecodedAccessToken().user.userId}/lands`, {
+    return this.find<PagedRes<LandDto>>(`/users/${this.authService.getDecodedAccessToken().user?.userId}/lands`, {
       query: { auctionType: q.auctionType },
       opts: { sort: { createdAt: -1, price: q.sortPrice } },
       skip: q.skip,
