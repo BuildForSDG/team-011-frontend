@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, ValidationErrors, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as $ from 'jquery';
+import { PaginationInstance } from 'ngx-pagination';
 import Notiflix from 'notiflix-angular';
 
 import { NotifyService } from '../shared/services/notify.service';
@@ -27,21 +28,30 @@ export class LandComponent implements OnInit {
   updateLandForm: FormGroup;
   private file: File | null = null;
   fileName: string;
-  constructor(private landService: LandService, private fb: FormBuilder, private modalService: NgbModal) {}
+  pageOfItems: LandDto[];
 
+  pageConfig: PaginationInstance = {
+    itemsPerPage: 8,
+    currentPage: 1,
+    // totalItems: 0,
+    id: 'custom'
+  };
+
+  constructor(private landService: LandService, private fb: FormBuilder, private modalService: NgbModal) {}
   ngOnInit(): void {
-    this.landService.getLands(0, 10).subscribe(lands => {
-      this.lands = lands;
+    this.landService.getUserLands({ skip: 0, limit: 100 }).subscribe(res => {
+      // this.pageConfig.totalItems = res.totalCount;
+      this.lands = res.items;
     });
     this.initForm();
   }
 
-  onFileSelect(event: FileList) {
+  onFileSelect = (event: FileList) => {
     const file = event && event.item(0);
     this.file = file;
     this.fileName = file.name;
-  }
-  onClickCreate() {
+  };
+  onClickCreate = () => {
     // console.log(this.getFormValidationErrors(this.createLandForm));
     if (this.createLandForm.invalid) return;
     Notiflix.Loading.Pulse();
@@ -49,7 +59,7 @@ export class LandComponent implements OnInit {
     input.photo = this.file;
     const fd = this.toFormData(input);
     this.landService.createLand(fd).subscribe((res: LandDto) => {
-      this.lands.push(res);
+      this.lands.unshift(res);
       this.modalService.dismissAll();
       Notiflix.Loading.Remove();
       NotifyService.notify({
@@ -61,8 +71,8 @@ export class LandComponent implements OnInit {
         delay: 3
       });
     });
-  }
-  onClickUpdate() {
+  };
+  onClickUpdate = () => {
     // console.log(this.getFormValidationErrors(this.updateLandForm));
     if (this.updateLandForm.invalid) return;
     Notiflix.Loading.Pulse();
@@ -70,10 +80,11 @@ export class LandComponent implements OnInit {
     input.photo = this.file;
     if (!input.photo) delete input.photo;
     const fd = this.toFormData(input);
-
-    this.landService.updateLand(input.id, fd).subscribe((res: any) => {
-      const index = this.lands.findIndex(v => v.id === res.land.id);
-      this.lands[index] = res.land;
+    const currPage = this.pageConfig.currentPage;
+    this.landService.updateLand(input.id, fd).subscribe((res: LandDto) => {
+      const index = this.lands.findIndex(v => v.id === res.id);
+      this.lands[index] = res;
+      this.pageConfig.currentPage = currPage;
       this.modalService.dismissAll();
       Notiflix.Loading.Remove();
       NotifyService.notify({
@@ -85,22 +96,21 @@ export class LandComponent implements OnInit {
         delay: 3
       });
     });
-  }
-  onClickLandInfoBtn(landInfo: TemplateRef<any>, land: LandDto) {
+  };
+  onClickLandInfoBtn = (landInfo: TemplateRef<any>, land: LandDto) => {
     this.landInfo = land;
     this.modalService.open(landInfo, { centered: true });
-  }
-  onClickAddBtn(createLandModal: TemplateRef<any>) {
+  };
+  onClickAddBtn = (createLandModal: TemplateRef<any>) => {
     this.createLandForm.reset();
     this.fileName = null;
     this.modalService.open(createLandModal, { centered: true });
-  }
-  onClickEditBtn(id: string, updateLandModal: TemplateRef<any>) {
+  };
+  onClickEditBtn = (id: string, updateLandModal: TemplateRef<any>) => {
     const land = this.lands.find(v => v.id === id);
     this.fileName = null;
     this.updateLandForm.setValue({
       id: land.id,
-      title: land.title,
       description: land.description,
       acres: land.acres,
       shortLocation: land.shortLocation,
@@ -108,13 +118,12 @@ export class LandComponent implements OnInit {
       price: land.price,
       auctionType: land.auctionType,
       installmentType: land.installmentType,
-      currency: land.currency,
       photo: null
     });
     this.modalService.open(updateLandModal, { centered: true });
-  }
+  };
 
-  onClickDelete(id: string) {
+  onClickDelete = (id: string) => {
     Notiflix.Confirm.Init({
       okButtonBackground: '#e71c14',
       titleColor: '#ff0000',
@@ -137,37 +146,33 @@ export class LandComponent implements OnInit {
         });
       });
     });
-  }
+  };
 
   //#region
-  initForm() {
+  initForm = () => {
     this.createLandForm = this.fb.group({
-      title: [null, [Validators.required, Validators.maxLength(32)]],
-      description: [null, Validators.maxLength(32)],
+      description: [null, Validators.maxLength(128)],
       acres: [null, [Validators.required, Validators.min(1)]],
-      shortLocation: [null, [Validators.required, Validators.maxLength(64)]],
-      fullLocation: [null, [Validators.required, Validators.maxLength(64)]],
+      shortLocation: [null, [Validators.required, Validators.maxLength(32)]],
+      fullLocation: [null, [Validators.required, Validators.maxLength(512)]],
       price: [null, [Validators.required, Validators.min(1)]],
       auctionType: [null, Validators.required],
       installmentType: [null, Validators.required],
-      currency: [null, Validators.required],
       photo: [null, this.requiredFileType('png', 'jpg', 'jpeg')]
     });
     this.updateLandForm = this.fb.group({
       id: [Validators.required],
-      title: [[Validators.required, Validators.maxLength(32)]],
-      description: [Validators.maxLength(32)],
+      description: [Validators.maxLength(128)],
       acres: [[Validators.required, Validators.min(1)]],
-      shortLocation: [[Validators.required, Validators.maxLength(64)]],
-      fullLocation: [[Validators.required, Validators.maxLength(64)]],
+      shortLocation: [[Validators.required, Validators.maxLength(32)]],
+      fullLocation: [[Validators.required, Validators.maxLength(512)]],
       price: [[Validators.required, Validators.min(1)]],
       auctionType: [Validators.required],
       installmentType: [Validators.required],
-      currency: [Validators.required],
       photo: [null, this.requiredFileType('png', 'jpg', 'jpeg')]
     });
-  }
-  toFormData<T>(formValue: T) {
+  };
+  toFormData = <T>(formValue: T) => {
     const formData = new FormData();
 
     for (const key of Object.keys(formValue)) {
@@ -176,8 +181,8 @@ export class LandComponent implements OnInit {
     }
 
     return formData;
-  }
-  requiredFileType(...types: string[]) {
+  };
+  requiredFileType = (...types: string[]) => {
     return (control: FormControl) => {
       const file = control.value;
       if (file) {
@@ -193,8 +198,8 @@ export class LandComponent implements OnInit {
 
       return null;
     };
-  }
-  getFormValidationErrors(form: FormGroup) {
+  };
+  getFormValidationErrors = (form: FormGroup) => {
     Object.keys(form.controls).forEach(key => {
       const controlErrors: ValidationErrors = form.get(key).errors;
       if (controlErrors != null) {
@@ -203,10 +208,8 @@ export class LandComponent implements OnInit {
         });
       }
     });
-  }
-  onClickFileUpload() {
-    $('#file').click();
-  }
+  };
+  onClickFileUpload = () => $('#file').click();
 
   //#endregion
 }

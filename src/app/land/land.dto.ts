@@ -1,5 +1,4 @@
 export interface CreateLandDto {
-  title: string;
   description: string;
   acres: number;
   shortLocation: string;
@@ -8,8 +7,12 @@ export interface CreateLandDto {
   photo?: File;
   auctionType: 'Lease' | 'Rent';
   installmentType: string;
-  currency: string;
 }
 export interface LandDto extends CreateLandDto {
   id: string;
+}
+
+export interface PagedRes<T> {
+  totalCount: number;
+  items: T[];
 }

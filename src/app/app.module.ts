@@ -18,6 +18,7 @@ import { httpInterceptorProviders } from './shared/services/http-interceptors';
     FormsModule,
     ReactiveFormsModule,
     ComponentsModule,
+
     RouterModule,
     AppRouting,
     AuthModule

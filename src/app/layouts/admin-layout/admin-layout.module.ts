@@ -7,11 +7,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { LandComponent } from 'src/app/land/land.component';
 
 import { DashboardComponent } from '../../../app/dashboard/dashboard.component';
 import { UserProfileComponent } from '../../../app/user-profile/user-profile.component';
 import { AdminLayoutRouting } from './admin.routing';
-import { LandComponent } from 'src/app/land/land.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [DashboardComponent, UserProfileComponent, LandComponent],
@@ -25,7 +26,8 @@ import { LandComponent } from 'src/app/land/land.component';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatTooltipModule
+    MatTooltipModule,
+    NgxPaginationModule
   ]
 })
 export class AdminLayoutModule {}
