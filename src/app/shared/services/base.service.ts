@@ -14,13 +14,17 @@ export abstract class BaseService {
   update<TInput, TRes>(input: TInput, path: string) {
     return this.http.put<TRes>(this.endpoint(path), input);
   }
-  find<TRes>(path: string, { query = {}, skip = 0, limit = 5 }: { query?: {} | any; skip?: number; limit?: number }) {
-    delete query?.skip;
-    delete query?.limit;
+  find<TRes>(
+    path: string,
+    { query = {}, opts = {}, skip = 0, limit = 5 }: { query?: {} | any; opts?: {} | any; skip?: number; limit?: number }
+  ) {
     const queryStr = JSON.stringify(query);
-    const params = { params: new HttpParams({ fromObject: { query: queryStr, skip: `${skip}`, limit: `${limit}` } }) };
+    const optsStr = JSON.stringify({ ...opts, skip, limit });
+    const params = {
+      params: new HttpParams({ fromObject: { query: queryStr, opts: optsStr } })
+    };
 
-    return this.http.get<TRes[]>(this.endpoint(path), params);
+    return this.http.get<TRes>(this.endpoint(path), params);
   }
 
   delete(path: string) {
