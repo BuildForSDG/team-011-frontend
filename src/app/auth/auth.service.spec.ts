@@ -1,7 +1,4 @@
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
 import { SignupInput, SignupResp, LoginInput, LoginResp } from './auth.dto';
@@ -15,15 +12,15 @@ describe('AuthService', () => {
     firstName: 'First',
     lastName: 'Last',
     password: '123qwE!',
-    role: 'Landowner',
+    role: 'Landowner'
   };
   const loginInput: LoginInput = {
     password: signupInput.password,
-    email: signupInput.email,
+    email: signupInput.email
   };
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule]
     });
 
     httpMock = TestBed.inject(HttpTestingController);
@@ -38,10 +35,10 @@ describe('AuthService', () => {
 
   it('should register user', () => {
     const expected: SignupResp = {
-      canLogin: false,
+      canLogin: false
     };
 
-    service.register(signupInput).subscribe((res) => {
+    service.register(signupInput).subscribe(res => {
       expect(res).toEqual(expected);
     });
 
@@ -53,10 +50,9 @@ describe('AuthService', () => {
 
   it('should sign user in', () => {
     const expected: LoginResp = {
-      accessToken: 'access_token',
-      expiresInMins: 1,
+      accessToken: 'access_token'
     };
-    service.login(loginInput).subscribe((res) => {
+    service.login(loginInput).subscribe(res => {
       expect(res).toEqual(expected);
     });
 

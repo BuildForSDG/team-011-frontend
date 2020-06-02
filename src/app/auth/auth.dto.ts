@@ -22,7 +22,6 @@ export class SignupInput extends LoginInput {
 
 export class LoginResp {
   accessToken: string;
-  expiresInMins: number;
 }
 
 export class SignupResp {

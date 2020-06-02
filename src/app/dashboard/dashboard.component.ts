@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import * as Chartist from 'chartist';
+import { Observable } from 'rxjs';
+
+import { AuthService, DecodedAccessToken } from '../auth/auth.service';
+import { LandDto, PagedRes } from '../land/land.dto';
+import { LandService } from '../land/land.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,14 +12,19 @@ import * as Chartist from 'chartist';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  constructor() {}
+  jwt: DecodedAccessToken;
+  landsCountObs: Observable<PagedRes<LandDto>>;
+  constructor(private authService: AuthService, private landService: LandService) {
+    this.jwt = this.authService.getDecodedAccessToken();
+  }
+
   startAnimationForLineChart(chart) {
     let seq: any, delays: any, durations: any;
     seq = 0;
     delays = 80;
     durations = 500;
 
-    chart.on('draw', function(data) {
+    chart.on('draw', function (data) {
       if (data.type === 'line' || data.type === 'area') {
         data.element.animate({
           d: {
@@ -47,7 +57,7 @@ export class DashboardComponent implements OnInit {
     seq2 = 0;
     delays2 = 80;
     durations2 = 500;
-    chart.on('draw', function(data) {
+    chart.on('draw', function (data) {
       if (data.type === 'bar') {
         seq2++;
         data.element.animate({
@@ -65,6 +75,9 @@ export class DashboardComponent implements OnInit {
     seq2 = 0;
   }
   ngOnInit() {
+    this.landsCountObs = this.landService.getUserLands({ skip: 0, limit: 1 });
+    //value
+
     /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
 
     const dataDailySalesChart: any = {

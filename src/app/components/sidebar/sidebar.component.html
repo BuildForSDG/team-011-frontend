@@ -54,7 +54,8 @@
   </div>
   <ul class="nav">
     <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
-      <a class="nav-link" [routerLink]="[menuItem.path]" routerLinkActive="active">
+      <a class="nav-link" [routerLink]="[menuItem.path]" routerLinkActive="active"
+        *ngIf="!(menuItem.excludeRoles && menuItem.excludeRoles.includes(jwt.user?.role))">
         <i class="material-icons">{{menuItem.icon}}</i>
         <p>{{menuItem.title}}</p>
       </a>

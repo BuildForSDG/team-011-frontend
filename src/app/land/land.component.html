@@ -27,6 +27,7 @@
     <div class="row">
       <div class="col-md-3" *ngFor="let land of lands  | paginate: pageConfig">
         <div class="card">
+
           <img class="card-img-top" [src]="land.photo" rel="nofollow" alt="land image" *ngIf="land.photo">
           <div class="card-body">
             <h4 class="card-title">
@@ -36,9 +37,11 @@
                 {{land.auctionType}}</span> | <span>{{land.price | currency:'₦'}}, {{land.installmentType}}</span>
             </h6>
             <p class="card-text">{{land.description}}</p>
-            <a role="button" (click)="onClickLandInfoBtn(landInfoModal,land)">
-              <i class="fas fa-info-circle fa-2x text-primary"></i></a>
 
+            <button mat-raised-button type="button" matTooltip="Click to see more info" [matTooltipPosition]="'right'"
+              class="btn btn-primary btn-link btn-sm btn-just-icon" (click)="onClickLandInfoBtn(landInfoModal,land)">
+              <i class="material-icons">info</i>
+            </button>
             <div class="row float-right">
               <div class="col-6">
                 <button class="btn btn-sm btn-fab btn-fab-mini" (click)="onClickEditBtn(land.id,updateLandModal)">
@@ -62,7 +65,7 @@
 
 <!-- Pagination -->
 <pagination-template #p="paginationApi" (pageChange)="pageConfig.currentPage = $event" [id]="pageConfig.id">
-  <nav aria-label="Page navigation">
+  <nav aria-label="Page navigation" *ngIf="p.pages.length>1">
     <ul class="pagination justify-content-start">
       <li class="page-item pagination-previous" [class.disabled]="p.isFirstPage()">
         <a class="page-link" (click)="p.previous()" tabindex="-1">Previous</a>

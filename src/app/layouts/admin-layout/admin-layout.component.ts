@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { Location, LocationStrategy, PathLocationStrategy, PopStateEvent } from '@angular/common';
 import 'rxjs/add/operator/filter';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
@@ -18,10 +18,13 @@ export class AdminLayoutComponent implements OnInit {
   private lastPoppedUrl: string;
   private yScrollStack: number[] = [];
   constructor(public location: Location, private router: Router, private authService: AuthService) {}
+  // ngOnDestroy(): void {
+  //   document.getElementById('theme').setAttribute('href', './assets/css/material-kit.min.css');
+  // }
 
   ngOnInit() {
     const isWindows = navigator.platform.indexOf('Win') > -1 ? true : false;
-
+    // document.getElementById('theme').setAttribute('href', './assets/css/material-dashboard.min.css');
     if (isWindows && !document.getElementsByTagName('body')[0].classList.contains('sidebar-mini')) {
       // if we are on windows OS we activate the perfectScrollbar function
 

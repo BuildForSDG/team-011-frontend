@@ -6,7 +6,7 @@ import { PaginationInstance } from 'ngx-pagination';
 import Notiflix from 'notiflix-angular';
 
 import { NotifyService } from '../shared/services/notify.service';
-import { CreateLandDto, LandDto } from './land.dto';
+import { CreateLandDto, LandDto, UpdateLandDto } from './land.dto';
 import { LandService } from './land.service';
 import { LocalStoreService } from '../shared/services/local-store.service';
 
@@ -31,7 +31,7 @@ export class LandComponent implements OnInit {
   fileName: string;
 
   pageConfig: PaginationInstance = {
-    itemsPerPage: 3,
+    itemsPerPage: 8,
     currentPage: 1,
     // totalItems: 0,
     id: 'custom'
@@ -69,9 +69,9 @@ export class LandComponent implements OnInit {
     if (this.createLandForm.invalid) return;
     Notiflix.Loading.Pulse();
     const input: CreateLandDto = this.createLandForm.value;
-    input.photo = this.file;
-    const fd = this.toFormData(input);
-    this.landService.createLand(fd).subscribe((res: LandDto) => {
+
+    const inputDto = this.file ? this.toFormData({ ...input, photo: this.file }) : input;
+    this.landService.createLand(inputDto).subscribe((res: LandDto) => {
       this.lands.unshift(res);
       this.modalService.dismissAll();
       Notiflix.Loading.Remove();
@@ -89,12 +89,11 @@ export class LandComponent implements OnInit {
     // console.log(this.getFormValidationErrors(this.updateLandForm));
     if (this.updateLandForm.invalid) return;
     Notiflix.Loading.Pulse();
-    const input: LandDto = this.updateLandForm.value;
-    input.photo = this.file;
-    if (!input.photo) delete input.photo;
-    const fd = this.toFormData(input);
     const currPage = this.pageConfig.currentPage;
-    this.landService.updateLand(input.id, fd).subscribe((res: LandDto) => {
+    const input: UpdateLandDto = this.updateLandForm.value;
+
+    const inputDto = this.file ? this.toFormData({ ...input, photo: this.file }) : input;
+    this.landService.updateLand(input.id, inputDto).subscribe((res: LandDto) => {
       const index = this.lands.findIndex(v => v.id === res.id);
       this.lands[index] = res;
       this.pageConfig.currentPage = currPage;
@@ -192,7 +191,6 @@ export class LandComponent implements OnInit {
       const value = formValue[key];
       formData.append(key, value);
     }
-
     return formData;
   };
   requiredFileType = (...types: string[]) => {
