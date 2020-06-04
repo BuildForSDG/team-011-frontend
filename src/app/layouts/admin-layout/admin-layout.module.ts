@@ -13,9 +13,10 @@ import { DashboardComponent } from '../../../app/dashboard/dashboard.component';
 import { UserProfileComponent } from '../../../app/user-profile/user-profile.component';
 import { AdminLayoutRouting } from './admin.routing';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { MarketplaceComponent } from '../../marketplace/marketplace.component';
 
 @NgModule({
-  declarations: [DashboardComponent, UserProfileComponent, LandComponent],
+  declarations: [DashboardComponent, UserProfileComponent, LandComponent, MarketplaceComponent],
   imports: [
     CommonModule,
     AdminLayoutRouting,

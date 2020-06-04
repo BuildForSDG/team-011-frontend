@@ -5,29 +5,32 @@
         <div class="card card-stats">
           <div class="card-header card-header-warning card-header-icon">
             <div class="card-icon">
-              <i class="material-icons">content_copy</i>
+              <i class="material-icons">store</i>
             </div>
-            <p class="card-category">Used Space</p>
-            <h3 class="card-title">49/50
-              <small>GB</small>
+            <h4 class="card-category text-white">Rented Out</h4>
+            <h3 class="card-title text-white">0/{{landsCount}}
             </h3>
           </div>
           <div class="card-footer">
-            <div class="stats">
+            <div class="stats" *ngIf="landsCount === 0">
               <i class="material-icons text-danger">warning</i>
-              <a href="javascript:void(0)">Get More Space...</a>
+              <a [routerLink]="['/dashboard/lands']">Add Farmland...</a>
+            </div>
+            <div class="stats" *ngIf="landsCount !== 0">
+              <i class="material-icons">settings</i> Farmland Prices
+              <a [routerLink]="['/dashboard/lands']" class="text-rose"><strong>&nbsp;Settings...</strong></a>
             </div>
           </div>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 col-sm-6">
         <div class="card card-stats">
-          <div class="card-header card-header-success card-header-icon">
+          <div class="card-header card-header-danger card-header-icon">
             <div class="card-icon">
-              <i class="material-icons">store</i>
+              <i class="material-icons">&#8358;</i>
             </div>
-            <p class="card-category">Revenue</p>
-            <h3 class="card-title">$34,245</h3>
+            <h4 class="card-category text-white">Revenue</h4>
+            <h3 class="card-title text-white">{{revenueTotal|currency:'&#8358;'}}</h3>
           </div>
           <div class="card-footer">
             <div class="stats">
@@ -38,16 +41,16 @@
       </div>
       <div class="col-lg-3 col-md-6 col-sm-6">
         <div class="card card-stats">
-          <div class="card-header card-header-danger card-header-icon">
+          <div class="card-header card-header-success card-header-icon">
             <div class="card-icon">
-              <i class="material-icons">info_outline</i>
+              <i class="fas fa-tractor"></i>
             </div>
-            <p class="card-category">Fixed Issues</p>
-            <h3 class="card-title">75</h3>
+            <h5 class="card-category text-white">Farmlands</h5>
+            <h3 class="card-title text-white">{{landsCount}}</h3>
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="material-icons">local_offer</i> Tracked from Github
+              <i class="material-icons">update</i> Updated on refresh
             </div>
           </div>
         </div>
@@ -56,19 +59,23 @@
         <div class="card card-stats">
           <div class="card-header card-header-info card-header-icon">
             <div class="card-icon">
-              <i class="fa fa-twitter"></i>
+              <i class="material-icons">notifications_active</i>
             </div>
-            <p class="card-category">Followers</p>
-            <h3 class="card-title">+245</h3>
+            <h4 class="card-category text-white">Requests</h4>
+            <h3 class="card-title text-white" *ngIf="(landRequest$|async) as res;else loading">{{res.totalCount}}</h3>
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="material-icons">update</i> Just Updated
+              <i class="material-icons">local_offer</i> Tracked from
+              <a [routerLink]="['/dashboard/marketplace']"
+                style="color: Dodgerblue;">&nbsp;<strong>Marketplace...</strong></a>
             </div>
           </div>
         </div>
       </div>
+
     </div>
+
     <div class="row">
       <div class="col-md-4">
         <div class="card card-chart">
@@ -76,29 +83,30 @@
             <div class="ct-chart" id="dailySalesChart"></div>
           </div>
           <div class="card-body">
-            <h4 class="card-title">Daily Sales</h4>
+            <h4 class="card-title">Monthly Income</h4>
             <p class="card-category">
-              <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.</p>
+              Showing monthly rent remitted.
+            </p>
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="material-icons">access_time</i> updated 4 minutes ago
+              <i class="material-icons">access_time</i> updated monthly
             </div>
           </div>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card card-chart">
-          <div class="card-header card-header-warning">
+          <div class="card-header card-header-info">
             <div class="ct-chart" id="websiteViewsChart"></div>
           </div>
           <div class="card-body">
-            <h4 class="card-title">Email Subscriptions</h4>
-            <p class="card-category">Last Campaign Performance</p>
+            <h4 class="card-title">Your Land Prices in %</h4>
+            <p class="card-category">Glance of your Farmland Prices in %</p>
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="material-icons">access_time</i> campaign sent 2 days ago
+              <i class="material-icons">refresh</i> refresh for update
             </div>
           </div>
         </div>
@@ -109,40 +117,42 @@
             <div class="ct-chart" id="completedTasksChart"></div>
           </div>
           <div class="card-body">
-            <h4 class="card-title">Completed Tasks</h4>
-            <p class="card-category">Last Campaign Performance</p>
+            <h4 class="card-title">Rate Of Requests</h4>
+            <p class="card-category">Showing Latest Requests</p>
           </div>
           <div class="card-footer">
-            <div class="stats">
-              <i class="material-icons">access_time</i> campaign sent 2 days ago
+            <div class="stats" *ngIf="landRequest$|async as req;else loading">
+              <i class="material-icons">date_range</i>
+              <span *ngIf="!req.items.length">no requests yet</span>
+              <span *ngIf="req.items.length">last updated at {{req.items[0].updatedAt|date}}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-lg-6 col-md-12">
+    <div class="row" *ngIf="lands$ | async as lands;">
+      <div class="col-lg-6 col-md-12" *ngIf="lands.items.length">
         <div class="card">
           <div class="card-header card-header-tabs card-header-primary">
             <div class="nav-tabs-navigation">
               <div class="nav-tabs-wrapper">
-                <span class="nav-tabs-title">Tasks:</span>
+                <span class="nav-tabs-title">Last 5 Lands:</span>
                 <ul class="nav nav-tabs" data-tabs="tabs">
                   <li class="nav-item">
-                    <a mat-button class="nav-link active" href="#profile" data-toggle="tab">
-                      <i class="material-icons">bug_report</i> Bugs
+                    <a mat-button class="nav-link" [class.active]='isContainsRent' href="#rent" data-toggle="tab">
+                      <i class="material-icons">store</i> Rent
                       <div class="ripple-container"></div>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a mat-button class="nav-link" href="#messages" data-toggle="tab">
-                      <i class="material-icons">code</i> Website
+                    <a mat-button class="nav-link" [class.active]='!isContainsRent' href="#lease" data-toggle="tab">
+                      <i class="fas fa-hand-holding-usd fa-1x"></i>&nbsp; Lease
                       <div class="ripple-container"></div>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a mat-button class="nav-link" href="#settings" data-toggle="tab">
-                      <i class="material-icons">cloud</i> Server
+                    <a mat-button class="nav-link" [routerLink]="['/dashboard/lands']" data-toggle="tab">
+                      <i class="fas fa-expand-alt fa-1x"></i>&nbsp; All
                       <div class="ripple-container"></div>
                     </a>
                   </li>
@@ -152,279 +162,90 @@
           </div>
           <div class="card-body">
             <div class="tab-content">
-              <div class="tab-pane active" id="profile">
-                <table class="table">
+              <div class="tab-pane" [class.active]='isContainsRent' id="rent">
+                <table class="table table-hover" *ngIf="isContainsRent">
+                  <thead class="text-primary">
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Province</th>
+                    <th></th>
+                  </thead>
                   <tbody>
-                    <tr>
-                      <td>
-                        <div class="form-check">
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" value="" checked>
-                            <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                          </label>
-                        </div>
-                      </td>
-                      <td>Sign contract for "What are conference organizers afraid of?"</td>
-                      <td class="td-actions text-right">
-                        <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'"
-                          class="btn btn-primary btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                          class="btn btn-danger btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">close</i>
-                        </button>
-                      </td>
+                    <tr *ngFor="let l of lands.items|slice:0:5;let i = index" [class.table-dark]="!l.isAvailable">
+                      <ng-template [ngIf]="l.auctionType ==='Rent'">
+                        <td>{{l.description}}</td>
+                        <td>{{l.price|currency:'₦'}}</td>
+                        <td>{{l.shortLocation}}</td>
+                        <td class="td-actions text-right">
+                          <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
+                            class="btn btn-danger btn-link btn-sm btn-just-icon" *ngIf="l.isAvailable"
+                            (click)="onClickRemoveLandIcon(l.id)">
+                            <i class="material-icons" *ngIf="!isRemovingLand;else loading">close</i>
+                          </button>
+                        </td>
+                      </ng-template>
                     </tr>
-                    <tr>
-                      <td>
-                        <div class="form-check">
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" value="">
-                            <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                          </label>
-                        </div>
-                      </td>
-                      <td>Lines From Great Russian Literature? Or E-mails From My Boss?</td>
-                      <td class="td-actions text-right">
-                        <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'"
-                          class="btn btn-primary btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                          class="btn btn-danger btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">close</i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="form-check">
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" value="">
-                            <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                          </label>
-                        </div>
-                      </td>
-                      <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept
-                        through metro Detroit
-                      </td>
-                      <td class="td-actions text-right">
-                        <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'"
-                          class="btn btn-primary btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                          class="btn btn-danger btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">close</i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="form-check">
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" value="" checked>
-                            <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                          </label>
-                        </div>
-                      </td>
-                      <td>Create 4 Invisible User Experiences you Never Knew About</td>
-                      <td class="td-actions text-right">
-                        <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'"
-                          class="btn btn-primary btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                          class="btn btn-danger btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">close</i>
-                        </button>
-                      </td>
+                  </tbody>
+                </table>
+
+              </div>
+              <div class="tab-pane" [class.active]='!isContainsRent' id="lease">
+                <table class="table table-hover">
+                  <thead class="text-primary">
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Province</th>
+                    <th></th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let l of lands.items|slice:0:5;let i = index" [class.table-dark]="!l.isAvailable">
+                      <ng-template [ngIf]="l.auctionType ==='Lease'">
+                        <td>{{l.description}}</td>
+                        <td>{{l.price|currency:'₦'}}</td>
+                        <td>{{l.shortLocation}}</td>
+                        <td class="td-actions text-right">
+                          <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
+                            class="btn btn-danger btn-link btn-sm btn-just-icon" *ngIf="l.isAvailable"
+                            (click)="onClickRemoveLandIcon(l.id)">
+                            <i class="material-icons">close</i>
+                          </button>
+                        </td>
+                      </ng-template>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div class="tab-pane" id="messages">
-                <table class="table">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="form-check">
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" value="" checked>
-                            <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                          </label>
-                        </div>
-                      </td>
-                      <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept
-                        through metro Detroit
-                      </td>
-                      <td class="td-actions text-right">
-                        <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'"
-                          class="btn btn-primary btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                          class="btn btn-danger btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">close</i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="form-check">
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" value="">
-                            <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                          </label>
-                        </div>
-                      </td>
-                      <td>Sign contract for "What are conference organizers afraid of?"</td>
-                      <td class="td-actions text-right">
-                        <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'"
-                          class="btn btn-primary btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                          class="btn btn-danger btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">close</i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="tab-pane" id="settings">
-                <table class="table">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="form-check">
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" value="">
-                            <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                          </label>
-                        </div>
-                      </td>
-                      <td>Lines From Great Russian Literature? Or E-mails From My Boss?</td>
-                      <td class="td-actions text-right">
-                        <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'"
-                          class="btn btn-primary btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                          class="btn btn-danger btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">close</i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="form-check">
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" value="" checked>
-                            <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                          </label>
-                        </div>
-                      </td>
-                      <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept
-                        through metro Detroit
-                      </td>
-                      <td class="td-actions text-right">
-                        <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'"
-                          class="btn btn-primary btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                          class="btn btn-danger btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">close</i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="form-check">
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" value="" checked>
-                            <span class="form-check-sign">
-                              <span class="check"></span>
-                            </span>
-                          </label>
-                        </div>
-                      </td>
-                      <td>Sign contract for "What are conference organizers afraid of?"</td>
-                      <td class="td-actions text-right">
-                        <button mat-raised-button type="button" matTooltip="Edit Task" [matTooltipPosition]="'above'"
-                          class="btn btn-primary btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                          class="btn btn-danger btn-link btn-sm btn-just-icon">
-                          <i class="material-icons">close</i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+
             </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-6 col-md-12">
-        <div class="card">
+      <div class="col-lg-6 col-md-12" *ngIf="landRequest$|async as req;">
+        <div class="card" *ngIf="req.items.length">
           <div class="card-header card-header-warning">
-            <h4 class="card-title">Employees Stats</h4>
-            <p class="card-category">New employees on 15th September, 2016</p>
+            <h4 class="card-title">Farmers Requests Summary</h4>
+            <p class="card-category"><em>Glance at 5 latest requesting Farmers</em>
+              <b class="float-right">
+                <a [routerLink]="['/dashboard/requests']" routerLinkActive="router-link-active">
+                  See all...
+                </a>
+              </b></p>
+
           </div>
           <div class="card-body table-responsive">
             <table class="table table-hover">
               <thead class="text-warning">
                 <th>ID</th>
                 <th>Name</th>
-                <th>Salary</th>
-                <th>Country</th>
+                <th>Price</th>
+                <th>Province</th>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Dakota Rice</td>
-                  <td>$36,738</td>
-                  <td>Niger</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Minerva Hooper</td>
-                  <td>$23,789</td>
-                  <td>Curaçao</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>Sage Rodriguez</td>
-                  <td>$56,142</td>
-                  <td>Netherlands</td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>Philip Chaney</td>
-                  <td>$38,735</td>
-                  <td>Korea, South</td>
+                <tr *ngFor="let r of req.items|slice:0:5;let i = index">
+                  <td>{{i+1}}</td>
+                  <td>{{r.createdBy.firstName}} {{r.createdBy.lastName}}</td>
+                  <td>{{r.landId.price|currency:'₦'}}</td>
+                  <td>{{r.landId.shortLocation}}</td>
                 </tr>
               </tbody>
             </table>
@@ -434,3 +255,6 @@
     </div>
   </div>
 </div>
+<ng-template #loading>
+  <i class="fas fa-spinner fa-spin" style="font-size: 1.3rem;"></i>
+</ng-template>

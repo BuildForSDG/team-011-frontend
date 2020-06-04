@@ -27,8 +27,10 @@ export class AuthService {
   register = (input: SignupInput) => this.http.post<SignupResp>(this.endpoint('register'), input);
   login = (input: LoginInput) => this.http.post<LoginResp>(this.endpoint('login'), input);
   logout = () => {
-    this.localStore.disableCaching();
-    return of(localStorage.clear());
+    return of(() => {
+      this.localStore.disableCaching();
+      localStorage.clear();
+    });
   };
   endpoint = (action: string) => `/api/auth/${action}`;
 
