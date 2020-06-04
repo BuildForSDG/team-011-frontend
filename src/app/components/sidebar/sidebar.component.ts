@@ -13,7 +13,20 @@ declare interface RouteInfo {
 }
 export const ROUTES: RouteInfo[] = [
   { path: '/dashboard/home', title: 'Dashboard', icon: 'dashboard', class: '' },
-  { path: '/dashboard/land', title: 'Manage Lands', icon: 'landscape', class: '', excludeRoles: ['Farmer', 'Admin'] },
+  {
+    path: '/dashboard/marketplace',
+    title: 'Marketplace',
+    icon: 'shopping_cart',
+    class: '',
+    excludeRoles: ['Admin']
+  },
+  {
+    path: '/dashboard/lands',
+    title: 'Manage Lands',
+    icon: 'construction',
+    class: '',
+    excludeRoles: ['Farmer', 'Admin']
+  },
 
   {
     path: '/dashboard/user-profile',

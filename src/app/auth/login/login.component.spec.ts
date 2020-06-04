@@ -10,22 +10,11 @@ describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
-  // beforeEach(async(() => {
-  //   TestBed.configureTestingModule({
-  //     declarations: [ LoginComponent ]
-  //   })
-  //   .compileComponents();
-  // }));
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [LoginComponent],
-      imports: [
-        RouterTestingModule,
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-      ],
-      providers: [AuthService],
+      imports: [RouterTestingModule, ReactiveFormsModule, HttpClientTestingModule],
+      providers: [AuthService]
     }).compileComponents();
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;

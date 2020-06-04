@@ -44,6 +44,7 @@ export class LandComponent implements OnInit {
     private localStore: LocalStoreService
   ) {}
   ngOnInit(): void {
+    this.localStore.disableCaching();
     this.landService.getUserLands({ skip: 0, limit: 100, auctionType: 'Rent' }).subscribe(res => {
       this.lands = res.items;
     });
