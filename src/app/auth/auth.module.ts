@@ -11,9 +11,10 @@ import { AuthComponent } from './auth.component';
 import { AuthRouting } from './auth.routing';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
+import { EmailVerifyComponent } from './email-verify/email-verify.component';
 
 @NgModule({
-  declarations: [LoginComponent, SignupComponent, AuthComponent],
+  declarations: [LoginComponent, SignupComponent, AuthComponent, EmailVerifyComponent],
   imports: [
     CommonModule,
     RouterModule,

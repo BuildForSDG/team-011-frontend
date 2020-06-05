@@ -1,5 +1,7 @@
+import { environment } from './../../environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Injectable } from '@angular/core';
+import urlJoin from 'url-join';
 
 import { LoginInput, SignupInput, LoginResp, SignupResp } from './auth.dto';
 import { HttpClient } from '@angular/common/http';
@@ -24,7 +26,11 @@ export interface DecodedAccessToken {
 export class AuthService {
   constructor(private readonly http: HttpClient, private localStore: LocalStoreService) {}
 
-  register = (input: SignupInput) => this.http.post<SignupResp>(this.endpoint('register'), input);
+  register = (input: SignupInput) =>
+    this.http.post<SignupResp>(this.endpoint('register'), {
+      ...input,
+      clientUrl: `${urlJoin(environment.appUrl, '/account/email-verification')}`
+    });
   login = (input: LoginInput) => this.http.post<LoginResp>(this.endpoint('login'), input);
   logout = () => {
     return of(() => {
@@ -33,6 +39,7 @@ export class AuthService {
     });
   };
   endpoint = (action: string) => `/api/auth/${action}`;
+  verifyEmail = (token: string) => this.http.get<any>(this.endpoint(`verify/${token}`));
 
   getDecodedAccessToken(): DecodedAccessToken {
     const accessToken = this.localStore.getAccessToken();
