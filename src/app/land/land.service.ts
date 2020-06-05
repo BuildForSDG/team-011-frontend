@@ -40,9 +40,13 @@ export class LandService extends BaseService {
       limit: q.limit
     });
   }
-  getLands(skip: number, limit: number) {
-    const jwt = this.authService.getDecodedAccessToken();
-    return this.find<PagedRes<LandDto>>(`/users/${jwt.user.userId}/lands`, { limit, skip });
+  getLands(q: { skip: number; limit: number; query?: any; opts?: any }) {
+    return this.find<PagedRes<LandDto>>('/lands', {
+      query: q.query || {},
+      opts: q.opts || { sort: { createdAt: -1 } },
+      skip: q.skip,
+      limit: q.limit
+    });
   }
   getLand(id: string) {
     return this.find<LandDto>('/lands', { query: { id }, limit: 1, skip: 0 });

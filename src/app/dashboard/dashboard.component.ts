@@ -34,7 +34,13 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.localStore.disableCaching();
-    this.lands$ = this.landService.getUserLands({ skip: 0, limit: 10 * 2 }).pipe(share());
+    const currUser = this.jwt.user;
+    const role = this.jwt?.user?.role;
+    let query = {};
+    if (role === 'Farmer') query = { occupant: currUser.userId };
+    else if (role === 'Landowner') query = { createdBy: currUser.userId };
+
+    this.lands$ = this.landService.getLands({ skip: 0, limit: 10 * 2, query }).pipe(share());
     this.landRequest$ = this.landService.getLandRequests({ skip: 0, limit: 10 * 2 * 10 }).pipe(share());
 
     this.lands$.subscribe(res => {
