@@ -8,16 +8,16 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
+
   {
     path: 'account',
     component: AuthComponent,
     children: [
       {
         path: '',
-        loadChildren: () =>
-          import('./auth/auth.module').then((m) => m.AuthModule),
-      },
-    ],
+        loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
+      }
+    ]
   },
   {
     path: 'dashboard',
@@ -26,22 +26,19 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () =>
-          import('./layouts/admin-layout/admin-layout.module').then(
-            (m) => m.AdminLayoutModule
-          ),
-      },
-    ],
+        loadChildren: () => import('./layouts/admin-layout/admin-layout.module').then(m => m.AdminLayoutModule)
+      }
+    ]
   },
-  { path: '**', redirectTo: '', pathMatch: 'full' },
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      useHash: false,
-    }),
+      useHash: false
+    })
   ],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class AppRouting {}
