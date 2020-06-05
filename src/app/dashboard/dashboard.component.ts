@@ -35,7 +35,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.localStore.disableCaching();
     const currUser = this.jwt.user;
-    const role = this.jwt.user.role;
+    const role = this.jwt?.user?.role;
     let query = {};
     if (role === 'Farmer') query = { occupant: currUser.userId };
     else if (role === 'Landowner') query = { createdBy: currUser.userId };
