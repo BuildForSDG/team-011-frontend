@@ -2,10 +2,13 @@
   <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="card-header card-header-primary text-center">
       <h4 class="card-title">Sign In</h4>
-      <span></span>
+      <p class="text-white-50">or resend email <b><a href="javascript:;" (click)="onClickResend(resendModal)"
+            class="text-white">verification</a></b></p>
     </div>
+
     <br />
     <div class="card-body">
+
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text">
@@ -34,3 +37,35 @@
     </div>
   </form>
 </div>
+<ng-template #resendModal let-modal>
+  <div class="modal-content">
+    <div class="card card-signup card-plain">
+      <div class="modal-header">
+        <div class="card-header card-header-icon card-header-primary text-center">
+          <div class="card-icon">
+            <i class="material-icons">forward_to_inbox</i>
+          </div>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="modal.dismiss()"><i
+              class="material-icons">clear</i></button>
+          <h4 class="card-title text-white">Resend Email Confirmation</h4>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form class="form" [formGroup]="resendVerificationForm" (ngSubmit)="onResend()">
+          <span></span>
+          <div class="card-body">
+            <div class="form-group">
+              <input type="email" placeholder="Email..." class="form-control" formControlName="email" required>
+            </div>
+
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg"
+              [disabled]="resendVerificationForm.invalid">Resend
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>

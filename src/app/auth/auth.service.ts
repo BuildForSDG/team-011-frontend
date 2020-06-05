@@ -1,12 +1,12 @@
-import { environment } from './../../environments/environment';
-import { JwtHelperService } from '@auth0/angular-jwt';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { of } from 'rxjs';
 import urlJoin from 'url-join';
 
-import { LoginInput, SignupInput, LoginResp, SignupResp } from './auth.dto';
-import { HttpClient } from '@angular/common/http';
 import { LocalStoreService } from '../shared/services/local-store.service';
-import { of } from 'rxjs';
+import { environment } from './../../environments/environment';
+import { LoginInput, LoginResp, SignupInput, SignupResp } from './auth.dto';
 
 interface User {
   userId: string;
@@ -40,6 +40,10 @@ export class AuthService {
   };
   endpoint = (action: string) => `/api/auth/${action}`;
   verifyEmail = (token: string) => this.http.get<any>(this.endpoint(`verify/${token}`));
+  resendEmailVerification = (email: string) => {
+    const clientUrl = `${urlJoin(environment.appUrl, '/account/email-verification')}`;
+    return this.http.get<any>(this.endpoint('resend'), { params: { email, clientUrl } });
+  };
 
   getDecodedAccessToken(): DecodedAccessToken {
     const accessToken = this.localStore.getAccessToken();

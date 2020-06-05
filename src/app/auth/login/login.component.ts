@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Notiflix from 'notiflix-angular';
 import { LocalStoreService } from 'src/app/shared/services/local-store.service';
+import { NotifyService } from 'src/app/shared/services/notify.service';
 
 import { LoginInput } from '../auth.dto';
 import { AuthService } from '../auth.service';
 import { authConstants } from '../constants';
-import { NotifyService } from 'src/app/shared/services/notify.service';
 
 @Component({
   selector: 'app-login',
@@ -16,19 +17,26 @@ import { NotifyService } from 'src/app/shared/services/notify.service';
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
+  resendVerificationForm: FormGroup;
   isUserRegistered: boolean;
+
   constructor(
     private fb: FormBuilder,
+    private modalService: NgbModal,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly authService: AuthService,
+
     private readonly localStore: LocalStoreService
   ) {}
   ngOnInit(): void {
     this.notifyFreshSignup();
     this.form = this.fb.group({
-      email: ['', [Validators.email, Validators.required]],
+      email: ['', [Validators.email, Validators.required, Validators.maxLength(32)]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(24)]]
+    });
+    this.resendVerificationForm = this.fb.group({
+      email: ['', [Validators.email, Validators.required, Validators.maxLength(32)]]
     });
   }
   onSubmit() {
@@ -40,6 +48,23 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/dashboard']);
       Notiflix.Loading.Remove();
     });
+  }
+  onResend() {
+    this.modalService.dismissAll();
+    NotifyService.dismissAll();
+    this.localStore.disableCaching();
+    const email = this.resendVerificationForm.value.email;
+    this.authService.resendEmailVerification(email).subscribe(() => {
+      NotifyService.notify({
+        message: "We've sent a fresh verification link to your email. Please check your email",
+        icon: 'forward_to_inbox',
+        notifyType: 'success'
+      });
+    });
+  }
+  onClickResend(resendModal: any) {
+    this.resendVerificationForm.reset();
+    this.modalService.open(resendModal, { centered: true });
   }
 
   private notifyFreshSignup() {
