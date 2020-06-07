@@ -8,15 +8,15 @@ import { LocalStoreService } from '../shared/services/local-store.service';
 import { environment } from './../../environments/environment';
 import { LoginInput, LoginResp, SignupInput, SignupResp } from './auth.dto';
 
-interface User {
+export interface CurrentUser {
   userId: string;
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
+  role: 'Farmer' | 'Landowner' | 'Admin';
 }
-export interface DecodedAccessToken {
-  user: User;
+interface DecodedAccessToken {
+  user: CurrentUser;
   isExpired: boolean;
   expirationDate: Date;
 }
@@ -33,10 +33,8 @@ export class AuthService {
     });
   login = (input: LoginInput) => this.http.post<LoginResp>(this.endpoint('login'), input);
   logout = () => {
-    return of(() => {
-      this.localStore.disableCaching();
-      localStorage.clear();
-    });
+    this.localStore.disableCaching();
+    return of(localStorage.clear());
   };
   endpoint = (action: string) => `/api/auth/${action}`;
   verifyEmail = (token: string) => this.http.get<any>(this.endpoint(`verify/${token}`));
@@ -45,12 +43,19 @@ export class AuthService {
     return this.http.get<any>(this.endpoint('resend'), { params: { email, clientUrl } });
   };
 
-  getDecodedAccessToken(): DecodedAccessToken {
+  private getDecodedAccessToken(): DecodedAccessToken {
     const accessToken = this.localStore.getAccessToken();
     const helper = new JwtHelperService();
-    const user: User = helper.decodeToken(accessToken);
+    const user: CurrentUser = helper.decodeToken(accessToken);
     const expirationDate = helper.getTokenExpirationDate(accessToken);
     const isExpired = helper.isTokenExpired(accessToken);
     return { user, isExpired, expirationDate };
   }
+  isLoggedIn = () => {
+    const { isExpired } = this.getDecodedAccessToken();
+    return !isExpired;
+  };
+  getCurrentUser = () => {
+    return this.getDecodedAccessToken().user;
+  };
 }

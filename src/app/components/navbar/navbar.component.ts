@@ -1,8 +1,8 @@
-import { AuthService, DecodedAccessToken } from '../../auth/auth.service';
 import { Location } from '@angular/common';
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { AuthService, CurrentUser } from '../../auth/auth.service';
 import { ROUTES } from '../sidebar/sidebar.component';
 
 @Component({
@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit {
   mobile_menu_visible: any = 0;
   private toggleButton: any;
   private sidebarVisible: boolean;
-  jwt: DecodedAccessToken;
+  currentUser: CurrentUser;
   constructor(
     location: Location,
     private element: ElementRef,
@@ -28,7 +28,7 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.jwt = this.authService.getDecodedAccessToken();
+    this.currentUser = this.authService.getCurrentUser();
     this.listTitles = ROUTES.filter(listTitle => listTitle);
     const navbar: HTMLElement = this.element.nativeElement;
     this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];

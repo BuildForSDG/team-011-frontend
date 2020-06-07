@@ -116,6 +116,7 @@ export class LandComponent implements OnInit {
   };
   onClickAddBtn = (createLandModal: TemplateRef<any>) => {
     this.createLandForm.reset();
+    this.file = null;
     this.fileName = null;
     this.modalService.open(createLandModal, { centered: true });
   };

@@ -7,14 +7,18 @@
             <div class="card-icon">
               <i class="material-icons">store</i>
             </div>
-            <h4 class="card-category text-white">Rented Out</h4>
-            <h3 class="card-title text-white">0/{{landsCount}}
+            <h4 class="card-category text-white" *ngIf="currentUser.role==='Landowner'">Rented Out</h4>
+            <h4 class="card-category text-white" *ngIf="currentUser.role==='Farmer'">Occupying</h4>
+            <h3 class="card-title text-white" *ngIf="currentUser.role==='Landowner'">0/{{landsCount}}
+            </h3>
+            <h3 class="card-title text-white" *ngIf="currentUser.role==='Farmer'">{{landsCount}}
             </h3>
           </div>
           <div class="card-footer">
             <div class="stats" *ngIf="landsCount === 0">
               <i class="material-icons text-danger">warning</i>
-              <a [routerLink]="['/dashboard/lands']">Add Farmland...</a>
+              <a [routerLink]="['/dashboard/lands']" *ngIf="currentUser.role==='Landowner'">Add Farmland...</a>
+              <a [routerLink]="['/dashboard/marketplace']" *ngIf="currentUser.role==='Farmer'">Rent a land...</a>
             </div>
             <div class="stats" *ngIf="landsCount !== 0">
               <i class="material-icons">settings</i> Farmland Prices
@@ -29,7 +33,8 @@
             <div class="card-icon">
               <i class="material-icons">&#8358;</i>
             </div>
-            <h4 class="card-category text-white">Revenue</h4>
+            <h4 class="card-category text-white" *ngIf="currentUser.role==='Landowner'">Revenue</h4>
+            <h4 class="card-category text-white" *ngIf="currentUser.role==='Farmer'">Expenses</h4>
             <h3 class="card-title text-white">{{revenueTotal|currency:'&#8358;'}}</h3>
           </div>
           <div class="card-footer">
@@ -79,11 +84,12 @@
     <div class="row">
       <div class="col-md-4">
         <div class="card card-chart">
-          <div class="card-header card-header-success">
+          <div class="card-header card-header-success" [ngClass]="{'card-heard-danger': currentUser.role==='Farmer'}">
             <div class="ct-chart" id="dailySalesChart"></div>
           </div>
           <div class="card-body">
-            <h4 class="card-title">Monthly Income</h4>
+            <h4 class="card-title" *ngIf="currentUser.role === 'Landowner'">Monthly Income</h4>
+            <h4 class="card-title" *ngIf="currentUser.role === 'Farmer'">Monthly Expense</h4>
             <p class="card-category">
               Showing monthly rent remitted.
             </p>
@@ -171,15 +177,16 @@
                     <th></th>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let l of lands.items|slice:0:5;let i = index" [class.table-dark]="!l.isAvailable">
+                    <tr *ngFor="let l of lands.items|slice:0:5;let i = index"
+                      [class.table-dark]="l.status === LandStatus.Occupied">
                       <ng-template [ngIf]="l.auctionType ==='Rent'">
                         <td>{{l.description}}</td>
                         <td>{{l.price|currency:'₦'}}</td>
                         <td>{{l.shortLocation}}</td>
                         <td class="td-actions text-right">
                           <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                            class="btn btn-danger btn-link btn-sm btn-just-icon" *ngIf="l.isAvailable"
-                            (click)="onClickRemoveLandIcon(l.id)">
+                            class="btn btn-danger btn-link btn-sm btn-just-icon"
+                            *ngIf="l.status === LandStatus.Available" (click)="onClickRemoveLandIcon(l.id)">
                             <i class="material-icons" *ngIf="!isRemovingLand;else loading">close</i>
                           </button>
                         </td>
@@ -198,15 +205,16 @@
                     <th></th>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let l of lands.items|slice:0:5;let i = index" [class.table-dark]="!l.isAvailable">
+                    <tr *ngFor="let l of lands.items|slice:0:5;let i = index"
+                      [class.table-dark]="l.status === LandStatus.Occupied">
                       <ng-template [ngIf]="l.auctionType ==='Lease'">
                         <td>{{l.description}}</td>
                         <td>{{l.price|currency:'₦'}}</td>
                         <td>{{l.shortLocation}}</td>
                         <td class="td-actions text-right">
                           <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
-                            class="btn btn-danger btn-link btn-sm btn-just-icon" *ngIf="l.isAvailable"
-                            (click)="onClickRemoveLandIcon(l.id)">
+                            class="btn btn-danger btn-link btn-sm btn-just-icon"
+                            *ngIf="l.status === LandStatus.Available" (click)="onClickRemoveLandIcon(l.id)">
                             <i class="material-icons">close</i>
                           </button>
                         </td>

@@ -7,16 +7,20 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { LandComponent } from 'src/app/land/land.component';
+import { Angular4PaystackModule } from 'angular4-paystack';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
 import { DashboardComponent } from '../../../app/dashboard/dashboard.component';
 import { UserProfileComponent } from '../../../app/user-profile/user-profile.component';
-import { AdminLayoutRouting } from './admin.routing';
-import { NgxPaginationModule } from 'ngx-pagination';
+import { environment } from '../../../environments/environment';
+import { LandComponent } from '../../land/land.component';
 import { MarketplaceComponent } from '../../marketplace/marketplace.component';
+import { TransactionsComponent } from '../../transactions/transactions.component';
+import { AdminLayoutRouting } from './admin.routing';
 
 @NgModule({
-  declarations: [DashboardComponent, UserProfileComponent, LandComponent, MarketplaceComponent],
+  declarations: [DashboardComponent, UserProfileComponent, LandComponent, MarketplaceComponent, TransactionsComponent],
   imports: [
     CommonModule,
     AdminLayoutRouting,
@@ -28,7 +32,9 @@ import { MarketplaceComponent } from '../../marketplace/marketplace.component';
     MatInputModule,
     MatSelectModule,
     MatTooltipModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    NgxSkeletonLoaderModule,
+    Angular4PaystackModule.forRoot(environment.paystackPublicKey)
   ]
 })
 export class AdminLayoutModule {}

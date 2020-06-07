@@ -9,8 +9,8 @@ import { AuthService } from './auth/auth.service';
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const { isExpired } = this.authService.getDecodedAccessToken();
-    if (isExpired) this.router.navigate(['/account/login']);
-    return !isExpired;
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (!isLoggedIn) this.router.navigate(['/account/login']);
+    return isLoggedIn;
   }
 }

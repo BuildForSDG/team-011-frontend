@@ -44,7 +44,8 @@ export class ErrorHandlerService {
         else
           NotifyService.notify({
             message: errorMsg,
-            notifyType: 'info'
+            notifyType: 'info',
+            icon: 'feedback'
           });
       }
 

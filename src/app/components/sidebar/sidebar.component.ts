@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AuthService, DecodedAccessToken } from '../../auth/auth.service';
+import { AuthService, CurrentUser } from '../../auth/auth.service';
 
 declare const $: any;
 
@@ -27,7 +27,12 @@ export const ROUTES: RouteInfo[] = [
     class: '',
     excludeRoles: ['Farmer', 'Admin']
   },
-
+  {
+    path: '/dashboard/transactions',
+    title: 'Transactions',
+    icon: 'double_arrow',
+    class: 'text-rose'
+  },
   {
     path: '/dashboard/user-profile',
     title: 'User Profile',
@@ -43,13 +48,13 @@ export const ROUTES: RouteInfo[] = [
 })
 export class SidebarComponent implements OnInit {
   menuItems: RouteInfo[];
-  jwt: DecodedAccessToken;
+  currentUser: CurrentUser;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
-    this.jwt = this.authService.getDecodedAccessToken();
+    this.currentUser = this.authService.getCurrentUser();
   }
   isMobileMenu() {
     if ($(window).width() > 991) {

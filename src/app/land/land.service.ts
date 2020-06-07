@@ -1,23 +1,55 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
-import { AuthService, DecodedAccessToken } from '../auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { BaseService } from '../shared/services/base.service';
-import { CreateLandDto, LandDto, PagedRes, UpdateLandDto, ReqDto } from './land.dto';
+import { BaseResDto, CreateLandDto, LandDto, LandRequestStatus, PagedRes, ReqDto, UpdateLandDto } from './land.dto';
 
+export interface CreateLandReqInput {
+  landId: string;
+}
+export interface CreatPaymentInput {
+  metadata: {};
+  requestId: string;
+}
+export interface PaymentDto {
+  land: any;
+  request: any;
+  createdBy: any;
+  amount: number;
+  metadata: any;
+}
 @Injectable({
   providedIn: 'root'
 })
 export class LandService extends BaseService {
   land: LandDto;
-  jwt: DecodedAccessToken;
   constructor(protected http: HttpClient, private authService: AuthService) {
     super(http);
   }
 
-  getLandRequests(q: { skip: number; limit: number; query?: any; opts?: any }) {
-    const jwt = this.authService.getDecodedAccessToken();
-    return this.find<PagedRes<ReqDto>>(`/users/${jwt.user?.userId}/land_requests`, {
+  savePaymentDetails(input: CreatPaymentInput): Observable<PaymentDto> {
+    return this.create(input, '/payments');
+  }
+
+  getRequestsToLandowner(q: { skip: number; limit: number; query?: any; opts?: any }) {
+    return this.find<PagedRes<ReqDto>>('/land_requests/requests_to_landowner', {
+      query: q.query || {},
+      opts: q.opts || { sort: { createdAt: -1 } },
+      skip: q.skip,
+      limit: q.limit
+    });
+  }
+  updateRequestsToLandowner(reqId: string, input: LandRequestStatus) {
+    return this.update<any, ReqDto>({ status: input }, `/land_requests/requests_to_landowner/${reqId}`);
+  }
+  createLandRequest(landId: string): Observable<BaseResDto> {
+    const input: CreateLandReqInput = { landId };
+    return this.create(input, '/land_requests');
+  }
+  getFarmerRequests(q: { skip: number; limit: number; query?: any; opts?: any }) {
+    return this.find<PagedRes<ReqDto>>('/land_requests/farmer_land_requests', {
       query: q.query || {},
       opts: q.opts || { sort: { createdAt: -1 } },
       skip: q.skip,
@@ -32,17 +64,18 @@ export class LandService extends BaseService {
     query?: any;
     opts?: any;
   }) {
-    const jwt = this.authService.getDecodedAccessToken();
-    return this.find<PagedRes<LandDto>>(`/users/${jwt.user?.userId}/lands`, {
+    const currentUser = this.authService.getCurrentUser();
+    return this.find<PagedRes<LandDto>>(`/users/${currentUser?.userId}/lands`, {
       query: q.query || { auctionType: q.auctionType },
       opts: q.opts || { sort: { createdAt: -1, price: q.sortPrice } },
       skip: q.skip,
       limit: q.limit
     });
   }
-  getLands(q: { skip: number; limit: number; query?: any; opts?: any }) {
+  getLands(q: { skip: number; limit: number; query?: any; opts?: any; countQuery?: any }) {
     return this.find<PagedRes<LandDto>>('/lands', {
       query: q.query || {},
+      countQuery: q.countQuery || {},
       opts: q.opts || { sort: { createdAt: -1 } },
       skip: q.skip,
       limit: q.limit
@@ -55,11 +88,11 @@ export class LandService extends BaseService {
     return this.create<CreateLandDto | FormData, LandDto>(input, '/lands');
   }
   updateLand(id: string, input: UpdateLandDto | FormData) {
-    const jwt = this.authService.getDecodedAccessToken();
-    return this.update<UpdateLandDto | FormData, LandDto>(input, `/users/${jwt.user.userId}/lands/${id}`);
+    const currentUser = this.authService.getCurrentUser();
+    return this.update<UpdateLandDto | FormData, LandDto>(input, `/users/${currentUser.userId}/lands/${id}`);
   }
   deleteLand(id: string) {
-    const jwt = this.authService.getDecodedAccessToken();
-    return this.delete(`/users/${jwt.user.userId}/lands/${id}`);
+    const currentUser = this.authService.getCurrentUser();
+    return this.delete(`/users/${currentUser.userId}/lands/${id}`);
   }
 }

@@ -4,8 +4,8 @@ import Notiflix from 'notiflix-angular';
 import { Observable } from 'rxjs';
 import { share } from 'rxjs/operators';
 
-import { AuthService, DecodedAccessToken } from '../auth/auth.service';
-import { LandDto, PagedRes, ReqDto } from '../land/land.dto';
+import { AuthService, CurrentUser } from '../auth/auth.service';
+import { LandDto, PagedRes, ReqDto, LandStatus } from '../land/land.dto';
 import { LandService } from '../land/land.service';
 import { LocalStoreService } from '../shared/services/local-store.service';
 import { NotifyService } from '../shared/services/notify.service';
@@ -16,7 +16,8 @@ import { NotifyService } from '../shared/services/notify.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  jwt: DecodedAccessToken;
+  currentUser: CurrentUser;
+  LandStatus = LandStatus;
   landsCount: number;
   landRequest$: Observable<PagedRes<ReqDto>>;
   monthlyPaidLands: LandDto[];
@@ -29,19 +30,24 @@ export class DashboardComponent implements OnInit {
     private landService: LandService,
     private localStore: LocalStoreService
   ) {
-    this.jwt = this.authService.getDecodedAccessToken();
+    this.currentUser = this.authService.getCurrentUser();
   }
 
   ngOnInit() {
     this.localStore.disableCaching();
-    const currUser = this.jwt.user;
-    const role = this.jwt?.user?.role;
+    const role = this.currentUser?.role;
     let query = {};
-    if (role === 'Farmer') query = { occupant: currUser.userId };
-    else if (role === 'Landowner') query = { createdBy: currUser.userId };
+    let countQuery = {};
+    if (role === 'Farmer') {
+      query = { occupant: this.currentUser.userId };
+      countQuery = query;
+      this.landRequest$ = this.landService.getFarmerRequests({ skip: 0, limit: 10 * 2 * 10 }).pipe(share());
+    } else if (role === 'Landowner') {
+      query = { createdBy: this.currentUser.userId };
+      this.landRequest$ = this.landService.getRequestsToLandowner({ skip: 0, limit: 10 * 2 * 10 }).pipe(share());
+    }
 
-    this.lands$ = this.landService.getLands({ skip: 0, limit: 10 * 2, query }).pipe(share());
-    this.landRequest$ = this.landService.getLandRequests({ skip: 0, limit: 10 * 2 * 10 }).pipe(share());
+    this.lands$ = this.landService.getLands({ skip: 0, limit: 10 * 2, query, countQuery }).pipe(share());
 
     this.lands$.subscribe(res => {
       this.landsCount = res.totalCount;
@@ -52,7 +58,7 @@ export class DashboardComponent implements OnInit {
       this.isContainsRent = !!res.items.find(x => x.auctionType === 'Rent');
 
       res.items.map((v, i) => {
-        if (!v.isAvailable) this.revenueTotal += v.price;
+        if (v.status === LandStatus.Occupied) this.revenueTotal += v.price;
         this.computeMonthlyRevenue(v, monthlyRevenue);
         landLabels.push(`L${i + 1}`);
         landSeries.push(v.requests.length);
@@ -62,6 +68,8 @@ export class DashboardComponent implements OnInit {
       this.initRequestRateLineChart(landLabels, landSeries);
       this.initLandPricesLineChart(landLabels, landPriceSeries);
     });
+
+    // TODO: All farmer requests for each month on the chart
   }
 
   onClickRemoveLandIcon(id: string) {
@@ -212,18 +220,30 @@ export class DashboardComponent implements OnInit {
   }
 
   private computeMonthlyRevenue(v: LandDto, r: any) {
-    if (new Date(v.updatedAt).getMonth() === 0 && !v.isAvailable) r.jan = r.jan ? r.jan + v.price : v.price;
-    if (new Date(v.updatedAt).getMonth() === 1 && !v.isAvailable) r.feb = r.feb ? r.feb + v.price : v.price;
-    if (new Date(v.updatedAt).getMonth() === 2 && !v.isAvailable) r.mar = r.mar ? r.mar + v.price : v.price;
-    if (new Date(v.updatedAt).getMonth() === 3 && !v.isAvailable) r.apr = r.apr ? r.apr + v.price : v.price;
-    if (new Date(v.updatedAt).getMonth() === 4 && !v.isAvailable) r.may = r.may ? r.may + v.price : v.price;
-    if (new Date(v.updatedAt).getMonth() === 5 && !v.isAvailable) r.jun = r.jun ? r.jun + v.price : v.price;
-    if (new Date(v.updatedAt).getMonth() === 6 && !v.isAvailable) r.jul = r.jul ? r.jul + v.price : v.price;
-    if (new Date(v.updatedAt).getMonth() === 7 && !v.isAvailable) r.aug = r.aug ? r.aug + v.price : v.price;
-    if (new Date(v.updatedAt).getMonth() === 8 && !v.isAvailable) r.sep = r.sep ? r.sep + v.price : v.price;
-    if (new Date(v.updatedAt).getMonth() === 9 && !v.isAvailable) r.oct = r.oct ? r.oct + v.price : v.price;
-    if (new Date(v.updatedAt).getMonth() === 10 && !v.isAvailable) r.nov = r.nov ? r.nov + v.price : v.price;
-    if (new Date(v.updatedAt).getMonth() === 11 && !v.isAvailable) r.dec = r.dec ? r.dec + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 0 && v.status === LandStatus.Occupied)
+      r.jan = r.jan ? r.jan + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 1 && v.status === LandStatus.Occupied)
+      r.feb = r.feb ? r.feb + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 2 && v.status === LandStatus.Occupied)
+      r.mar = r.mar ? r.mar + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 3 && v.status === LandStatus.Occupied)
+      r.apr = r.apr ? r.apr + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 4 && v.status === LandStatus.Occupied)
+      r.may = r.may ? r.may + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 5 && v.status === LandStatus.Occupied)
+      r.jun = r.jun ? r.jun + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 6 && v.status === LandStatus.Occupied)
+      r.jul = r.jul ? r.jul + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 7 && v.status === LandStatus.Occupied)
+      r.aug = r.aug ? r.aug + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 8 && v.status === LandStatus.Occupied)
+      r.sep = r.sep ? r.sep + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 9 && v.status === LandStatus.Occupied)
+      r.oct = r.oct ? r.oct + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 10 && v.status === LandStatus.Occupied)
+      r.nov = r.nov ? r.nov + v.price : v.price;
+    if (new Date(v.updatedAt).getMonth() === 11 && v.status === LandStatus.Occupied)
+      r.dec = r.dec ? r.dec + v.price : v.price;
   }
 
   private initRevenueLineChart(r: any) {

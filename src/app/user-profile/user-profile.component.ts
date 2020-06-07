@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService, DecodedAccessToken } from '../auth/auth.service';
+
+import { AuthService, CurrentUser } from '../auth/auth.service';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.css'],
+  styleUrls: ['./user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit {
-  jwt: DecodedAccessToken;
+  currentUser: CurrentUser;
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.jwt = this.authService.getDecodedAccessToken();
+    this.currentUser = this.authService.getCurrentUser();
   }
 }
