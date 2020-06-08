@@ -1,5 +1,6 @@
 # Farm Landlord
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/510e8d197d094fa0810f51bd850fa13c)](https://app.codacy.com/gh/BuildForSDG/team-011-frontend?utm_source=github.com&utm_medium=referral&utm_content=BuildForSDG/team-011-frontend&utm_campaign=Badge_Grade_Settings)
 [![build status](https://github.com/coryrylan/angular-github-actions/workflows/Build/badge.svg)](https://github.com/BuildForSDG/team-011-frontend/actions)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.4.
