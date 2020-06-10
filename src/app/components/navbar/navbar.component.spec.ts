@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { NavbarComponent } from './navbar.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AuthService } from 'src/app/auth/auth.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NavbarComponent } from "./navbar.component";
+import { RouterTestingModule } from "@angular/router/testing";
+import { AuthService } from "src/app/auth/auth.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
-describe('NavbarComponent', () => {
+describe("NavbarComponent", () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
 
@@ -13,7 +13,7 @@ describe('NavbarComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, HttpClientTestingModule],
       providers: [AuthService],
-      declarations: [NavbarComponent],
+      declarations: [NavbarComponent]
     }).compileComponents();
   }));
 
@@ -23,7 +23,7 @@ describe('NavbarComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

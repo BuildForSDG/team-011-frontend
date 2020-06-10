@@ -1,3 +1,3 @@
 export const authConstants = {
-  emailConfirmKey: 'isEmailConfirmationRequired',
+  emailConfirmKey: "isEmailConfirmationRequired"
 };

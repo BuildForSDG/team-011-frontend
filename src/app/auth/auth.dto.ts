@@ -1,4 +1,4 @@
-export type UserRole = 'Farmer' | 'Landowner' | 'Admin';
+export type UserRole = "Farmer" | "Landowner" | "Admin";
 export class LoginInput {
   email: string;
   password: string;

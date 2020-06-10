@@ -1,11 +1,11 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
 
-import { LandService } from './land.service';
+import { LandService } from "./land.service";
 
-describe('LandService', () => {
+describe("LandService", () => {
   let service: LandService;
 
   beforeEach(() => {
@@ -15,7 +15,7 @@ describe('LandService', () => {
     service = TestBed.inject(LandService);
   });
 
-  it('should be created', () => {
+  it("should be created", () => {
     expect(service).toBeTruthy();
   });
 });

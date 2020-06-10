@@ -1,24 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import Notiflix from 'notiflix-angular';
-import { LocalStoreService } from 'src/app/shared/services/local-store.service';
-import { NotifyService } from 'src/app/shared/services/notify.service';
+import { Component, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import Notiflix from "notiflix-angular";
+import { LocalStoreService } from "src/app/shared/services/local-store.service";
+import { NotifyService } from "src/app/shared/services/notify.service";
 
-import { LoginInput } from '../auth.dto';
-import { AuthService } from '../auth.service';
-import { authConstants } from '../constants';
+import { LoginInput } from "../auth.dto";
+import { AuthService } from "../auth.service";
+import { authConstants } from "../constants";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: "app-login",
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.css"]
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
   resendVerificationForm: FormGroup;
   isUserRegistered: boolean;
+  returnUrl: string;
 
   constructor(
     private fb: FormBuilder,
@@ -32,12 +33,14 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.notifyFreshSignup();
     this.form = this.fb.group({
-      email: ['', [Validators.email, Validators.required, Validators.maxLength(32)]],
-      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(24)]]
+      email: ["", [Validators.email, Validators.required, Validators.maxLength(32)]],
+      password: ["", [Validators.required, Validators.minLength(6), Validators.maxLength(24)]]
     });
     this.resendVerificationForm = this.fb.group({
-      email: ['', [Validators.email, Validators.required, Validators.maxLength(32)]]
+      email: ["", [Validators.email, Validators.required, Validators.maxLength(32)]]
     });
+    // get return url from route parameters or default to '/dashboard'
+    this.returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/dashboard";
   }
   onSubmit() {
     Notiflix.Loading.Pulse();
@@ -45,7 +48,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(input).subscribe(res => {
       this.localStore.storeAccessToken(res.accessToken);
       NotifyService.dismissAll();
-      this.router.navigate(['/dashboard']);
+      this.router.navigateByUrl(this.returnUrl);
       Notiflix.Loading.Remove();
     });
   }
@@ -57,8 +60,8 @@ export class LoginComponent implements OnInit {
     this.authService.resendEmailVerification(email).subscribe(() => {
       NotifyService.notify({
         message: "We've sent a fresh verification link to your email. Please check your email",
-        icon: 'forward_to_inbox',
-        notifyType: 'success'
+        icon: "forward_to_inbox",
+        notifyType: "success"
       });
     });
   }
@@ -70,14 +73,14 @@ export class LoginComponent implements OnInit {
   private notifyFreshSignup() {
     const { emailConfirmKey } = authConstants;
     this.route.queryParams.subscribe(params => {
-      if (params[emailConfirmKey] === 'true') {
+      if (params[emailConfirmKey] === "true") {
         NotifyService.notify({
           message: "We've sent a confirmation email to you. Please confirm your email to proceed.",
-          title: '<strong>Welcome Aboard</strong>',
-          icon: 'forward_to_inbox',
+          title: "<strong>Welcome Aboard</strong>",
+          icon: "forward_to_inbox",
           delay: 10,
           showProgressBar: true,
-          notifyType: 'success'
+          notifyType: "success"
         });
       }
     });

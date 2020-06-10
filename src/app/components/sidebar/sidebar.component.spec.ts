@@ -1,12 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 
-import { SidebarComponent } from './sidebar.component';
-import { AuthService } from 'src/app/auth/auth.service';
-import { AuthModule } from 'src/app/auth/auth.module';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SidebarComponent } from "./sidebar.component";
 
-describe('SidebarComponent', () => {
+describe("SidebarComponent", () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
 
@@ -23,7 +21,7 @@ describe('SidebarComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

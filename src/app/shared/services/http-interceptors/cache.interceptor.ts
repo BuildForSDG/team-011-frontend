@@ -1,15 +1,15 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { LocalStoreService } from '../local-store.service';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable, of } from "rxjs";
+import { tap } from "rxjs/operators";
+import { LocalStoreService } from "../local-store.service";
 
 @Injectable()
 export class CacheInterceptor implements HttpInterceptor {
   private cache = new Map<string, any>();
   constructor(private localStore: LocalStoreService) {}
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (request.method !== 'GET') {
+    if (request.method !== "GET") {
       return next.handle(request);
     }
 

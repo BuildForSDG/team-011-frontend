@@ -1,14 +1,14 @@
-import { authConstants } from './../constants';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import Notiflix from 'notiflix-angular';
-import { NotifyService } from '../../shared/services/notify.service';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import Notiflix from "notiflix-angular";
 
-import { AuthService } from '../auth.service';
+import { NotifyService } from "../../shared/services/notify.service";
+import { AuthService } from "../auth.service";
+import { authConstants } from "../constants";
 
 @Component({
-  selector: 'app-email-verify',
-  template: '',
+  selector: "app-email-verify",
+  template: "",
   styles: []
 })
 export class EmailVerifyComponent implements OnInit {
@@ -24,22 +24,22 @@ export class EmailVerifyComponent implements OnInit {
   }
   private verifyEmail() {
     this.route.queryParams.subscribe(params => {
-      const token = params['token'];
+      const { token } = params;
       if (token) this.verifyEmailToken(token);
 
-      this.router.navigate(['/account/login']);
+      this.router.navigate(["/account/login"]);
     });
   }
   private verifyEmailToken(token: any) {
     this.authService.verifyEmail(token).subscribe(() => {
       const { emailConfirmKey } = authConstants;
-      this.router.navigate(['/account/login'], { queryParams: { [emailConfirmKey]: false } });
+      this.router.navigate(["/account/login"], { queryParams: { [emailConfirmKey]: false } });
       Notiflix.Loading.Remove();
       NotifyService.notify({
-        message: 'Your email has been verified. You may now login',
-        title: '<strong>Congratulations</strong>',
-        icon: 'check',
-        notifyType: 'success'
+        message: "Your email has been verified. You may now login",
+        title: "<strong>Congratulations</strong>",
+        icon: "check",
+        notifyType: "success"
       });
     });
   }

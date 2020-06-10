@@ -20,7 +20,7 @@
             </p>
           </a>
         </li>
-        <li class="nav-item dropdown">
+        <!-- <li class="nav-item dropdown">
           <a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
             <i class="material-icons">notifications</i>
@@ -36,18 +36,19 @@
             <a class="dropdown-item" href="javascript:void(0)">Another Notification</a>
             <a class="dropdown-item" href="javascript:void(0)">Another One</a>
           </div>
-        </li>
+        </li> -->
         <li class="nav-item dropdown">
           <a class="nav-link text-capitalize" href="javascript:;" id="navbarDropdownProfile" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            {{jwt.user?.firstName}} <i class="material-icons">person</i>
+            {{currentUser?.firstName}} <i class="material-icons">person</i>
             <p class="d-lg-none d-md-block">
               Account
             </p>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-            <a class="dropdown-item" [routerLink]="['/dashboard/user-profile']">Profile</a>
-            <a class="dropdown-item" href="#">Settings</a>
+            <a class="dropdown-item" [routerLink]="['/dashboard/account/profile']">Profile</a>
+            <a class="dropdown-item" [routerLink]="['/dashboard/account/profile']"
+              routerLinkActive="router-link-active">Settings</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="javascript:void(0)" (click)="onClickLogout()">Log out</a>
           </div>

@@ -1,12 +1,12 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
 
-import { AuthService } from '../auth.service';
-import { EmailVerifyComponent } from './email-verify.component';
+import { AuthService } from "../auth.service";
+import { EmailVerifyComponent } from "./email-verify.component";
 
-describe('EmailVerifyComponent', () => {
+describe("EmailVerifyComponent", () => {
   let component: EmailVerifyComponent;
   let fixture: ComponentFixture<EmailVerifyComponent>;
 
@@ -24,7 +24,7 @@ describe('EmailVerifyComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

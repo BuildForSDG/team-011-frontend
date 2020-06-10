@@ -1,16 +1,16 @@
-import { AppPage } from './app.po';
-import { browser, logging, element, by } from 'protractor';
+import { AppPage } from "./app.po";
+import { browser, logging, element, by } from "protractor";
 
-describe('workspace-project App', () => {
+describe("workspace-project App", () => {
   let page: AppPage;
 
   beforeEach(() => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
+  it("should display welcome message", () => {
     page.navigateTo();
-    expect(page.getTitleText('app-home .title')).toBeTruthy();
+    expect(page.getTitleText("app-home .title")).toBeTruthy();
   });
 
   afterEach(async () => {
@@ -23,14 +23,14 @@ describe('workspace-project App', () => {
     );
   });
 
-  describe('Auth', () => {
-    it('should navigate to login page', async () => {
-      page.navigateTo('/account/login');
-      expect(page.getTitleText('app-login .card-title')).toBe('Sign In');
+  describe("Auth", () => {
+    it("should navigate to login page", async () => {
+      page.navigateTo("/account/login");
+      expect(page.getTitleText("app-login .card-title")).toBe("Sign In");
     });
-    it('should navigate to signup page', () => {
-      page.navigateTo('/account/signup');
-      expect(page.getTitleText('app-signup .card-title')).toBe('Register');
+    it("should navigate to signup page", () => {
+      page.navigateTo("/account/signup");
+      expect(page.getTitleText("app-signup .card-title")).toBe("Register");
     });
     // it('should navigate to login page when link is clicked', () => {
     //   element(by.linkText('Login')).click();

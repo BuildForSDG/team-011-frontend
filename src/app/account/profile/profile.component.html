@@ -1,0 +1,177 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header card-header-primary">
+            <h4 class="card-title">Edit Profile</h4>
+            <p class="card-category">Update your profile</p>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="onSubmit()" [formGroup]="profileForm">
+
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Fist Name" type="text" name="firstName" formControlName="firstName">
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Last Name" type="text" name="lastName" formControlName="lastName">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Email address" type="email" name="email" [value]="currentUser?.email"
+                      [disabled]="true">
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Phone number" type="tel" name="phoneNumber"
+                      formControlName="phoneNumber">
+                  </mat-form-field>
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="City" type="text" name="city" formControlName="city">
+                  </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Country" type="text" name="country" formControlName="country">
+                  </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Postal Code" type="text" name="postalCode"
+                      formControlName="postalCode">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Address" type="text" name="address" formControlName="address">
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <label>About Me</label>
+                  <mat-form-field class="example-full-width">
+                    <textarea matInput
+                      placeholder="Say something about yourself that everybody sees when they look you up"
+                      name="description" formControlName="description"></textarea>
+                  </mat-form-field>
+
+                </div>
+              </div>
+              <div class="form-group form-file-upload form-file-multiple" (click)="onClickFileUpload()">
+                <input type="file" id="file" formControlName="profileImage" enctype="multipart/form-data" multiple=""
+                  class="inputFileHidden" (change)="onFileSelect($event.target.files)">
+                <div class="input-group">
+                  <input type="text" class="form-control inputFileVisible" placeholder="Upload profile image"
+                    [(ngModel)]="fileName" [ngModelOptions]="{standalone: true}" readonly>
+                  <span class="input-group-btn">
+                    <button type="submit" class="btn btn-fab btn-round btn-primary" style="z-index: 10;">
+                      <i class="material-icons">attach_file</i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+              <br>
+              <ng-template [ngIf]="!isUpdating">
+                <button mat-raised-button type="submit" class="btn btn-primary">Update Profile</button>
+              </ng-template>
+              <ng-template [ngIf]="isUpdating">
+                <button mat-raised-button type="submit" class="btn btn-primary" disabled><i
+                    class="fas fa-spinner fa-spin"></i>
+                  Updating</button>
+              </ng-template>
+              <div class="clearfix"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <ng-container *ngIf="(user$|async) as user;else loading">
+          <div class="card card-profile">
+            <div class="card-avatar">
+              <a href="javascript:void(0)">
+
+                <img class="img" [src]="user.profileImage" />
+              </a>
+            </div>
+            <div class="card-body">
+              <h6 class="card-category text-gray">{{currentUser?.role}}</h6>
+              <h4 class="card-title text-capitalize">{{user.firstName}} {{user.lastName}}</h4>
+              <p class="card-description">
+                {{user.description}}
+              </p>
+            </div>
+          </div>
+        </ng-container>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Loading -->
+<ng-template #loading>
+  <div class="fb-item">
+    <div class="first-section-wrapper">
+      <div class="gravatar">
+        <ngx-skeleton-loader appearance="circle" animation="progress-dark" [theme]="{ width: '80px', height: '80px' }">
+        </ngx-skeleton-loader>
+      </div>
+      <div class="gravatar-title">
+        <div>
+          <ngx-skeleton-loader animation="progress-dark" [theme]="{
+              width: '200px',
+              'border-radius': '0',
+              height: '15px',
+              'margin-bottom': '10px'
+            }"></ngx-skeleton-loader>
+        </div>
+        <div>
+          <ngx-skeleton-loader animation="progress-dark"
+            [theme]="{ width: '170px', 'border-radius': '0', height: '15px' }"></ngx-skeleton-loader>
+        </div>
+      </div>
+    </div>
+    <div class="second-section-wrapper">
+      <div class="wrapper">
+        <ngx-skeleton-loader animation="progress-dark" [theme]="{
+            width: '80%',
+            'border-radius': '0',
+            height: '15px',
+            'margin-bottom': '10px'
+          }"></ngx-skeleton-loader>
+      </div>
+      <div class="wrapper">
+        <ngx-skeleton-loader animation="progress-dark" [theme]="{
+            width: '90%',
+            'border-radius': '0',
+            height: '15px',
+            'margin-bottom': '10px'
+          }"></ngx-skeleton-loader>
+      </div>
+      <div class="wrapper">
+        <ngx-skeleton-loader animation="progress-dark" [theme]="{
+            width: '60%',
+            'border-radius': '0',
+            height: '15px',
+            'margin-bottom': '10px'
+          }"></ngx-skeleton-loader>
+      </div>
+    </div>
+  </div>
+</ng-template>
