@@ -1,0 +1,322 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">store</i>
+            </div>
+            <ng-template [ngIf]="currentUser?.role==='Farmer'">
+
+              <h4 class="card-category text-white">Occupying</h4>
+              <h3 class="card-title text-white" *ngIf="landRequest$|async as res;else loading">
+                {{getFarmerOccupancyArray(res?.items).length}}
+              </h3>
+            </ng-template>
+            <ng-template [ngIf]="currentUser?.role==='Landowner'">
+
+              <h4 class="card-category text-white">Rented Out</h4>
+              <h3 class="card-title text-white" *ngIf=" (lands$|async) as res;else loading">
+                {{getLandCountRentedOut(res?.items)}}/{{res?.totalCount}}
+              </h3>
+            </ng-template>
+          </div>
+          <div class="card-footer" *ngIf="(lands$|async) as res;else loading">
+            <div class="stats" *ngIf="res?.totalCount === 0">
+              <i class="material-icons text-danger">warning</i>
+              <a [routerLink]="['/dashboard/lands']" *ngIf="currentUser?.role==='Landowner'">Add Farmland...</a>
+              <a [routerLink]="['/dashboard/marketplace']" *ngIf="currentUser?.role==='Farmer'">Rent a land...</a>
+            </div>
+            <div class="stats" *ngIf="res?.totalCount !== 0">
+              <i class="material-icons">settings</i> Farmland Prices
+              <a [routerLink]="['/dashboard/lands']" class="text-rose"><strong>&nbsp;Settings...</strong></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-danger card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">&#8358;</i>
+            </div>
+            <h4 class="card-category text-white" *ngIf="currentUser?.role==='Landowner'">Revenue</h4>
+            <h4 class="card-category text-white" *ngIf="currentUser?.role==='Farmer'">Expenses</h4>
+            <h3 class="card-title text-white" *ngIf="(landRequest$|async)?.items as reqs;else loading">
+              {{calculateTotalRevenue(reqs)|currency:'&#8358;'}}</h3>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <i class="material-icons">date_range</i> Last 24 Hours
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-success card-header-icon">
+            <div class="card-icon">
+              <i class="fas fa-tractor"></i>
+            </div>
+            <h5 class="card-category text-white">Farmlands</h5>
+            <h3 class="card-title text-white" *ngIf="(lands$|async) as res;else loading">{{res?.totalCount}}</h3>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <i class="material-icons">update</i> Updated on refresh
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-stats">
+          <div class="card-header card-header-info card-header-icon">
+            <div class="card-icon">
+              <i class="material-icons">notifications_active</i>
+            </div>
+            <h4 class="card-category text-white">Requests</h4>
+            <h3 class="card-title text-white" *ngIf="(landRequest$|async) as res;else loading">{{res.totalCount}}</h3>
+          </div>
+          <div class="card-footer">
+            <div class="stats">
+              <i class="material-icons">local_offer</i> Tracked from
+              <a [routerLink]="['/dashboard/marketplace']"
+                style="color: Dodgerblue;">&nbsp;<strong>Marketplace...</strong></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <ng-template [ngIf]="currentUser?.role==='Landowner'">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card card-chart">
+            <div class="card-header card-header-success">
+              <div class="ct-chart" id="dailySalesChart"></div>
+            </div>
+            <div class="card-body">
+              <h4 class="card-title">Monthly Income (%)</h4>
+              <p class="card-category">
+                Showing monthly rent remitted.
+              </p>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                <i class="material-icons">access_time</i> updated monthly
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card card-chart">
+            <div class="card-header card-header-info">
+              <div class="ct-chart" id="websiteViewsChart"></div>
+            </div>
+            <div class="card-body">
+              <h4 class="card-title">Your Land Prices in %</h4>
+              <p class="card-category">Glance of your Farmland Prices in %</p>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                <i class="material-icons">refresh</i> refresh for update
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card card-chart">
+            <div class="card-header card-header-danger">
+              <div class="ct-chart" id="completedTasksChart"></div>
+            </div>
+            <div class="card-body">
+              <h4 class="card-title">Rate Of Requests</h4>
+              <p class="card-category">Showing Latest Requests</p>
+            </div>
+            <div class="card-footer">
+              <div class="stats" *ngIf="landRequest$|async as req;else loading">
+                <i class="material-icons">date_range</i>
+                <span *ngIf="!req.items.length">no requests yet</span>
+                <span *ngIf="req.items.length">last updated at {{req.items[0].updatedAt|date}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="row" *ngIf="lands$ | async as lands;">
+      <div class="col-lg-6 col-md-12" *ngIf="lands.items.length">
+        <div class="card">
+          <div class="card-header card-header-tabs card-header-primary">
+            <div class="nav-tabs-navigation">
+              <div class="nav-tabs-wrapper">
+                <span class="nav-tabs-title">Last 5 Lands:</span>
+                <ul class="nav nav-tabs" data-tabs="tabs">
+                  <li class="nav-item">
+                    <a mat-button class="nav-link" [class.active]='isContainsRent' href="#rent" data-toggle="tab">
+                      <i class="material-icons">store</i> Rent
+                      <div class="ripple-container"></div>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a mat-button class="nav-link" [class.active]='!isContainsRent' href="#lease" data-toggle="tab">
+                      <i class="fas fa-hand-holding-usd fa-1x"></i>&nbsp; Lease
+                      <div class="ripple-container"></div>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a mat-button class="nav-link" [routerLink]="['/dashboard/lands']" data-toggle="tab">
+                      <i class="fas fa-expand-alt fa-1x"></i>&nbsp; All
+                      <div class="ripple-container"></div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="tab-content">
+              <div class="tab-pane" [class.active]='isContainsRent' id="rent">
+                <table class="table table-hover" *ngIf="isContainsRent">
+                  <thead class="text-primary">
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Province</th>
+                    <th></th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let l of lands.items|slice:0:5;let i = index">
+                      <ng-template [ngIf]="l.auctionType ==='Rent'">
+                        <td>{{l.description}}</td>
+                        <td>{{l.price|currency:'₦'}}</td>
+                        <td>{{l.shortLocation}}</td>
+                        <td class="td-actions text-right">
+                          <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
+                            class="btn btn-danger btn-link btn-sm btn-just-icon"
+                            *ngIf="l.status === LandStatus.Available" (click)="onClickRemoveLandIcon(l.id)">
+                            <i class="material-icons" *ngIf="!isRemovingLand;else loading">close</i>
+                          </button>
+                        </td>
+                      </ng-template>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+              <div class="tab-pane" [class.active]='!isContainsRent' id="lease">
+                <table class="table table-hover">
+                  <thead class="text-primary">
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Province</th>
+                    <th></th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let l of lands.items|slice:0:5;let i = index">
+                      <ng-template [ngIf]="l.auctionType ==='Lease'">
+                        <td>{{l.description}}</td>
+                        <td>{{l.price|currency:'₦'}}</td>
+                        <td>{{l.shortLocation}}</td>
+                        <td class="td-actions text-right">
+                          <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
+                            class="btn btn-danger btn-link btn-sm btn-just-icon"
+                            *ngIf="l.status === LandStatus.Available" (click)="onClickRemoveLandIcon(l.id)">
+                            <i class="material-icons">close</i>
+                          </button>
+                        </td>
+                      </ng-template>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template [ngIf]="currentUser?.role === 'Farmer'">
+        <ng-container *ngIf="landRequest$|async as req;">
+          <div class="col-md-12">
+            <div class="card" *ngIf="req.items.length">
+              <div class="card-header card-header-rose">
+                <h4 class="card-title">Landowners' Summary</h4>
+                <p class="card-category"><em>Glance at 5 latest farmlands you occupy</em>
+                  <b class="float-right">
+                    <a [routerLink]="['/dashboard/transactions']" routerLinkActive="router-link-active">
+                      See all...
+                    </a>
+                  </b>
+                </p>
+              </div>
+              <div class="card-body table-responsive">
+                <table class="table table-hover">
+                  <thead class="text-rose">
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Province</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let r of req.items|slice:0:5;let i = index">
+                      <ng-template [ngIf]="!!r.landId">
+                        <td>{{i+1}}</td>
+                        <td>{{r.landownerId.firstName}} {{r.landownerId.lastName}}</td>
+                        <td>{{r.landId.price|currency:'₦'}}</td>
+                        <td>{{r.landId.shortLocation}}</td>
+                      </ng-template>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-template>
+
+      <ng-template [ngIf]="currentUser?.role === 'Landowner'">
+        <ng-container *ngIf="(landRequest$|async ) as req;">
+          <div class="col-lg-6 col-md-12">
+            <div class="card" *ngIf="req.items.length">
+              <div class="card-header card-header-warning">
+                <h4 class="card-title">Farmers Requests Summary</h4>
+                <p class="card-category"><em>Glance at 5 latest requesting Farmers</em>
+                  <b class="float-right">
+                    <a [routerLink]="['/dashboard/transactions']" routerLinkActive="router-link-active">
+                      See all...
+                    </a>
+                  </b></p>
+
+              </div>
+              <div class="card-body table-responsive">
+                <table class="table table-hover">
+                  <thead class="text-warning">
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Province</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let r of req.items|slice:0:5;let i = index">
+                      <ng-template [ngIf]="!!r.landId">
+                        <td>{{i+1}}</td>
+                        <td>{{r.createdBy.firstName}} {{r.createdBy.lastName}}</td>
+                        <td>{{r.landId.price|currency:'₦'}}</td>
+                        <td>{{r.landId.shortLocation}}</td>
+                      </ng-template>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-template>
+    </div>
+  </div>
+</div>
+<ng-template #loading>
+  <i class="fas fa-spinner fa-spin"></i>
+</ng-template>

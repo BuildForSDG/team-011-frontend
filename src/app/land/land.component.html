@@ -1,0 +1,337 @@
+<div class="main-content">
+  <hr />
+  <ul class="nav nav-pills nav-pills-icons" role="tablist">
+    <!--
+                  color-classes: "nav-pills-primary", "nav-pills-info", "nav-pills-success", "nav-pills-warning","nav-pills-danger"
+              -->
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="filterType==='Rent'" href="#dashboard-1" role="tab" data-toggle="tab"
+        (click)="onClickTab('Rent')">
+        <i class="material-icons">store</i>
+        Rent
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="filterType==='Lease'" href="#schedule-1" role="tab" data-toggle="tab"
+        (click)="onClickTab('Lease')">
+        <i class="fas fa-hand-holding-usd fa-1x"></i>
+        Lease
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="filterType==='Occupied'" href="#schedule-1" role="tab" data-toggle="tab"
+        (click)="onClickTab('Occupied')">
+        <i class="fas fa-house-user"></i> Occupied
+      </a>
+    </li>
+  </ul>
+  <div class="container-fluid">
+    <hr />
+    <button class="btn btn-outline-primary btn-lg btn-fab btn-fab-mini btn-round"
+      (click)="onClickAddBtn(createLandModal)">
+      <i class="material-icons">add</i>
+    </button>
+    <div class="row">
+
+      <ng-container *ngIf="(lands$|async)?.items as lands;else loadingLand">
+
+
+        <ng-template [ngIf]="lands.length">
+          <div class="col-md-3" *ngFor="let land of filterLands(lands)  | paginate: pageConfig">
+            <div class="card">
+              <img class="card-img-top" [src]="land.photo" rel="nofollow" alt="land image" *ngIf="land.photo">
+              <div class="card-body">
+                <h4 class="card-title">
+                  <small><i class="fas fa-map-marker-alt text-warning"></i></small> {{land.shortLocation}}
+                </h4>
+                <h6 class="card-subtitle mb-2 text-dark text-capitalize"> <span>{{land.acres}} acres, for
+                    {{land.auctionType}}</span> | <span>{{land.price | currency:'₦'}}, {{land.installmentType}}</span>
+                </h6>
+                <p class="card-text">{{land.description}}</p>
+
+                <button mat-raised-button type="button" matTooltip="Click to see more info"
+                  [matTooltipPosition]="'right'" class="btn btn-info btn-link btn-just-icon"
+                  (click)="onClickLandInfoBtn(landInfoModal,land)">
+                  <i class="material-icons">info</i>
+                </button>
+                <ng-template [ngIf]="land.status!==LandStatus.Occupied">
+                  <button mat-raised-button type="button" matTooltip="delete land" [matTooltipPosition]="'right'"
+                    class="btn btn-danger btn-link btn-just-icon float-right" (click)="onClickDelete(land.id)">
+                    <i class="material-icons">delete</i>
+                  </button>
+                  <button mat-raised-button type="button" matTooltip="land settings" [matTooltipPosition]="'right'"
+                    class="btn btn-link btn-just-icon float-right" (click)="onClickEditBtn(land,updateLandModal)"
+                    style="color: black;">
+                    <i class="material-icons">settings</i>
+                  </button>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template [ngIf]="!lands.length">
+          <h4>Nothing here. Click the plus button to a new land...</h4>
+        </ng-template>
+      </ng-container>
+
+    </div>
+  </div>
+</div>
+
+<!-- Pagination -->
+<pagination-template #p="paginationApi" (pageChange)="pageConfig.currentPage = $event" [id]="pageConfig.id">
+  <nav aria-label="Page navigation" *ngIf="p.pages.length>1">
+    <ul class="pagination justify-content-start">
+      <li class="page-item pagination-previous" [class.disabled]="p.isFirstPage()">
+        <a class="page-link" (click)="p.previous()" tabindex="-1">Previous</a>
+      </li>
+      <li class="page-item" *ngFor="let page of p.pages" [class.active]="p.getCurrent() === page.value">
+        <a class="page-link" (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">{{page.label}}</a>
+        <a class="page-link" href="javascript:;" *ngIf="p.getCurrent() === page.value">
+          {{page.label}} <span class="sr-only">(current)</span>
+        </a>
+      </li>
+      <li class="page-item pagination-next" [class.disabled]="p.isLastPage()">
+        <a class="page-link" (click)="p.next()">Next</a>
+      </li>
+    </ul>
+  </nav>
+</pagination-template>
+
+<!-- Create Land Modal -->
+<ng-template #createLandModal let-modal>
+  <div class="modal-content">
+    <div class="card card-signup card-plain">
+      <div class="modal-header">
+        <div class="card-header card-header-icon card-header-primary text-center">
+          <div class="card-icon">
+            <i class="material-icons">add</i>
+          </div>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="modal.dismiss()"><i
+              class="material-icons">clear</i></button>
+          <h4 class="card-title text-white">Create New Farmland</h4>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form class="form" [formGroup]="createLandForm" (ngSubmit)="onClickCreate()">
+          <span></span>
+          <div class="card-body">
+            <div class="form-group">
+              <input type="text" placeholder="What are the uniques features of this farmland..." class="form-control"
+                formControlName="description">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="auctionType">Auction type</label>
+                <select class="form-control selectpicker" data-style="btn btn-link" name="auctionType"
+                  formControlName="auctionType">
+                  <option></option>
+                  <option>Lease</option>
+                  <option>Rent</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="installmentType">Installment type</label>
+                <select class="form-control selectpicker" data-style="btn btn-link" name="installmentType"
+                  formControlName="installmentType">
+                  <option></option>
+                  <option>Daily</option>
+                  <option>Weekly</option>
+                  <option>Monthly</option>
+                  <option>Annual</option>
+                  <option>Biannual</option>
+                </select>
+              </div>
+
+            </div>
+
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="acres">No. acres</label>
+                <input type="text" class="form-control" name="acres" formControlName="acres">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="price">Price</label>
+                <input type="text" class="form-control" name="price" formControlName="price">
+              </div>
+            </div>
+
+            <div class="form-group"><input type="text" placeholder="Province..." class="form-control"
+                formControlName="shortLocation"></div>
+
+            <input type="text" placeholder="Full farmland address..." class="form-control"
+              formControlName="fullLocation">
+
+            <div class="form-group form-file-upload form-file-multiple" (click)="onClickFileUpload()">
+              <input type="file" id="file" formControlName="photo" enctype="multipart/form-data" multiple=""
+                class="inputFileHidden" (change)="onFileSelect($event.target.files)">
+              <div class="input-group">
+                <input type="text" class="form-control inputFileVisible" placeholder="land photo..."
+                  [(ngModel)]="fileName" [ngModelOptions]="{standalone: true}" readonly>
+                <span class="input-group-btn">
+                  <button type="submit" class="btn btn-fab btn-round btn-primary" style="z-index: 10;">
+                    <i class="material-icons">attach_file</i>
+                  </button>
+                </span>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Create
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Update Land Modal -->
+<ng-template #updateLandModal let-modal>
+  <div class="modal-content">
+    <div class="card card-signup card-plain">
+      <div class="modal-header">
+        <div class="card-header card-header-icon card-header-primary text-center">
+          <div class="card-icon">
+            <i class="material-icons">edit</i>
+          </div>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="modal.dismiss()"><i
+              class="material-icons">clear</i></button>
+          <h4 class="card-title text-white">Update Farmland Details</h4>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form class="form" [formGroup]="updateLandForm" (ngSubmit)="onClickUpdate()">
+          <span></span>
+          <div class="card-body">
+            <div class="form-group">
+              <input type="text" placeholder="What are the uniques features of this farmland..." class="form-control"
+                formControlName="description">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="auctionType">Auction type</label>
+                <select class="form-control selectpicker" data-style="btn btn-link" name="auctionType"
+                  formControlName="auctionType">
+                  <option></option>
+                  <option>Lease</option>
+                  <option>Rent</option>
+                </select>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="installmentType">Installment type</label>
+                <select class="form-control selectpicker" data-style="btn btn-link" name="installmentType"
+                  formControlName="installmentType">
+                  <option></option>
+                  <option>Daily</option>
+                  <option>Weekly</option>
+                  <option>Monthly</option>
+                  <option>Annual</option>
+                  <option>Biannual</option>
+                </select>
+              </div>
+
+            </div>
+
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="acres">No. acres</label>
+                <input type="text" class="form-control" name="acres" formControlName="acres">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="price">Price</label>
+                <input type="text" class="form-control" name="price" formControlName="price">
+              </div>
+            </div>
+
+            <div class="form-group"><input type="text" placeholder="Province..." class="form-control"
+                formControlName="shortLocation"></div>
+
+            <input type="text" placeholder="Full farmland address..." class="form-control"
+              formControlName="fullLocation">
+
+            <div class="form-group form-file-upload form-file-multiple" (click)="onClickFileUpload()">
+              <input type="file" id="file" formControlName="photo" enctype="multipart/form-data" multiple=""
+                class="inputFileHidden" (change)="onFileSelect($event.target.files)">
+              <div class="input-group">
+                <input type="text" class="form-control inputFileVisible" placeholder="land photo..."
+                  [(ngModel)]="fileName" [ngModelOptions]="{standalone: true}" readonly>
+                <span class="input-group-btn">
+                  <button type="submit" class="btn btn-fab btn-round btn-primary" style="z-index: 10;">
+                    <i class="material-icons">attach_file</i>
+                  </button>
+                </span>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Update
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Info about land -->
+<ng-template #landInfoModal let-modal>
+  <div class="modal-content">
+    <div class="card card-plain">
+      <div class="modal-header">
+        <h4 class="modal-title">Full Farmland Information</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="modal.dismiss()">
+          <i class="material-icons text-primary" style="font-size:larger;">clear</i></button>
+      </div>
+      <div class="info info-horizontal">
+        <div class="icon">
+          <i class="fab fa-pagelines fa-4x text-success"></i>
+        </div>
+        <div class="description">
+          <h4 class="info-title">Farmland</h4>
+          <p>{{landInfo.description}}</p>
+        </div>
+      </div>
+      <div class="info info-horizontal">
+        <div class="icon ">
+          <i class="fas fa-map-marked-alt fa-4x text-rose"></i>
+        </div>
+        <div class="description">
+          <h4 class="info-title">Full Address</h4>
+          <p>{{landInfo.fullLocation}}, {{landInfo.shortLocation}}</p>
+        </div>
+      </div>
+
+      <div class="info info-horizontal">
+        <div class="icon ">
+          <i class="fas fa-comment-dollar fa-4x text-info"></i>
+        </div>
+        <div class="description">
+          <h4 class="info-title">How Much?</h4>
+          <p *ngIf="landInfo.auctionType === 'Lease'">We are talking about a mere
+            <strong class="text-dark">{{landInfo.price|currency:'₦'}}
+              {{landInfo.installmentType}}</strong> payment for
+            a lease to own</p>
+          <p *ngIf="landInfo.auctionType === 'Rent'">Renting this <strong class="text-dark">{{landInfo.acres}}
+              acre(s)</strong> farmland goes for about
+            <strong class="text-dark">{{landInfo.price|currency: '₦'}}
+              {{landInfo.installmentType}}</strong>
+            payment</p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</ng-template>
+
+<!-- Loading -->
+<ng-template #loadingLand>
+  <ngx-skeleton-loader count="5" appearance="line"></ngx-skeleton-loader>
+</ng-template>

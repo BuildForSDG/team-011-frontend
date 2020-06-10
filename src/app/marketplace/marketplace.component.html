@@ -1,0 +1,132 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <ng-container *ngIf="(lands$|async) as res;else loadingLand">
+      <div class="row" *ngIf="res.items.length;else nothingText">
+        <ng-container *ngFor="let land of res.items  | paginate: pageConfig">
+          <div class="col-md-3">
+            <div class="card">
+              <img class="card-img-top" [src]="land.photo" rel="nofollow" alt="land image" *ngIf="land.photo">
+              <div class="card-body">
+                <h4 class="card-title">
+                  <small><i class="fas fa-map-marker-alt text-warning"></i></small> {{land.shortLocation}}
+                </h4>
+                <h6 class="card-subtitle mb-2 text-dark text-capitalize"> <span>{{land.acres}} acres, for
+                    {{land.auctionType}}</span> | <span>{{land.price | currency:'₦'}}, {{land.installmentType}}</span>
+                </h6>
+                <p class="card-text">{{land.description}}</p>
+
+                <button mat-raised-button type="button" matTooltip="Click to see more info"
+                  [matTooltipPosition]="'right'" class="btn btn-info btn-link btn-just-icon"
+                  (click)="onClickLandInfoBtn(landInfoModal,land)">
+                  <i class="material-icons">info</i>
+                </button>
+                <ng-template [ngIf]="currentUser.role === 'Farmer' && !checkLandRequestStatus(land.requests)">
+                  <button mat-raised-button type="button" matTooltip="send request now" [matTooltipPosition]="'right'"
+                    class="btn btn-primary btn-link  btn-just-icon float-right" (click)="onClickLandSendReqBtn(land)">
+                    <i class="material-icons">send</i>
+                  </button>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+
+        </ng-container>
+      </div>
+    </ng-container>
+
+  </div>
+
+
+</div>
+
+<!-- Pagination -->
+<pagination-template #p="paginationApi" (pageChange)="pageConfig.currentPage = $event" [id]="pageConfig.id">
+  <nav aria-label="Page navigation" *ngIf="p.pages.length>1">
+    <ul class="pagination justify-content-start">
+      <li class="page-item pagination-previous" [class.disabled]="p.isFirstPage()">
+        <a class="page-link" (click)="p.previous()" tabindex="-1">Previous</a>
+      </li>
+      <li class="page-item" *ngFor="let page of p.pages" [class.active]="p.getCurrent() === page.value">
+        <a class="page-link" (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">{{page.label}}</a>
+        <a class="page-link" href="javascript:;" *ngIf="p.getCurrent() === page.value">
+          {{page.label}} <span class="sr-only">(current)</span>
+        </a>
+      </li>
+      <li class="page-item pagination-next" [class.disabled]="p.isLastPage()">
+        <a class="page-link" (click)="p.next()">Next</a>
+      </li>
+    </ul>
+  </nav>
+</pagination-template>
+
+
+<!-- Info about land -->
+<ng-template #landInfoModal let-modal>
+  <div class="modal-content">
+    <div class="card card-plain">
+      <div class="modal-header">
+        <h4 class="modal-title">Full Farmland Information</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="modal.dismiss()">
+          <i class="material-icons text-primary" style="font-size:larger;">clear</i></button>
+      </div>
+      <div class="info info-horizontal">
+        <div class="icon">
+          <i class="fab fa-pagelines fa-4x text-success"></i>
+        </div>
+        <div class="description">
+          <h4 class="info-title">Farmland</h4>
+          <p>{{landInfo.description}}</p>
+        </div>
+      </div>
+      <div class="info info-horizontal">
+        <div class="icon ">
+          <i class="fas fa-map-marked-alt fa-4x text-rose"></i>
+        </div>
+        <div class="description">
+          <h4 class="info-title">Full Address</h4>
+          <p>{{landInfo.fullLocation}}, {{landInfo.shortLocation}}</p>
+        </div>
+      </div>
+
+      <div class="info info-horizontal">
+        <div class="icon ">
+          <i class="fas fa-comment-dollar fa-4x text-info"></i>
+        </div>
+        <div class="description">
+          <h4 class="info-title">How Much?</h4>
+          <p *ngIf="landInfo.auctionType === 'Lease'">We are talking about a mere
+            <strong class="text-dark">{{landInfo.price|currency:'₦'}}
+              {{landInfo.installmentType}}</strong> payment for
+            a lease to own</p>
+          <p *ngIf="landInfo.auctionType === 'Rent'">Renting this <strong class="text-dark">{{landInfo.acres}}
+              acre(s)</strong> farmland goes for about
+            <strong class="text-dark">{{landInfo.price|currency: '₦'}}
+              {{landInfo.installmentType}}</strong>
+            payment</p>
+        </div>
+
+      </div>
+      <div class="info info-horizontal" *ngIf="currentUser.role === 'Farmer'">
+        <div class="icon">
+          <i class="fas fa-fingerprint fa-4x text-danger"></i>
+        </div>
+        <div class="description">
+          <h4 class="info-title">Secure Payment</h4>
+          <p>If this farmland suites what you are looking for, you can proceed to make secure payment and immediately
+            start utilizing the land for your next harvest</p>
+          <a href="#pablo">Make payment...</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Loading -->
+<ng-template #loadingLand>
+  <div class="item">
+    <ngx-skeleton-loader count="5" appearance="circle"></ngx-skeleton-loader>
+  </div>
+</ng-template>
+<ng-template #nothingText>
+  <h1>Nothing here</h1>
+</ng-template>
