@@ -1,4 +1,4 @@
 export const localStoreKeys = {
-  accessToken: 'access_Token',
-  shouldCache: 'shouldCache'
+  accessToken: "access_Token",
+  shouldCache: "shouldCache"
 };

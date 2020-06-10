@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:1234',
-  appUrl: 'http://localhost:4200/',
-  paystackPublicKey: 'pk_test_c613fc7d428a64fd1e5daea22f8380551b28c78e'
+  apiUrl: "http://localhost:1234",
+  appUrl: "http://localhost:4200/",
+  paystackPublicKey: "pk_test_c613fc7d428a64fd1e5daea22f8380551b28c78e"
 };
 
 /*

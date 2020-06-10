@@ -1,180 +1,191 @@
 <div class="main-content">
   <div class="container-fluid">
-    <ng-template [ngIf]="currentUser.role === 'Landowner'">
+    <ng-template [ngIf]="currentUser?.role === 'Landowner'">
       <div class="row">
         <div class="col-md-12">
-          <div class="card" *ngIf="filerAuctionType((lands$|async)?.items,'Rent') as rentLands;else loadingLand">
-            <div class="card-header card-header-primary">
-              <h4 class="card-title ">Farmlands For Rent</h4>
-              <p class="card-category">List of Lands and corresponding Requests</p>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead class=" text-primary">
-                    <th>
-                      ID
-                    </th>
-                    <th>
-                      Description
-                    </th>
-                    <th>
-                      Installment
-                    </th>
-                    <th>
-                      Location
-                    </th>
-                    <th>
-                      Acres
-                    </th>
-                    <th>
-                      Price
-                    </th>
-                    <th>
-                      Status
-                    </th>
-                    <th class="text-center">Requests</th>
-                    <th></th>
-                  </thead>
-                  <tbody>
-                    <ng-container *ngFor="let land of rentLands;let i=index">
-                      <tr>
-                        <td>
-                          {{i+1}}
-                        </td>
-                        <td>
-                          {{land.description}}
-                        </td>
-                        <td>
-                          {{land.installmentType}}
-                        </td>
-                        <td>
-                          {{land.shortLocation}}
-                        </td>
-                        <td>
-                          {{land.acres}}
-                        </td>
-                        <td>
-                          {{land.price|currency:'₦'}}
-                        </td>
-                        <td>
-                          {{ land.status}}
-                        </td>
-                        <td class="text-center">
-                          <ng-template [ngIf]="land.requests.length">
-                            <a href="javascript:;" class="badge badge-pill" (click)="onClickMoreBtn(land,requestsModal)"
-                              [class.badge-warning]="land.status == LandStatus.PendingPayment"
-                              [class.badge-default]="land.status == LandStatus.Occupied"
-                              [class.badge-success]='land.status == LandStatus.Available'>{{land.requests.length}}
-                            </a>
-                          </ng-template>
-                          <ng-template [ngIf]="land.requests.length===0">Nill</ng-template>
+          <ng-container *ngIf="filerAuctionType((lands$|async)?.items,'Rent') as rentLands;else loadingLand">
+            <ng-template [ngIf]="rentLands.length">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title ">Farmlands For Rent</h4>
+                  <p class="card-category">List of Lands and corresponding Requests</p>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class=" text-primary">
+                        <th>
+                          ID
+                        </th>
+                        <th>
+                          Description
+                        </th>
+                        <th>
+                          Installment
+                        </th>
+                        <th>
+                          Location
+                        </th>
+                        <th>
+                          Acres
+                        </th>
+                        <th>
+                          Price
+                        </th>
+                        <th>
+                          Status
+                        </th>
+                        <th class="text-center">Requests</th>
+                        <th></th>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let land of rentLands;let i=index">
+                          <tr>
+                            <td>
+                              {{i+1}}
+                            </td>
+                            <td>
+                              {{land.description}}
+                            </td>
+                            <td>
+                              {{land.installmentType}}
+                            </td>
+                            <td>
+                              {{land.shortLocation}}
+                            </td>
+                            <td>
+                              {{land.acres}}
+                            </td>
+                            <td>
+                              {{land.price|currency:'₦'}}
+                            </td>
+                            <td>
+                              {{ land.status}}
+                            </td>
+                            <td class="text-center">
+                              <ng-template [ngIf]="land.requests.length">
+                                <a href="javascript:;" class="badge badge-pill"
+                                  (click)="onClickMoreBtn(land,requestsModal)"
+                                  [class.badge-warning]="land.status == LandStatus.PendingPayment"
+                                  [class.badge-default]="land.status == LandStatus.Occupied"
+                                  [class.badge-success]='land.status == LandStatus.Available'>{{land.requests.length}}
+                                </a>
+                              </ng-template>
+                              <ng-template [ngIf]="land.requests.length===0">Nill</ng-template>
 
-                        </td>
-                        <td>
-                          <button mat-raised-button type="button" class="btn btn-primary btn-link  btn-just-icon"
-                            (click)="onClickMoreBtn(land,requestsModal)" *ngIf="land.requests.length">
-                            <i class="material-icons">expand_more</i>
-                          </button>
-                        </td>
-                      </tr>
-                    </ng-container>
-                  </tbody>
-                </table>
+                            </td>
+                            <td>
+                              <button mat-raised-button type="button" class="btn btn-primary btn-link  btn-just-icon"
+                                (click)="onClickMoreBtn(land,requestsModal)" *ngIf="land.requests.length">
+                                <i class="material-icons">expand_more</i>
+                              </button>
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </ng-template>
+          </ng-container>
         </div>
         <div class="col-md-12">
-          <div class="card card-plain"
-            *ngIf="filerAuctionType((lands$|async)?.items,'Lease') as leaseLands;else loadingLand">
-            <div class="card-header card-header-rose">
-              <h4 class="card-title ">Farmlands For Lease</h4>
-              <p class="card-category">List of Lands and corresponding Requests</p>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead class=" text-rose">
-                    <th>
-                      ID
-                    </th>
-                    <th>
-                      Description
-                    </th>
-                    <th>
-                      Installment
-                    </th>
-                    <th>
-                      Location
-                    </th>
-                    <th>
-                      Acres
-                    </th>
-                    <th>
-                      Price
-                    </th>
-                    <th>
-                      Status
-                    </th>
-                    <th class="text-center">Requests</th>
-                    <th></th>
-                  </thead>
-                  <tbody>
-                    <ng-container *ngFor="let land of leaseLands;let i=index">
-                      <tr>
-                        <td>
-                          {{i+1}}
-                        </td>
-                        <td>
-                          {{land.description}}
-                        </td>
-                        <td>
-                          {{land.installmentType}}
-                        </td>
-                        <td>
-                          {{land.shortLocation}}
-                        </td>
-                        <td>
-                          {{land.acres}}
-                        </td>
-                        <td>
-                          {{land.price|currency:'₦'}}
-                        </td>
-                        <td>
-                          {{land.status}}
-                        </td>
-                        <td class="text-center">
-                          <ng-template [ngIf]="land.requests.length">
-                            <a href="javascript:;" class="badge badge-pill" (click)="onClickMoreBtn(land,requestsModal)"
-                              [class.badge-warning]="land.status == LandStatus.PendingPayment"
-                              [class.badge-default]="land.status == LandStatus.Occupied"
-                              [class.badge-success]='land.status == LandStatus.Available'>{{land.requests.length}}
-                            </a>
-                          </ng-template>
-                          <ng-template [ngIf]="land.requests.length===0">Nill</ng-template>
+          <ng-container *ngIf="filerAuctionType((lands$|async)?.items,'Lease') as leaseLands;else loadingLand">
+            <ng-template [ngIf]="leaseLands.length">
 
-                        </td>
-                        <td>
-                          <button mat-raised-button type="button" (click)="onClickMoreBtn(land,requestsModal)"
-                            *ngIf="land.requests.length">
-                            <i class="material-icons">expand_more</i>
-                          </button>
-                        </td>
-                      </tr>
-                    </ng-container>
-                  </tbody>
-                </table>
+              <div class="card card-plain">
+                <div class="card-header card-header-rose">
+                  <h4 class="card-title ">Farmlands For Lease</h4>
+                  <p class="card-category">List of Lands and corresponding Requests</p>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class=" text-rose">
+                        <th>
+                          ID
+                        </th>
+                        <th>
+                          Description
+                        </th>
+                        <th>
+                          Installment
+                        </th>
+                        <th>
+                          Location
+                        </th>
+                        <th>
+                          Acres
+                        </th>
+                        <th>
+                          Price
+                        </th>
+                        <th>
+                          Status
+                        </th>
+                        <th class="text-center">Requests</th>
+                        <th></th>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let land of leaseLands;let i=index">
+                          <tr>
+                            <td>
+                              {{i+1}}
+                            </td>
+                            <td>
+                              {{land.description}}
+                            </td>
+                            <td>
+                              {{land.installmentType}}
+                            </td>
+                            <td>
+                              {{land.shortLocation}}
+                            </td>
+                            <td>
+                              {{land.acres}}
+                            </td>
+                            <td>
+                              {{land.price|currency:'₦'}}
+                            </td>
+                            <td>
+                              {{land.status}}
+                            </td>
+                            <td class="text-center">
+                              <ng-template [ngIf]="land.requests.length">
+                                <a href="javascript:;" class="badge badge-pill"
+                                  (click)="onClickMoreBtn(land,requestsModal)"
+                                  [class.badge-warning]="land.status == LandStatus.PendingPayment"
+                                  [class.badge-default]="land.status == LandStatus.Occupied"
+                                  [class.badge-success]='land.status == LandStatus.Available'>{{land.requests.length}}
+                                </a>
+                              </ng-template>
+                              <ng-template [ngIf]="land.requests.length===0">Nill</ng-template>
+
+                            </td>
+                            <td>
+                              <button mat-raised-button type="button" (click)="onClickMoreBtn(land,requestsModal)"
+                                *ngIf="land.requests.length">
+                                <i class="material-icons">expand_more</i>
+                              </button>
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </ng-template>
+          </ng-container>
         </div>
+
       </div>
     </ng-template>
 
 
 
-    <ng-template [ngIf]="currentUser.role === 'Farmer'">
+    <ng-template [ngIf]="currentUser?.role === 'Farmer'">
       <div class="row">
         <div class="col-md-12">
           <ng-container *ngIf="filerAuctionTypeRequest((farmerReqs$|async)?.items,'Rent') as reqs;else loadingLand">

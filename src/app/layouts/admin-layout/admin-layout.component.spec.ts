@@ -1,11 +1,11 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 
-import { AdminLayoutComponent } from './admin-layout.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AuthService } from 'src/app/auth/auth.service';
+import { AuthService } from "../../auth/auth.service";
+import { AdminLayoutComponent } from "./admin-layout.component";
 
-describe('AdminLayoutComponent', () => {
+describe("AdminLayoutComponent", () => {
   let component: AdminLayoutComponent;
   let fixture: ComponentFixture<AdminLayoutComponent>;
 
@@ -13,7 +13,7 @@ describe('AdminLayoutComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, HttpClientTestingModule],
       declarations: [AdminLayoutComponent],
-      providers: [AuthService],
+      providers: [AuthService]
     }).compileComponents();
   }));
 
@@ -23,7 +23,7 @@ describe('AdminLayoutComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

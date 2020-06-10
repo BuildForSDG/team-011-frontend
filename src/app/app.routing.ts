@@ -1,36 +1,38 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
 
-import { AuthGuard } from './auth.guard';
-import { AuthComponent } from './auth/auth.component';
-import { HomeComponent } from './home/home.component';
-import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { AuthComponent } from "./auth/auth.component";
+import { HomeComponent } from "./home/home.component";
+import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
+import { LoggedInGuard } from "@shared/guards/logged-in.guard";
+import { AuthGuard } from "@shared/guards/auth.guard";
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: "", component: HomeComponent, canActivate: [LoggedInGuard] },
 
   {
-    path: 'account',
+    path: "account",
     component: AuthComponent,
+    canActivate: [LoggedInGuard],
     children: [
       {
-        path: '',
-        loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
+        path: "",
+        loadChildren: () => import("./auth/auth.module").then(m => m.AuthModule)
       }
     ]
   },
   {
-    path: 'dashboard',
+    path: "dashboard",
     component: AdminLayoutComponent,
     canActivate: [AuthGuard],
     children: [
       {
-        path: '',
-        loadChildren: () => import('./layouts/admin-layout/admin-layout.module').then(m => m.AdminLayoutModule)
+        path: "",
+        loadChildren: () => import("./layouts/admin-layout/admin-layout.module").then(m => m.AdminLayoutModule)
       }
     ]
   },
-  { path: '**', redirectTo: '', pathMatch: 'full' }
+  { path: "**", redirectTo: "", pathMatch: "full" }
 ];
 
 @NgModule({

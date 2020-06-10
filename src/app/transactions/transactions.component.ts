@@ -1,21 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { LocalStoreService } from '@shared/services/local-store.service';
-import { NotifyService } from '@shared/services/notify.service';
-import { Observable, throwError } from 'rxjs';
-import { catchError, share, tap } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { LocalStoreService } from "@shared/services/local-store.service";
+import { NotifyService } from "@shared/services/notify.service";
+import { PaystackOptions } from "angular4-paystack";
+import { Observable, throwError } from "rxjs";
+import { catchError, share, tap } from "rxjs/operators";
 
-import { AuthService, CurrentUser } from '../auth/auth.service';
-import { LandDto, LandRequestStatus, LandStatus, PagedRes, ReqDto } from '../land/land.dto';
-import { LandService, CreatPaymentInput } from '../land/land.service';
-import { environment } from '../../environments/environment';
-import { PaystackOptions } from 'angular4-paystack';
-import { Router, NavigationEnd } from '@angular/router';
+import { environment } from "../../environments/environment";
+import { AuthService, CurrentUser } from "../auth/auth.service";
+import { LandDto, LandRequestStatus, LandStatus, PagedRes, ReqDto } from "../land/land.dto";
+import { CreatPaymentInput, LandService } from "../land/land.service";
 
 @Component({
-  selector: 'app-transactions',
-  templateUrl: './transactions.component.html',
-  styleUrls: ['./transactions.component.css']
+  selector: "app-transactions",
+  templateUrl: "./transactions.component.html",
+  styleUrls: ["./transactions.component.css"]
 })
 export class TransactionsComponent implements OnInit {
   farmerReqs$: Observable<PagedRes<ReqDto>>;
@@ -35,7 +34,6 @@ export class TransactionsComponent implements OnInit {
   paystackPublicKey = environment.paystackPublicKey;
 
   constructor(
-    private router: Router,
     private modalService: NgbModal,
     private authService: AuthService,
     private landService: LandService,
@@ -46,13 +44,21 @@ export class TransactionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.localStore.disableCaching();
+    const role = this.currentUser?.role;
+    let query = {};
+    let countQuery = {};
+
+    if (role === "Landowner") {
+      query = { createdBy: this.currentUser.userId };
+      countQuery = query;
+    }
     this.farmerReqs$ = this.landService.getFarmerRequests({ skip: 0, limit: 100 }).pipe(
       share(),
       tap(res => {
         this.cachedPagedReqDto = res;
       })
     );
-    this.lands$ = this.landService.getLands({ skip: 0, limit: 0 }).pipe(
+    this.lands$ = this.landService.getLands({ skip: 0, limit: 0, query, countQuery }).pipe(
       share(),
       tap(res => {
         this.cachedPagedLandDto = res;
@@ -62,7 +68,7 @@ export class TransactionsComponent implements OnInit {
 
   onClickMoreBtn(land: LandDto, content: any) {
     NotifyService.dismissAll();
-    this.modalService.open(content, { size: 'lg', centered: true });
+    this.modalService.open(content, { size: "lg", centered: true });
     this.localStore.disableCaching();
 
     this.inViewLandIndex = this.cachedPagedLandDto.items.indexOf(land);
@@ -80,11 +86,11 @@ export class TransactionsComponent implements OnInit {
     this.landService.updateRequestsToLandowner(this.acceptedReqId, LandRequestStatus.Approved).subscribe(res => {
       this.cachedPagedLandDto.items[this.inViewLandIndex].status = res.landId.status;
       NotifyService.notify({
-        from: 'top',
-        align: 'right',
-        message: 'Request accepted',
-        notifyType: 'success',
-        icon: 'check',
+        from: "top",
+        align: "right",
+        message: "Request accepted",
+        notifyType: "success",
+        icon: "check",
         delay: 3
       });
     });
@@ -92,10 +98,7 @@ export class TransactionsComponent implements OnInit {
 
   onPaymentInit = (reqId: string) => (this.selectedRequestId = reqId);
   onPaymentCancel = () => {
-    // quickly refresh the page
-    this.router.navigateByUrl('/dashboard', { skipLocationChange: true }).then(() => {
-      this.router.navigate(['/dashboard/transactions']);
-    });
+    this.ngOnInit();
   };
   onPaymentDone = (metadata: any) => {
     const input: CreatPaymentInput = {
@@ -107,25 +110,25 @@ export class TransactionsComponent implements OnInit {
       this.cachedPagedReqDto.items[index].landId.status = LandStatus.Occupied;
       this.selectedRequestId = null;
       NotifyService.notify({
-        from: 'top',
-        align: 'right',
-        title: 'Congratulations!',
-        message: 'You are now the occupant of the land',
-        notifyType: 'success',
-        icon: 'check',
+        from: "top",
+        align: "right",
+        title: "Congratulations!",
+        message: "You are now the occupant of the land",
+        notifyType: "success",
+        icon: "check",
         delay: 3
       });
     });
   };
 
   //#region Helpers
-  filerAuctionType = (lands: LandDto[], auctionType: 'Rent' | 'Lease') =>
-    lands && lands.filter(x => x.auctionType === auctionType);
-  filerAuctionTypeRequest = (reqs: ReqDto[], auctionType: 'Rent' | 'Lease') =>
-    reqs && reqs.filter(x => x.landId.auctionType === auctionType);
+  filerAuctionType = (lands: LandDto[], auctionType: "Rent" | "Lease") =>
+    lands?.filter(x => x.auctionType === auctionType);
+  filerAuctionTypeRequest = (reqs: ReqDto[], auctionType: "Rent" | "Lease") =>
+    reqs?.filter(x => x.landId.auctionType === auctionType);
   generatePaystackOpts = (req: ReqDto): PaystackOptions => {
     const rand = Math.ceil(Math.random() * 10e10);
-    const prefix = 'REF-PAYSTACK';
+    const prefix = "REF-PAYSTACK";
     const ref =
       (req.landId.id && `${prefix}-${req.landId.id}-${req.id}-${rand}`.toUpperCase()) ||
       `${prefix}-${rand}`.toUpperCase();
@@ -140,7 +143,7 @@ export class TransactionsComponent implements OnInit {
         userRole: user.role,
         landReqId: req?.id
       },
-      channels: ['bank', 'card'],
+      channels: ["bank", "card"],
       ref
     };
   };

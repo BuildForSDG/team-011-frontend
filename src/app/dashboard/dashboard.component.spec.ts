@@ -1,10 +1,10 @@
-import { AuthService } from '../auth/auth.service';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AuthService } from "../auth/auth.service";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { DashboardComponent } from './dashboard.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { DashboardComponent } from "./dashboard.component";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
-describe('DashboardComponent', () => {
+describe("DashboardComponent", () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
 
@@ -22,7 +22,7 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

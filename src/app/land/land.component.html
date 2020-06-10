@@ -5,18 +5,25 @@
                   color-classes: "nav-pills-primary", "nav-pills-info", "nav-pills-success", "nav-pills-warning","nav-pills-danger"
               -->
     <li class="nav-item">
-      <a class="nav-link active" href="#dashboard-1" role="tab" data-toggle="tab" (click)="onClickTab('Rent')">
-        <i class="material-icons">account_balance</i>
+      <a class="nav-link" [class.active]="filterType==='Rent'" href="#dashboard-1" role="tab" data-toggle="tab"
+        (click)="onClickTab('Rent')">
+        <i class="material-icons">store</i>
         Rent
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#schedule-1" role="tab" data-toggle="tab" (click)="onClickTab('Lease')">
-        <i class="material-icons">attach_money</i>
+      <a class="nav-link" [class.active]="filterType==='Lease'" href="#schedule-1" role="tab" data-toggle="tab"
+        (click)="onClickTab('Lease')">
+        <i class="fas fa-hand-holding-usd fa-1x"></i>
         Lease
       </a>
     </li>
-
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="filterType==='Occupied'" href="#schedule-1" role="tab" data-toggle="tab"
+        (click)="onClickTab('Occupied')">
+        <i class="fas fa-house-user"></i> Occupied
+      </a>
+    </li>
   </ul>
   <div class="container-fluid">
     <hr />
@@ -25,41 +32,50 @@
       <i class="material-icons">add</i>
     </button>
     <div class="row">
-      <div class="col-md-3" *ngFor="let land of lands  | paginate: pageConfig">
-        <div class="card">
 
-          <img class="card-img-top" [src]="land.photo" rel="nofollow" alt="land image" *ngIf="land.photo">
-          <div class="card-body">
-            <h4 class="card-title">
-              <small><i class="fas fa-map-marker-alt text-warning"></i></small> {{land.shortLocation}}
-            </h4>
-            <h6 class="card-subtitle mb-2 text-dark text-capitalize"> <span>{{land.acres}} acres, for
-                {{land.auctionType}}</span> | <span>{{land.price | currency:'₦'}}, {{land.installmentType}}</span>
-            </h6>
-            <p class="card-text">{{land.description}}</p>
-
-            <button mat-raised-button type="button" matTooltip="Click to see more info" [matTooltipPosition]="'right'"
-              class="btn btn-info btn-link btn-just-icon" (click)="onClickLandInfoBtn(landInfoModal,land)">
-              <i class="material-icons">info</i>
-            </button>
-            <button mat-raised-button type="button" matTooltip="delete land" [matTooltipPosition]="'right'"
-              class="btn btn-danger btn-link btn-just-icon float-right" (click)="onClickDelete(land.id)">
-              <i class="material-icons">delete</i>
-            </button>
-            <button mat-raised-button type="button" matTooltip="edit land" [matTooltipPosition]="'right'"
-              class="btn btn-primary btn-link btn-just-icon float-right"
-              (click)="onClickEditBtn(land.id,updateLandModal)">
-              <i class="material-icons">edit</i>
-            </button>
+      <ng-container *ngIf="(lands$|async)?.items as lands;else loadingLand">
 
 
+        <ng-template [ngIf]="lands.length">
+          <div class="col-md-3" *ngFor="let land of filterLands(lands)  | paginate: pageConfig">
+            <div class="card">
+              <img class="card-img-top" [src]="land.photo" rel="nofollow" alt="land image" *ngIf="land.photo">
+              <div class="card-body">
+                <h4 class="card-title">
+                  <small><i class="fas fa-map-marker-alt text-warning"></i></small> {{land.shortLocation}}
+                </h4>
+                <h6 class="card-subtitle mb-2 text-dark text-capitalize"> <span>{{land.acres}} acres, for
+                    {{land.auctionType}}</span> | <span>{{land.price | currency:'₦'}}, {{land.installmentType}}</span>
+                </h6>
+                <p class="card-text">{{land.description}}</p>
+
+                <button mat-raised-button type="button" matTooltip="Click to see more info"
+                  [matTooltipPosition]="'right'" class="btn btn-info btn-link btn-just-icon"
+                  (click)="onClickLandInfoBtn(landInfoModal,land)">
+                  <i class="material-icons">info</i>
+                </button>
+                <ng-template [ngIf]="land.status!==LandStatus.Occupied">
+                  <button mat-raised-button type="button" matTooltip="delete land" [matTooltipPosition]="'right'"
+                    class="btn btn-danger btn-link btn-just-icon float-right" (click)="onClickDelete(land.id)">
+                    <i class="material-icons">delete</i>
+                  </button>
+                  <button mat-raised-button type="button" matTooltip="land settings" [matTooltipPosition]="'right'"
+                    class="btn btn-link btn-just-icon float-right" (click)="onClickEditBtn(land,updateLandModal)"
+                    style="color: black;">
+                    <i class="material-icons">settings</i>
+                  </button>
+                </ng-template>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </ng-template>
+        <ng-template [ngIf]="!lands.length">
+          <h4>Nothing here. Click the plus button to a new land...</h4>
+        </ng-template>
+      </ng-container>
+
     </div>
   </div>
-
-
 </div>
 
 <!-- Pagination -->
@@ -81,8 +97,6 @@
     </ul>
   </nav>
 </pagination-template>
-
-
 
 <!-- Create Land Modal -->
 <ng-template #createLandModal let-modal>
@@ -315,4 +329,9 @@
 
     </div>
   </div>
+</ng-template>
+
+<!-- Loading -->
+<ng-template #loadingLand>
+  <ngx-skeleton-loader count="5" appearance="line"></ngx-skeleton-loader>
 </ng-template>

@@ -2,40 +2,35 @@
   <div class="container-fluid">
     <ng-container *ngIf="(lands$|async) as res;else loadingLand">
       <div class="row" *ngIf="res.items.length;else nothingText">
-        <div class="col-md-3" *ngFor="let land of res.items  | paginate: pageConfig">
-          <div class="card">
-            <img class="card-img-top" [src]="land.photo" rel="nofollow" alt="land image" *ngIf="land.photo">
-            <div class="card-body">
-              <h4 class="card-title">
-                <small><i class="fas fa-map-marker-alt text-warning"></i></small> {{land.shortLocation}}
-              </h4>
-              <h6 class="card-subtitle mb-2 text-dark text-capitalize"> <span>{{land.acres}} acres, for
-                  {{land.auctionType}}</span> | <span>{{land.price | currency:'₦'}}, {{land.installmentType}}</span>
-              </h6>
-              <p class="card-text">{{land.description}}</p>
+        <ng-container *ngFor="let land of res.items  | paginate: pageConfig">
+          <div class="col-md-3">
+            <div class="card">
+              <img class="card-img-top" [src]="land.photo" rel="nofollow" alt="land image" *ngIf="land.photo">
+              <div class="card-body">
+                <h4 class="card-title">
+                  <small><i class="fas fa-map-marker-alt text-warning"></i></small> {{land.shortLocation}}
+                </h4>
+                <h6 class="card-subtitle mb-2 text-dark text-capitalize"> <span>{{land.acres}} acres, for
+                    {{land.auctionType}}</span> | <span>{{land.price | currency:'₦'}}, {{land.installmentType}}</span>
+                </h6>
+                <p class="card-text">{{land.description}}</p>
 
-              <button mat-raised-button type="button" matTooltip="Click to see more info" [matTooltipPosition]="'right'"
-                class="btn btn-info btn-link btn-just-icon" (click)="onClickLandInfoBtn(landInfoModal,land)">
-                <i class="material-icons">info</i>
-              </button>
-
-
-              <button mat-raised-button type="button" matTooltip="make payment" [matTooltipPosition]="'right'"
-                class="btn btn-success btn-link  btn-just-icon float-right" angular4-paystack [key]="paystackPublicKey"
-                [email]="currentUser.email" [amount]="land.price" [ref]="land.id" [class]="'btn btn-primary'"
-                (paymentInit)="paymentInit()" (close)="paymentCancel()" (callback)="paymentDone($event)"
-                *ngIf="currentUser.role === 'Farmer' ">
-                <i class="material-icons">payment</i>
-              </button>
-              <ng-template [ngIf]="currentUser.role === 'Farmer' && !checkLandRequestStatus(land.requests)">
-                <button mat-raised-button type="button" matTooltip="send request now" [matTooltipPosition]="'right'"
-                  class="btn btn-primary btn-link  btn-just-icon float-right" (click)="onClickLandSendReqBtn(land)">
-                  <i class="material-icons">send</i>
+                <button mat-raised-button type="button" matTooltip="Click to see more info"
+                  [matTooltipPosition]="'right'" class="btn btn-info btn-link btn-just-icon"
+                  (click)="onClickLandInfoBtn(landInfoModal,land)">
+                  <i class="material-icons">info</i>
                 </button>
-              </ng-template>
+                <ng-template [ngIf]="currentUser.role === 'Farmer' && !checkLandRequestStatus(land.requests)">
+                  <button mat-raised-button type="button" matTooltip="send request now" [matTooltipPosition]="'right'"
+                    class="btn btn-primary btn-link  btn-just-icon float-right" (click)="onClickLandSendReqBtn(land)">
+                    <i class="material-icons">send</i>
+                  </button>
+                </ng-template>
+              </div>
             </div>
           </div>
-        </div>
+
+        </ng-container>
       </div>
     </ng-container>
 

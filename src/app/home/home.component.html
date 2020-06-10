@@ -8,9 +8,7 @@
         <h4>We enable Farmers achieve and surpass their dream harvest capacity by helping them find affordable and
           fertile farmlands for their next farming season</h4>
         <br>
-        <a href="#" target="_blank" class="btn btn-danger btn-raised btn-lg">
-          <i class="fa fa-play"></i> Watch video
-        </a>
+
       </div>
     </div>
   </div>
@@ -21,51 +19,65 @@
       <div class="row">
         <div class="col-md-8 ml-auto mr-auto">
           <h2 class="title">How does this work?</h2>
-          <h5 class="description">This is the paragraph where you can write more details about your product. Keep you
-            user engaged by providing meaningful information. Remember that by this time, the user is curious, otherwise
-            he wouldn't scroll to get here. Add a button if you want the user to see more.</h5>
+          <h5 class="description">We've built a solution that will help Farmers maximize their productivity and output
+            every harvest by providing the most important resource every Farmer needs - Farmland Real Estate. Landowners
+            that own Farmlands that laying unutilized benefits from this solution simply by enrolling on the platform
+            and making their farmlands available in a virtual market. The whole process entails four simple steps</h5>
         </div>
       </div>
       <div class="features">
         <div class="row">
           <div class="col-md-3">
             <div class="info">
-              <div class="icon ">
-                <i class="material-icons icon-dark">filter_hdr</i>
+              <div class="icon">
+                <i class="fab fa-pagelines fa-4x text-success"></i>
               </div>
               <h4 class="info-title">Farmland</h4>
-              <p>Divide details about your product or agency work into parts. Write a few lines about each one. A
-                paragraph describing a feature will be enough.</p>
+              <p>First, you will need to create an account on Farmlord either as <b>Farmer</b> or <b>Landowner.</b> As a
+                Landowner, you can profile your pieces of farmlands on the platform which automatically becomes
+                available on a virtual market. After registering as a Farmer, you may go on the virtual market and view
+                land that interests you.</p>
             </div>
           </div>
           <div class="col-md-3">
             <div class="info">
-              <div class="icon icon-info">
-                <i class="material-icons">thumb_up</i>
+              <div class="icon">
+                <i class="far fa-paper-plane fa-4x" style="color:maroon"></i>
               </div>
-              <h4 class="info-title">Interested</h4>
-              <p>Divide details about your product or agency work into parts. Write a few lines about each one. A
-                paragraph describing a feature will be enough.</p>
+              <h4 class="info-title">Request</h4>
+              <p>When you find an interesting Farmland that meets your need on the <b>"farmland market"</b>, you will
+                simply <b>send a request</b> with just one
+                click! The Landowner will immediately get a "farmland request" notification on their dashboard,
+                prompting them of a
+                Farmer's interest on their listed property on the "farmland market"</p>
             </div>
           </div>
           <div class="col-md-3">
             <div class="info">
-              <div class="icon icon-rose">
-                <i class="material-icons">work</i>
+              <div class="icon ">
+                <i class="fas fa-handshake fa-4x" style="color:dodgerblue"></i>
               </div>
-              <h4 class="info-title">Strike Deal</h4>
-              <p>Divide details about your product or agency work into parts. Write a few lines about each one. A
-                paragraph describing a feature will be enough.</p>
+              <h4 class="info-title">Transact</h4>
+              <p>As soon as a Landowner receives a request to rent or lease their farmland, they will review and
+                <b>accept</b>
+                the request if it meets their preference or decline accordingly. All of these processes should take a
+                <b>few minutes</b> to complete a transaction end to end between a Landowner and the corresponding
+                requesting
+                Farmer.</p>
             </div>
           </div>
           <div class="col-md-3">
             <div class="info">
-              <div class="icon icon-success">
-                <i class="material-icons">payment</i>
+              <div class="icon icon-danger">
+                <i class="far fa-credit-card fa-4x"></i>
               </div>
               <h4 class="info-title">Payment</h4>
-              <p>Divide details about your product or agency work into parts. Write a few lines about each one. A
-                paragraph describing a feature will be enough.</p>
+              <p>After the Landowner has accepted the land request sent by a Farmer, the Farmer get a notification on
+                their dashboard to make <b>secure payment</b> for a right occupy or lease the farmland as agreed in the
+                terms
+                between Farmer and the Land owner. We've made sure to integrated to a <b>trusted</b> and secure payment
+                service.
+              </p>
             </div>
           </div>
         </div>
@@ -76,35 +88,41 @@
       <div class="row">
         <div class="col-md-8 ml-auto mr-auto">
           <h2 class="text-center title">Contact Us</h2>
-          <h4 class="text-center description">You're a farmland owner, or a Farmer and you need to make specific
-            enquiry, please feel free to contact us and we'll be happy to help. We should get back to you as soon as
-            possible.</h4>
-          <form class="contact-form">
+          <h4 class="text-center description">You're a Landowner, or a Farmer and you need to make specific
+            enquiry, please feel free to contact us and we will be happy to help. We should get back to you within one
+            to two business days. Alternatively, you can <a href="tel:+2347063644213"><em>call us</em></a> to make
+            further enquiries
+            about FarmLord.</h4>
+          a-from
+          <form class="contact-form" (ngSubmit)="onSubmit()" [formGroup]="contactForm">
+
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="bmd-label-floating">Your Name</label>
-                  <input type="email" class="form-control">
+                  <input type="text" class="form-control" formControlName="name">
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="bmd-label-floating">Your Email</label>
-                  <input type="email" class="form-control">
+                  <input type="email" class="form-control" formControlName="email">
                 </div>
               </div>
             </div>
             <div class="form-group">
               <label for="exampleMessage" class="bmd-label-floating">Your Message</label>
-              <textarea type="email" class="form-control" rows="4" id="exampleMessage"></textarea>
+              <textarea type="email" class="form-control" rows="4" id="exampleMessage"
+                formControlName="message"></textarea>
             </div>
             <div class="row">
               <div class="col-md-4 ml-auto mr-auto text-center">
-                <button class="btn btn-primary btn-raised">
+                <button type="submit" class="btn btn-primary btn-raised" [disabled]="contactForm.invalid">
                   Send Message
                 </button>
               </div>
             </div>
+
           </form>
         </div>
       </div>

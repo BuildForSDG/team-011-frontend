@@ -1,18 +1,19 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
+import { NgxPaginationModule } from "ngx-pagination";
 
-import { MarketplaceComponent } from './marketplace.component';
+import { MarketplaceComponent } from "./marketplace.component";
 
-describe('MarketplaceComponent', () => {
+describe("MarketplaceComponent", () => {
   let component: MarketplaceComponent;
   let fixture: ComponentFixture<MarketplaceComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MarketplaceComponent],
-      imports: [RouterTestingModule, ReactiveFormsModule, HttpClientTestingModule]
+      imports: [RouterTestingModule, ReactiveFormsModule, HttpClientTestingModule, NgxPaginationModule]
     }).compileComponents();
   }));
 
@@ -22,7 +23,7 @@ describe('MarketplaceComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

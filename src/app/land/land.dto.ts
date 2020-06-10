@@ -1,12 +1,12 @@
 export enum LandStatus {
-  Available = 'AVAILABLE',
-  Occupied = 'OCCUPIED',
-  PendingPayment = 'PENDING_PAYMENT'
+  Available = "AVAILABLE",
+  Occupied = "OCCUPIED",
+  PendingPayment = "PENDING_PAYMENT"
 }
 export enum LandRequestStatus {
-  Declined = 'DECLINED',
-  Approved = 'APPROVED',
-  Pending = 'PENDING'
+  Declined = "DECLINED",
+  Approved = "APPROVED",
+  Pending = "PENDING"
 }
 export interface BaseResDto {
   id: string;
@@ -27,7 +27,7 @@ export interface CreateLandDto {
   price: number;
   status: LandStatus;
   photo?: File;
-  auctionType: 'Lease' | 'Rent';
+  auctionType: "Lease" | "Rent";
   installmentType: string;
 }
 
@@ -40,6 +40,6 @@ export interface UpdateLandDto extends CreateLandDto {
 
 export interface ReqDto extends BaseResDto {
   landId: any;
-  landownerId: string;
+  landownerId: any;
   status: LandRequestStatus;
 }

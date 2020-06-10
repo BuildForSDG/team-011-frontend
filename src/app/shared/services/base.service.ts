@@ -1,13 +1,13 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import urlJoin from 'url-join';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import urlJoin from "url-join";
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export abstract class BaseService {
   constructor(protected http: HttpClient) {}
 
-  private endpoint = (...paths: string[]) => urlJoin('/api/', ...paths);
+  private endpoint = (...paths: string[]) => urlJoin("/api/", ...paths);
   create<TInput, TRes>(input: TInput, path: string) {
     return this.http.post<TRes>(this.endpoint(path), input);
   }
