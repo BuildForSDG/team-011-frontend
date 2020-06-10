@@ -219,12 +219,12 @@ export class DashboardComponent implements OnInit {
       series: [landSeries]
     };
     const max = Math.max(...landSeries);
-    const min = Math.min(...landSeries);
+    // const min = Math.min(...landSeries);
     const optionsCompletedTasksChart = {
       lineSmooth: Chartist.Interpolation.cardinal({
         tension: 0
       }),
-      low: min,
+      low: 0,
       high: max + max / 100,
       chartPadding: { top: 0, right: 0, bottom: 0, left: 0 }
     };
