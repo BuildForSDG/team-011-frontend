@@ -1,6 +1,8 @@
 import { Location } from "@angular/common";
 import { Component, ElementRef, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { NotifyService, Notify } from "@shared/notification.service";
+import { Observable } from "rxjs";
 
 import { AuthService, CurrentUser } from "../../auth/auth.service";
 import { ROUTES } from "../sidebar/sidebar.component";
@@ -17,11 +19,14 @@ export class NavbarComponent implements OnInit {
   private toggleButton: any;
   private sidebarVisible: boolean;
   currentUser: CurrentUser;
+  notify$: Observable<Notify>;
+
   constructor(
     location: Location,
     private element: ElementRef,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotifyService
   ) {
     this.location = location;
     this.sidebarVisible = false;
@@ -40,6 +45,7 @@ export class NavbarComponent implements OnInit {
         this.mobile_menu_visible = 0;
       }
     });
+    this.notify$ = this.notificationService.getNotification();
   }
 
   sidebarOpen() {

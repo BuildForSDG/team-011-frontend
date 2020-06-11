@@ -37,7 +37,8 @@
 
 
         <ng-template [ngIf]="lands.length">
-          <div class="col-md-3" *ngFor="let land of filterLands(lands)  | paginate: pageConfig">
+          <div class="col-md-3 d-flex align-items-stretch"
+            *ngFor="let land of filterLands(lands)  | paginate: pageConfig">
             <div class="card">
               <img class="card-img-top" [src]="land.photo" rel="nofollow" alt="land image" *ngIf="land.photo">
               <div class="card-body">

@@ -2,7 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import Notiflix from "notiflix-angular";
 import { ObservableInput, throwError } from "rxjs";
-import { NotifyService } from "../services/notify.service";
+import { Toast } from "../services/toast";
 
 @Injectable({
   providedIn: "root"
@@ -15,7 +15,7 @@ export class ErrorHandlerService {
     let errorMsg: string;
     if (error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      NotifyService.notify({
+      Toast.notify({
         message: error.message,
         notifyType: "warning",
         icon: "warning"
@@ -26,7 +26,7 @@ export class ErrorHandlerService {
       if (err.status >= 500) {
         errorMsg = "This is not your fault, it our fault; please try again later";
         errorMsg = error ? error.message || errorMsg : errorMsg;
-        NotifyService.notify({
+        Toast.notify({
           title: "An Error Occurred",
           message: error ? error.message || errorMsg : errorMsg,
           notifyType: "danger",
@@ -37,13 +37,13 @@ export class ErrorHandlerService {
         errorMsg = error ? error.message || errorMsg : errorMsg;
 
         if (err.status === 0)
-          NotifyService.notify({
+          Toast.notify({
             icon: "warning",
             message: "You request could not reach our servers. Check your internet connectivity and try again.",
             notifyType: "warning"
           });
         else
-          NotifyService.notify({
+          Toast.notify({
             message: errorMsg,
             notifyType: "info",
             icon: "feedback"

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStoreService } from "@shared/services/local-store.service";
-import { NotifyService } from "@shared/services/notify.service";
+import { Toast } from "@shared/services/toast";
 import { PaginationInstance } from "ngx-pagination";
 import { Observable } from "rxjs";
 import { share, tap } from "rxjs/operators";
@@ -54,11 +54,11 @@ export class MarketplaceComponent implements OnInit {
     this.modalService.open(landInfo, { centered: true });
   };
   onClickLandSendReqBtn = (land: LandDto) => {
-    NotifyService.dismissAll();
+    Toast.dismissAll();
     this.landService.createLandRequest(land.id).subscribe(res => {
       const index = this.cachedPagedLandDto.items.indexOf(land);
       this.cachedPagedLandDto.items[index].requests.push({ createdBy: this.currentUser.userId, ...res });
-      NotifyService.notify({
+      Toast.notify({
         from: "top",
         align: "right",
         message: "Request sent to Landowner",

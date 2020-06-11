@@ -3,7 +3,7 @@
     <ng-container *ngIf="(lands$|async) as res;else loadingLand">
       <div class="row" *ngIf="res.items.length;else nothingText">
         <ng-container *ngFor="let land of res.items  | paginate: pageConfig">
-          <div class="col-md-3">
+          <div class="col-md-3 d-flex align-items-stretch">
             <div class="card">
               <img class="card-img-top" [src]="land.photo" rel="nofollow" alt="land image" *ngIf="land.photo">
               <div class="card-body">

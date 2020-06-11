@@ -4,7 +4,7 @@ export type NotifyType = "default" | "success" | "info" | "warning" | "danger" |
 @Injectable({
   providedIn: "root"
 })
-export class NotifyService {
+export class Toast {
   constructor() {}
   static dismissAll() {
     $.notifyClose();

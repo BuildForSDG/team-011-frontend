@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import Notiflix from "notiflix-angular";
 import { LocalStoreService } from "src/app/shared/services/local-store.service";
-import { NotifyService } from "src/app/shared/services/notify.service";
+import { Toast } from "@shared/services/toast";
 
 import { LoginInput } from "../auth.dto";
 import { AuthService } from "../auth.service";
@@ -47,18 +47,18 @@ export class LoginComponent implements OnInit {
     const input: LoginInput = this.form.value;
     this.authService.login(input).subscribe(res => {
       this.localStore.storeAccessToken(res.accessToken);
-      NotifyService.dismissAll();
+      Toast.dismissAll();
       this.router.navigateByUrl(this.returnUrl);
       Notiflix.Loading.Remove();
     });
   }
   onResend() {
     this.modalService.dismissAll();
-    NotifyService.dismissAll();
+    Toast.dismissAll();
     this.localStore.disableCaching();
     const email = this.resendVerificationForm.value.email;
     this.authService.resendEmailVerification(email).subscribe(() => {
-      NotifyService.notify({
+      Toast.notify({
         message: "We've sent a fresh verification link to your email. Please check your email",
         icon: "forward_to_inbox",
         notifyType: "success"
@@ -74,7 +74,7 @@ export class LoginComponent implements OnInit {
     const { emailConfirmKey } = authConstants;
     this.route.queryParams.subscribe(params => {
       if (params[emailConfirmKey] === "true") {
-        NotifyService.notify({
+        Toast.notify({
           message: "We've sent a confirmation email to you. Please confirm your email to proceed.",
           title: "<strong>Welcome Aboard</strong>",
           icon: "forward_to_inbox",

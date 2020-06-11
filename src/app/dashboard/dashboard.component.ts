@@ -8,7 +8,7 @@ import { AuthService, CurrentUser } from "../auth/auth.service";
 import { LandDto, LandStatus, PagedRes, ReqDto } from "../land/land.dto";
 import { LandService } from "../land/land.service";
 import { LocalStoreService } from "../shared/services/local-store.service";
-import { NotifyService } from "../shared/services/notify.service";
+import { Toast } from "../shared/services/toast";
 
 @Component({
   selector: "app-dashboard",
@@ -83,7 +83,7 @@ export class DashboardComponent implements OnInit {
         .subscribe(
           () => {
             Notiflix.Loading.Remove();
-            NotifyService.notify({
+            Toast.notify({
               from: "top",
               align: "right",
               message: "Land removed successfully",

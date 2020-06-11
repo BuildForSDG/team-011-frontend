@@ -8,7 +8,7 @@ import { Observable } from "rxjs";
 import { share, tap } from "rxjs/operators";
 
 import { LocalStoreService } from "../shared/services/local-store.service";
-import { NotifyService } from "../shared/services/notify.service";
+import { Toast } from "../shared/services/toast";
 import { CreateLandDto, LandDto, LandStatus, PagedRes, UpdateLandDto } from "./land.dto";
 import { LandService } from "./land.service";
 
@@ -93,7 +93,7 @@ export class LandComponent implements OnInit {
       .subscribe(() => {
         this.modalService.dismissAll();
         Notiflix.Loading.Remove();
-        NotifyService.notify({
+        Toast.notify({
           from: "top",
           align: "right",
           message: "Land created successfully",
@@ -117,7 +117,7 @@ export class LandComponent implements OnInit {
       this.pageConfig.currentPage = currPage;
       this.modalService.dismissAll();
       Notiflix.Loading.Remove();
-      NotifyService.notify({
+      Toast.notify({
         from: "top",
         align: "right",
         message: "Land updated successfully",
@@ -166,7 +166,7 @@ export class LandComponent implements OnInit {
       this.landService.deleteLand(id).subscribe(() => {
         this.cachedPagedLandDto.items = this.cachedPagedLandDto.items.filter(v => v.id !== id);
         Notiflix.Loading.Remove();
-        NotifyService.notify({
+        Toast.notify({
           from: "top",
           align: "right",
           message: "Land removed successfully",

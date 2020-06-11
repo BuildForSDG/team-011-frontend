@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { LocalStoreService } from "@shared/services/local-store.service";
-import { NotifyService } from "@shared/services/notify.service";
+import { Toast } from "@shared/services/toast";
 import { PaystackOptions } from "angular4-paystack";
 import { Observable, throwError } from "rxjs";
 import { catchError, share, tap } from "rxjs/operators";
@@ -67,7 +67,7 @@ export class TransactionsComponent implements OnInit {
   }
 
   onClickMoreBtn(land: LandDto, content: any) {
-    NotifyService.dismissAll();
+    Toast.dismissAll();
     this.modalService.open(content, { size: "lg", centered: true });
     this.localStore.disableCaching();
 
@@ -85,7 +85,7 @@ export class TransactionsComponent implements OnInit {
     this.isReqSelected = false;
     this.landService.updateRequestsToLandowner(this.acceptedReqId, LandRequestStatus.Approved).subscribe(res => {
       this.cachedPagedLandDto.items[this.inViewLandIndex].status = res.landId.status;
-      NotifyService.notify({
+      Toast.notify({
         from: "top",
         align: "right",
         message: "Request accepted",
@@ -109,7 +109,7 @@ export class TransactionsComponent implements OnInit {
       const index = this.cachedPagedReqDto.items.findIndex(x => x.id === input.requestId);
       this.cachedPagedReqDto.items[index].landId.status = LandStatus.Occupied;
       this.selectedRequestId = null;
-      NotifyService.notify({
+      Toast.notify({
         from: "top",
         align: "right",
         title: "Congratulations!",
