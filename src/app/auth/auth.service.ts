@@ -34,7 +34,7 @@ export class AuthService {
   login = (input: LoginInput) => this.http.post<LoginResp>(this.endpoint("login"), input);
   logout = () => {
     this.localStore.disableCaching();
-    return of(localStorage.clear());
+    return of(this.localStore.clear());
   };
   endpoint = (action: string) => `/api/auth/${action}`;
   verifyEmail = (token: string) => this.http.get<any>(this.endpoint(`verify/${token}`));

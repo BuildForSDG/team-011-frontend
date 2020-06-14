@@ -1,14 +1,17 @@
 import { Component, OnInit } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { PagedRes } from "@shared/DTOs/paged-response.dto";
+import { environment } from "@shared/environment";
 import { LocalStoreService } from "@shared/services/local-store.service";
+import { NotifyService } from "@shared/services/notify.service";
 import { Toast } from "@shared/services/toast";
 import { PaystackOptions } from "angular4-paystack";
 import { Observable, throwError } from "rxjs";
 import { catchError, share, tap } from "rxjs/operators";
 
-import { environment } from "../../environments/environment";
 import { AuthService, CurrentUser } from "../auth/auth.service";
-import { LandDto, LandRequestStatus, LandStatus, PagedRes, ReqDto } from "../land/land.dto";
+import { LandReqDto, LandRequestStatus, LandStatus } from "../land/DTOs/land-request.dto";
+import { LandDto } from "../land/DTOs/land.dto";
 import { CreatPaymentInput, LandService } from "../land/land.service";
 
 @Component({
@@ -17,10 +20,10 @@ import { CreatPaymentInput, LandService } from "../land/land.service";
   styleUrls: ["./transactions.component.css"]
 })
 export class TransactionsComponent implements OnInit {
-  farmerReqs$: Observable<PagedRes<ReqDto>>;
+  farmerReqs$: Observable<PagedRes<LandReqDto>>;
   cachedPagedLandDto: PagedRes<LandDto>;
   lands$: Observable<PagedRes<LandDto>>;
-  farmers$: Observable<PagedRes<ReqDto>>;
+  farmers$: Observable<PagedRes<LandReqDto>>;
   acceptedReqId: string;
   isReqSelected = false;
   selectedRequestId: string;
@@ -28,7 +31,7 @@ export class TransactionsComponent implements OnInit {
   LandRequestStatus = LandRequestStatus;
   private inViewLandIndex: number;
   currentUser: CurrentUser;
-  cachedPagedReqDto: PagedRes<ReqDto>;
+  cachedPagedReqDto: PagedRes<LandReqDto>;
 
   // Paystack
   paystackPublicKey = environment.paystackPublicKey;
@@ -37,12 +40,14 @@ export class TransactionsComponent implements OnInit {
     private modalService: NgbModal,
     private authService: AuthService,
     private landService: LandService,
+    private notifyService: NotifyService,
     private localStore: LocalStoreService
   ) {
     this.currentUser = this.authService.getCurrentUser();
   }
 
   ngOnInit(): void {
+    this.notifyService.deleteNotifications().subscribe();
     this.localStore.disableCaching();
     const role = this.currentUser?.role;
     let query = {};
@@ -124,9 +129,9 @@ export class TransactionsComponent implements OnInit {
   //#region Helpers
   filerAuctionType = (lands: LandDto[], auctionType: "Rent" | "Lease") =>
     lands?.filter(x => x.auctionType === auctionType);
-  filerAuctionTypeRequest = (reqs: ReqDto[], auctionType: "Rent" | "Lease") =>
+  filerAuctionTypeRequest = (reqs: LandReqDto[], auctionType: "Rent" | "Lease") =>
     reqs?.filter(x => x.landId.auctionType === auctionType);
-  generatePaystackOpts = (req: ReqDto): PaystackOptions => {
+  generatePaystackOpts = (req: LandReqDto): PaystackOptions => {
     const rand = Math.ceil(Math.random() * 10e10);
     const prefix = "REF-PAYSTACK";
     const ref =
@@ -151,6 +156,6 @@ export class TransactionsComponent implements OnInit {
     this.acceptedReqId = reqId;
     this.isReqSelected = true;
   };
-  checkReqApprovalStatus = (reqs: ReqDto[]) => reqs.find(x => x.status === LandRequestStatus.Approved);
+  checkReqApprovalStatus = (reqs: LandReqDto[]) => reqs.find(x => x.status === LandRequestStatus.Approved);
   //#endregion
 }

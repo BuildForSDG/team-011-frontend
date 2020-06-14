@@ -10,27 +10,41 @@
             <ng-template [ngIf]="currentUser?.role==='Farmer'">
 
               <h4 class="card-category text-white">Occupying</h4>
-              <h3 class="card-title text-white" *ngIf="landRequest$|async as res;else loading">
+              <h3 class="card-title text-white" *ngIf="landRequest$|async as res;else tickLineLoading">
                 {{getFarmerOccupancyArray(res?.items).length}}
               </h3>
             </ng-template>
             <ng-template [ngIf]="currentUser?.role==='Landowner'">
 
               <h4 class="card-category text-white">Rented Out</h4>
-              <h3 class="card-title text-white" *ngIf=" (lands$|async) as res;else loading">
+              <h3 class="card-title text-white" *ngIf=" (lands$|async) as res;else tickLineLoading">
                 {{getLandCountRentedOut(res?.items)}}/{{res?.totalCount}}
               </h3>
             </ng-template>
           </div>
-          <div class="card-footer" *ngIf="(lands$|async) as res;else loading">
-            <div class="stats" *ngIf="res?.totalCount === 0">
-              <i class="material-icons text-danger">warning</i>
-              <a [routerLink]="['/dashboard/lands']" *ngIf="currentUser?.role==='Landowner'">Add Farmland...</a>
-              <a [routerLink]="['/dashboard/marketplace']" *ngIf="currentUser?.role==='Farmer'">Rent a land...</a>
-            </div>
-            <div class="stats" *ngIf="res?.totalCount !== 0">
-              <i class="material-icons">settings</i> Farmland Prices
-              <a [routerLink]="['/dashboard/lands']" class="text-rose"><strong>&nbsp;Settings...</strong></a>
+          <div class="card-footer">
+            <div class="stats">
+              <ng-container *ngIf="currentUser?.role==='Farmer'">
+                <i class="material-icons text-danger">warning</i>
+                <ng-container *ngIf="(lands$|async) as res;else tinLineLoading">
+                  <ng-template [ngIf]="res?.totalCount === 0">
+                    <a [routerLink]="['/dashboard/marketplace']" *ngIf="currentUser?.role==='Farmer'">Rent a land...</a>
+                  </ng-template>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="currentUser?.role==='Landowner'">
+                <ng-container *ngIf="(lands$|async) as res;else tinLineLoading">
+                  <ng-template [ngIf]="res?.totalCount === 0">
+                    <i class="material-icons text-danger">warning</i>
+                    <a [routerLink]="['/dashboard/lands']">Add Farmland...</a>
+                  </ng-template>
+                  <ng-template [ngIf]="res?.totalCount !== 0">
+                    <i class="material-icons">settings</i>
+                    Farmland Prices
+                    <a [routerLink]="['/dashboard/lands']" class="text-rose"><strong>&nbsp;Settings...</strong></a>
+                  </ng-template>
+                </ng-container>
+              </ng-container>
             </div>
           </div>
         </div>
@@ -43,8 +57,8 @@
             </div>
             <h4 class="card-category text-white" *ngIf="currentUser?.role==='Landowner'">Revenue</h4>
             <h4 class="card-category text-white" *ngIf="currentUser?.role==='Farmer'">Expenses</h4>
-            <h3 class="card-title text-white" *ngIf="(landRequest$|async)?.items as reqs;else loading">
-              {{calculateTotalRevenue(reqs)|currency:'&#8358;'}}</h3>
+            <h5 class="card-title text-white" *ngIf="(landRequest$|async)?.items as reqs;else tickLineLoading">
+              {{calculateTotalRevenue(reqs)|currency:'&#8358;'}}</h5>
           </div>
           <div class="card-footer">
             <div class="stats">
@@ -60,7 +74,8 @@
               <i class="fas fa-tractor"></i>
             </div>
             <h5 class="card-category text-white">Farmlands</h5>
-            <h3 class="card-title text-white" *ngIf="(lands$|async) as res;else loading">{{res?.totalCount}}</h3>
+            <h3 class="card-title text-white" *ngIf="(lands$|async) as res;else tickLineLoading">{{res?.totalCount}}
+            </h3>
           </div>
           <div class="card-footer">
             <div class="stats">
@@ -76,7 +91,9 @@
               <i class="material-icons">notifications_active</i>
             </div>
             <h4 class="card-category text-white">Requests</h4>
-            <h3 class="card-title text-white" *ngIf="(landRequest$|async) as res;else loading">{{res.totalCount}}</h3>
+            <h3 class="card-title text-white" *ngIf="(landRequest$|async) as res;else tickLineLoading">
+              {{res.totalCount}}
+            </h3>
           </div>
           <div class="card-footer">
             <div class="stats">
@@ -95,6 +112,8 @@
         <div class="col-md-4">
           <div class="card card-chart">
             <div class="card-header card-header-success">
+              <ng-container *ngIf="lands$|async;else loading">
+              </ng-container>
               <div class="ct-chart" id="dailySalesChart"></div>
             </div>
             <div class="card-body">
@@ -113,6 +132,8 @@
         <div class="col-md-4">
           <div class="card card-chart">
             <div class="card-header card-header-info">
+              <ng-container *ngIf="lands$|async;else loading">
+              </ng-container>
               <div class="ct-chart" id="websiteViewsChart"></div>
             </div>
             <div class="card-body">
@@ -129,6 +150,8 @@
         <div class="col-md-4">
           <div class="card card-chart">
             <div class="card-header card-header-danger">
+              <ng-container *ngIf="lands$|async as res;else loading">
+              </ng-container>
               <div class="ct-chart" id="completedTasksChart"></div>
             </div>
             <div class="card-body">
@@ -136,10 +159,12 @@
               <p class="card-category">Showing Latest Requests</p>
             </div>
             <div class="card-footer">
-              <div class="stats" *ngIf="landRequest$|async as req;else loading">
+              <div class="stats">
                 <i class="material-icons">date_range</i>
-                <span *ngIf="!req.items.length">no requests yet</span>
-                <span *ngIf="req.items.length">last updated at {{req.items[0].updatedAt|date}}</span>
+                <ng-container *ngIf="landRequest$|async as req;else tinLineLoading">
+                  <span *ngIf="!req.items.length">no requests yet</span>
+                  <span *ngIf="req.items.length">last updated at {{req.items[0].updatedAt|date}}</span>
+                </ng-container>
               </div>
             </div>
           </div>
@@ -196,7 +221,7 @@
                           <button mat-raised-button type="button" matTooltip="Remove" [matTooltipPosition]="'above'"
                             class="btn btn-danger btn-link btn-sm btn-just-icon"
                             *ngIf="l.status === LandStatus.Available" (click)="onClickRemoveLandIcon(l.id)">
-                            <i class="material-icons" *ngIf="!isRemovingLand;else loading">close</i>
+                            <i class="material-icons" *ngIf="!isRemovingLand;else tinLineLoading">close</i>
                           </button>
                         </td>
                       </ng-template>
@@ -242,8 +267,8 @@
           <div class="col-md-12">
             <div class="card" *ngIf="req.items.length">
               <div class="card-header card-header-rose">
-                <h4 class="card-title">Landowners' Summary</h4>
-                <p class="card-category"><em>Glance at 5 latest farmlands you occupy</em>
+                <h4 class="card-title">Farmland Summary</h4>
+                <p class="card-category"><em>Glance at 5 latest farmlands you're interested in</em>
                   <b class="float-right">
                     <a [routerLink]="['/dashboard/transactions']" routerLinkActive="router-link-active">
                       See all...
@@ -317,6 +342,45 @@
     </div>
   </div>
 </div>
-<ng-template #loading>
+<!-- <ng-template #loading>
   <i class="fas fa-spinner fa-spin"></i>
+</ng-template> -->
+<!-- Loading -->
+<ng-template #loading>
+  <div class="fb-item">
+    <div class="first-section-wrapper">
+
+      <div class="gravatar-title">
+        <div>
+          <ngx-skeleton-loader count="5" animation="progress-dark" [theme]="{
+              width: '200px',
+              'border-radius': '0',
+              height: '0.3rem',
+              'margin-bottom': '10px'
+            }"></ngx-skeleton-loader>
+        </div>
+        <div>
+          <ngx-skeleton-loader animation="progress-dark"
+            [theme]="{ width: '170px', 'border-radius': '0', height: '0.3rem' }"></ngx-skeleton-loader>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ng-template>
+<ng-template #tinLineLoading>
+  <div>
+    <ngx-skeleton-loader animation="progress-dark" [theme]="{ width: '170px', 'border-radius': '0', height: '0.3rem' }">
+    </ngx-skeleton-loader>
+  </div>
+</ng-template>
+<ng-template #tickLineLoading>
+  <div>
+    <ngx-skeleton-loader count="2" animation="progress-dark" [theme]="{
+      width: '200px',
+      'border-radius': '0',
+      height: '0.3rem',
+      'margin-bottom': '10px'
+    }"></ngx-skeleton-loader>
+  </div>
 </ng-template>

@@ -1,3 +1,4 @@
+import { NotificationDto, NotificationType } from "./../DTOs/notification.dto";
 import { Injectable } from "@angular/core";
 
 import { localStoreKeys } from "../constants/local-store.keys";
@@ -22,5 +23,8 @@ export class LocalStoreService {
   }
   getAccessToken() {
     return localStorage.getItem(localStoreKeys.accessToken);
+  }
+  clear() {
+    localStorage.clear();
   }
 }

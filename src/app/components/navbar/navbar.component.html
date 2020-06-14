@@ -20,23 +20,26 @@
             </p>
           </a>
         </li>
-        <!-- <li class="nav-item dropdown">
-          <a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="javascript:void(0)" id="navbarDropdownMenuLink"
+            [attr.data-toggle]="notifications.length?'dropdown':null" aria-haspopup="true" aria-expanded="false">
             <i class="material-icons">notifications</i>
-            <span class="notification">5</span>
-            <p>
+            <ng-container *ngIf="notifications.length">
+              <span class="notification">{{notifications.length}}</span>
+            </ng-container>
+            <!-- <p>
               <span class="d-lg-none d-md-block">Some Actions</span>
-            </p>
+            </p> -->
           </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="javascript:void(0)">Mike John responded to your email</a>
-            <a class="dropdown-item" href="javascript:void(0)">You have 5 new tasks</a>
-            <a class="dropdown-item" href="javascript:void(0)">You're now friend with Andrew</a>
-            <a class="dropdown-item" href="javascript:void(0)">Another Notification</a>
-            <a class="dropdown-item" href="javascript:void(0)">Another One</a>
-          </div>
-        </li> -->
+          <ng-container *ngIf="notifications.length">
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" [routerLink]="['/dashboard/transactions']"
+                *ngFor="let item of notifications"><span>{{item.metadata.message}}&nbsp;<small>at
+                    {{item.metadata.at|date:'HH:mm'}}</small></span></a>
+
+            </div>
+          </ng-container>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link text-capitalize" href="javascript:;" id="navbarDropdownProfile" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">

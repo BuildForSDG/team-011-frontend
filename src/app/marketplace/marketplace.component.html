@@ -22,8 +22,9 @@
                 </button>
                 <ng-template [ngIf]="currentUser.role === 'Farmer' && !checkLandRequestStatus(land.requests)">
                   <button mat-raised-button type="button" matTooltip="send request now" [matTooltipPosition]="'right'"
-                    class="btn btn-primary btn-link  btn-just-icon float-right" (click)="onClickLandSendReqBtn(land)">
+                    class="btn btn-success btn-link  btn-just-icon float-right" (click)="onClickLandSendReqBtn(land)">
                     <i class="material-icons">send</i>
+
                   </button>
                 </ng-template>
               </div>

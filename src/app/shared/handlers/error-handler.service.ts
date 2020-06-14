@@ -2,6 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import Notiflix from "notiflix-angular";
 import { ObservableInput, throwError } from "rxjs";
+
 import { Toast } from "../services/toast";
 
 @Injectable({
@@ -42,12 +43,13 @@ export class ErrorHandlerService {
             message: "You request could not reach our servers. Check your internet connectivity and try again.",
             notifyType: "warning"
           });
-        else
+        else {
           Toast.notify({
             message: errorMsg,
             notifyType: "info",
             icon: "feedback"
           });
+        }
       }
 
       //  this.modalService.open(error.error.message, { centered: true });

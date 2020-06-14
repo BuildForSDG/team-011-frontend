@@ -1,6 +1,7 @@
 import { Component, OnInit, TemplateRef } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, ValidationErrors, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { PagedRes } from "@shared/DTOs/paged-response.dto";
 import * as $ from "jquery";
 import { PaginationInstance } from "ngx-pagination";
 import Notiflix from "notiflix-angular";
@@ -9,7 +10,8 @@ import { share, tap } from "rxjs/operators";
 
 import { LocalStoreService } from "../shared/services/local-store.service";
 import { Toast } from "../shared/services/toast";
-import { CreateLandDto, LandDto, LandStatus, PagedRes, UpdateLandDto } from "./land.dto";
+import { LandStatus } from "./DTOs/land-request.dto";
+import { CreateLandDto, LandDto, UpdateLandDto } from "./DTOs/land.dto";
 import { LandService } from "./land.service";
 
 @Component({
