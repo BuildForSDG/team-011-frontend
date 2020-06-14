@@ -53,13 +53,13 @@ export class NavbarComponent implements OnInit {
       }
     });
     this.notifyService
-      .getNotifications({ skip: 0, limit: 100, query: { to: this.currentUser.userId } })
+      .getNotifications({ skip: 0, limit: 100, query: { to: this.currentUser?.userId } })
       .subscribe(data => (this.notifications = data.items));
     this.notifyService.notifications.subscribe(notifs => {
       this.notifications = notifs;
     });
     this.ioService.getNotification().subscribe(notification => {
-      if (this.currentUser.userId === notification.to && !this.notifications.find(x => x.id === notification.id)) {
+      if (this.currentUser?.userId === notification.to && !this.notifications.find(x => x.id === notification.id)) {
         this.notifications.unshift(notification);
         this.notifyService.notifications.next(this.notifications);
       }
