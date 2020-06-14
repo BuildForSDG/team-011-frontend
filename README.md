@@ -7,7 +7,7 @@ This application is an innovative solution for connecting subsistent farmers to 
 
 ## Usage
 
-The solution consist majorly of for steps
+The solution consist majorly of four steps
 
 ### 1. Farmlands
 
