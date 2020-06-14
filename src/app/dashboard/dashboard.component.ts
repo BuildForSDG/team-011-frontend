@@ -1,14 +1,16 @@
 import { Component, OnInit } from "@angular/core";
+import { PagedRes } from "@shared/DTOs/paged-response.dto";
+import { LocalStoreService } from "@shared/services/local-store.service";
+import { Toast } from "@shared/services/toast";
 import * as Chartist from "chartist";
 import Notiflix from "notiflix-angular";
 import { Observable } from "rxjs";
 import { share, tap } from "rxjs/operators";
 
 import { AuthService, CurrentUser } from "../auth/auth.service";
-import { LandDto, LandStatus, PagedRes, ReqDto } from "../land/land.dto";
+import { LandReqDto, LandStatus } from "../land/DTOs/land-request.dto";
+import { LandDto } from "../land/DTOs/land.dto";
 import { LandService } from "../land/land.service";
-import { LocalStoreService } from "../shared/services/local-store.service";
-import { NotifyService } from "../shared/services/notify.service";
 
 @Component({
   selector: "app-dashboard",
@@ -18,7 +20,7 @@ import { NotifyService } from "../shared/services/notify.service";
 export class DashboardComponent implements OnInit {
   currentUser: CurrentUser;
   LandStatus = LandStatus;
-  landRequest$: Observable<PagedRes<ReqDto>>;
+  landRequest$: Observable<PagedRes<LandReqDto>>;
   monthlyPaidLands: LandDto[];
   isRemovingLand = false;
   lands$: Observable<PagedRes<LandDto>>;
@@ -57,7 +59,7 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  calculateTotalRevenue(req: ReqDto[]) {
+  calculateTotalRevenue(req: LandReqDto[]) {
     const mapped = this.getFarmerOccupancyArray(req).map(x => x.landId.price);
     return mapped.length ? mapped.reduce((x, y) => x + y) : 0;
   }
@@ -83,7 +85,7 @@ export class DashboardComponent implements OnInit {
         .subscribe(
           () => {
             Notiflix.Loading.Remove();
-            NotifyService.notify({
+            Toast.notify({
               from: "top",
               align: "right",
               message: "Land removed successfully",
@@ -155,7 +157,7 @@ export class DashboardComponent implements OnInit {
   getLandCountRentedOut(lands: LandDto[]) {
     return lands?.filter(x => x.status === LandStatus.Occupied).length;
   }
-  getFarmerOccupancyArray(reqs?: ReqDto[]) {
+  getFarmerOccupancyArray(reqs?: LandReqDto[]) {
     return reqs?.filter(x => x.landId.status === LandStatus.Occupied);
   }
   private initCharts() {
