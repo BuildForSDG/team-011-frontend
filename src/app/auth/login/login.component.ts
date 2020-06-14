@@ -59,7 +59,8 @@ export class LoginComponent implements OnInit {
     const email = this.resendVerificationForm.value.email;
     this.authService.resendEmailVerification(email).subscribe(() => {
       Toast.notify({
-        message: "We've sent a fresh verification link to your email. Please check your email",
+        message:
+          "We've sent a fresh verification link to your email. Please check your inbox, if you can't find it there then it should be in your <b>junk</b>",
         icon: "forward_to_inbox",
         notifyType: "success"
       });
@@ -75,7 +76,8 @@ export class LoginComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       if (params[emailConfirmKey] === "true") {
         Toast.notify({
-          message: "We've sent a confirmation email to you. Please confirm your email to proceed.",
+          message:
+            "We've sent a confirmation email to you. Please check your inbox, if you can't find it there then it should be in your <b>junk</b>",
           title: "<strong>Welcome Aboard</strong>",
           icon: "forward_to_inbox",
           delay: 10,
