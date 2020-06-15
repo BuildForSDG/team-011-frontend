@@ -1,6 +1,13 @@
+import { map } from "rxjs/operators";
 import { Location } from "@angular/common";
 import { Component, ElementRef, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { NotificationDto } from "@shared/DTOs/notification.dto";
+import { PagedRes } from "@shared/DTOs/paged-response.dto";
+import { IoService } from "@shared/services/io.service";
+import { NotifyService } from "@shared/services/notify.service";
+import { Observable } from "rxjs";
+import { tap } from "rxjs/operators";
 
 import { AuthService, CurrentUser } from "../../auth/auth.service";
 import { ROUTES } from "../sidebar/sidebar.component";
@@ -17,18 +24,23 @@ export class NavbarComponent implements OnInit {
   private toggleButton: any;
   private sidebarVisible: boolean;
   currentUser: CurrentUser;
+  notifications: NotificationDto[] = [];
+  pagedNotif: PagedRes<NotificationDto>;
+
   constructor(
     location: Location,
     private element: ElementRef,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private notifyService: NotifyService,
+    private ioService: IoService
   ) {
     this.location = location;
     this.sidebarVisible = false;
+    this.currentUser = this.authService.getCurrentUser();
   }
 
   ngOnInit() {
-    this.currentUser = this.authService.getCurrentUser();
     this.listTitles = ROUTES.filter(listTitle => listTitle);
     const navbar: HTMLElement = this.element.nativeElement;
     this.toggleButton = navbar.getElementsByClassName("navbar-toggler")[0];
@@ -38,6 +50,18 @@ export class NavbarComponent implements OnInit {
       if ($layer) {
         $layer.remove();
         this.mobile_menu_visible = 0;
+      }
+    });
+    this.notifyService
+      .getNotifications({ skip: 0, limit: 100, query: { to: this.currentUser?.userId } })
+      .subscribe(data => (this.notifications = data.items));
+    this.notifyService.notifications.subscribe(notifs => {
+      this.notifications = notifs;
+    });
+    this.ioService.getNotification().subscribe(notification => {
+      if (this.currentUser?.userId === notification.to && !this.notifications.find(x => x.id === notification.id)) {
+        this.notifications.unshift(notification);
+        this.notifyService.notifications.next(this.notifications);
       }
     });
   }

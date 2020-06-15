@@ -1,6 +1,7 @@
 import { Component, OnInit, TemplateRef } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, ValidationErrors, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { PagedRes } from "@shared/DTOs/paged-response.dto";
 import * as $ from "jquery";
 import { PaginationInstance } from "ngx-pagination";
 import Notiflix from "notiflix-angular";
@@ -8,8 +9,9 @@ import { Observable } from "rxjs";
 import { share, tap } from "rxjs/operators";
 
 import { LocalStoreService } from "../shared/services/local-store.service";
-import { NotifyService } from "../shared/services/notify.service";
-import { CreateLandDto, LandDto, LandStatus, PagedRes, UpdateLandDto } from "./land.dto";
+import { Toast } from "../shared/services/toast";
+import { LandStatus } from "./DTOs/land-request.dto";
+import { CreateLandDto, LandDto, UpdateLandDto } from "./DTOs/land.dto";
 import { LandService } from "./land.service";
 
 @Component({
@@ -93,7 +95,7 @@ export class LandComponent implements OnInit {
       .subscribe(() => {
         this.modalService.dismissAll();
         Notiflix.Loading.Remove();
-        NotifyService.notify({
+        Toast.notify({
           from: "top",
           align: "right",
           message: "Land created successfully",
@@ -117,7 +119,7 @@ export class LandComponent implements OnInit {
       this.pageConfig.currentPage = currPage;
       this.modalService.dismissAll();
       Notiflix.Loading.Remove();
-      NotifyService.notify({
+      Toast.notify({
         from: "top",
         align: "right",
         message: "Land updated successfully",
@@ -166,7 +168,7 @@ export class LandComponent implements OnInit {
       this.landService.deleteLand(id).subscribe(() => {
         this.cachedPagedLandDto.items = this.cachedPagedLandDto.items.filter(v => v.id !== id);
         Notiflix.Loading.Remove();
-        NotifyService.notify({
+        Toast.notify({
           from: "top",
           align: "right",
           message: "Land removed successfully",

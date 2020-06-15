@@ -3,7 +3,7 @@
     <ng-container *ngIf="(lands$|async) as res;else loadingLand">
       <div class="row" *ngIf="res.items.length;else nothingText">
         <ng-container *ngFor="let land of res.items  | paginate: pageConfig">
-          <div class="col-md-3">
+          <div class="col-md-3 d-flex align-items-stretch">
             <div class="card">
               <img class="card-img-top" [src]="land.photo" rel="nofollow" alt="land image" *ngIf="land.photo">
               <div class="card-body">
@@ -22,8 +22,9 @@
                 </button>
                 <ng-template [ngIf]="currentUser.role === 'Farmer' && !checkLandRequestStatus(land.requests)">
                   <button mat-raised-button type="button" matTooltip="send request now" [matTooltipPosition]="'right'"
-                    class="btn btn-primary btn-link  btn-just-icon float-right" (click)="onClickLandSendReqBtn(land)">
+                    class="btn btn-success btn-link  btn-just-icon float-right" (click)="onClickLandSendReqBtn(land)">
                     <i class="material-icons">send</i>
+
                   </button>
                 </ng-template>
               </div>
@@ -106,25 +107,54 @@
         </div>
 
       </div>
-      <div class="info info-horizontal" *ngIf="currentUser.role === 'Farmer'">
-        <div class="icon">
-          <i class="fas fa-fingerprint fa-4x text-danger"></i>
+      <ng-template [ngIf]="currentUser.role === 'Farmer'">
+        <div class="info info-horizontal">
+          <div class="icon">
+            <i class="fas fa-fingerprint fa-4x text-danger"></i>
+          </div>
+          <div class="description">
+            <h4 class="info-title">Secure Payment</h4>
+            <p>If this farmland suites what you are looking for, you can proceed to make secure payment and immediately
+              start utilizing the land for your next harvest</p>
+            <a [routerLink]="['/dashboard/transactions']" routerLinkActive="router-link-active">Make payment...</a>
+          </div>
         </div>
-        <div class="description">
-          <h4 class="info-title">Secure Payment</h4>
-          <p>If this farmland suites what you are looking for, you can proceed to make secure payment and immediately
-            start utilizing the land for your next harvest</p>
-          <a href="#pablo">Make payment...</a>
-        </div>
-      </div>
+      </ng-template>
     </div>
   </div>
 </ng-template>
 
 <!-- Loading -->
 <ng-template #loadingLand>
-  <div class="item">
-    <ngx-skeleton-loader count="5" appearance="circle"></ngx-skeleton-loader>
+  <div class="fb-item">
+    <div class="first-section-wrapper">
+      <div class="gravatar">
+        <ngx-skeleton-loader count=3 animation="progress-dark"
+          [theme]="{ width: '15rem', height: '15rem', 'margin-right':'2rem'}">
+        </ngx-skeleton-loader>
+      </div>
+      <div class="gravatar-title">
+        <div>
+          <ngx-skeleton-loader count=3 animation="progress-dark" [theme]="{
+              width: '15rem',
+              'border-radius': '0',
+              'margin-right':'2rem',
+              height: '1rem',
+              'margin-bottom': '1rem'
+            }"></ngx-skeleton-loader>
+        </div>
+        <div>
+          <ngx-skeleton-loader count=3 animation="progress-dark" [theme]="{
+            width: '15rem',
+            'border-radius': '0',
+            'margin-right':'2rem',
+            height: '1rem',
+            'margin-bottom': '1rem'
+          }"></ngx-skeleton-loader>
+        </div>
+      </div>
+    </div>
+
   </div>
 </ng-template>
 <ng-template #nothingText>

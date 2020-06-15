@@ -1,10 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { BaseResDto } from "@shared/DTOs/base-response.dto";
+import { PagedRes } from "@shared/DTOs/paged-response.dto";
 import { Observable } from "rxjs";
 
 import { AuthService } from "../auth/auth.service";
 import { BaseService } from "../shared/services/base.service";
-import { BaseResDto, CreateLandDto, LandDto, LandRequestStatus, PagedRes, ReqDto, UpdateLandDto } from "./land.dto";
+import { LandReqDto, LandRequestStatus } from "./DTOs/land-request.dto";
+import { CreateLandDto, LandDto, UpdateLandDto } from "./DTOs/land.dto";
 
 export interface CreateLandReqInput {
   landId: string;
@@ -34,7 +37,7 @@ export class LandService extends BaseService {
   }
 
   getRequestsToLandowner(q: { skip: number; limit: number; query?: any; opts?: any }) {
-    return this.find<PagedRes<ReqDto>>("/land_requests/requests_to_landowner", {
+    return this.find<PagedRes<LandReqDto>>("/land_requests/requests_to_landowner", {
       query: q.query || {},
       opts: q.opts || { sort: { createdAt: -1 } },
       skip: q.skip,
@@ -42,14 +45,14 @@ export class LandService extends BaseService {
     });
   }
   updateRequestsToLandowner(reqId: string, input: LandRequestStatus) {
-    return this.update<any, ReqDto>({ status: input }, `/land_requests/requests_to_landowner/${reqId}`);
+    return this.update<any, LandReqDto>({ status: input }, `/land_requests/requests_to_landowner/${reqId}`);
   }
   createLandRequest(landId: string): Observable<BaseResDto> {
     const input: CreateLandReqInput = { landId };
     return this.create(input, "/land_requests");
   }
   getFarmerRequests(q: { skip: number; limit: number; query?: any; opts?: any }) {
-    return this.find<PagedRes<ReqDto>>("/land_requests/farmer_land_requests", {
+    return this.find<PagedRes<LandReqDto>>("/land_requests/farmer_land_requests", {
       query: q.query || {},
       opts: q.opts || { sort: { createdAt: -1 } },
       skip: q.skip,

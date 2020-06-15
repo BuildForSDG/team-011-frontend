@@ -1,12 +1,13 @@
 # Farmlord
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/510e8d197d094fa0810f51bd850fa13c)](https://app.codacy.com/gh/BuildForSDG/team-011-frontend?utm_source=github.com&utm_medium=referral&utm_content=BuildForSDG/team-011-frontend&utm_campaign=Badge_Grade_Settings)
 [![build status](https://github.com/coryrylan/angular-github-actions/workflows/Build/badge.svg)](https://github.com/BuildForSDG/team-011-frontend/actions)
 
 This application is an innovative solution for connecting subsistent farmers to land owners. It offers the farmers the opportunity to rent the lands or lease at affordable prices. We've built a solution that will help Farmers maximize their productivity and output every harvest by providing the most important resource every Farmer needs - Farmland Real Estate. Landowners that own Farmlands that laying unutilized benefits from this solution simply by enrolling on the platform and making their farmlands available in a virtual market. The whole process entails four simple steps
 
 ## Usage
 
-The solution consist majorly of for steps
+The solution consist majorly of four steps
 
 ### 1. Farmlands
 

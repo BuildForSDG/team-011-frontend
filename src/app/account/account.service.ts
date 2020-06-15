@@ -1,9 +1,10 @@
-import { Observable } from "rxjs";
-import { AuthService } from "../auth/auth.service";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { BaseResDto } from "@shared/DTOs/base-response.dto";
 import { BaseService } from "@shared/services/base.service";
-import { BaseResDto } from "../land/land.dto";
+import { Observable } from "rxjs";
+
+import { AuthService } from "../auth/auth.service";
 
 export interface UpdateUserDto {
   firstName: string;

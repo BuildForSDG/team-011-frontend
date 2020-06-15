@@ -2,6 +2,8 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
+import { environment } from "@shared/environment";
+import { SocketIoModule } from "ngx-socket-io";
 
 import { AppComponent } from "./app.component";
 import { AppRouting } from "./app.routing";
@@ -21,7 +23,8 @@ import { httpInterceptorProviders } from "./shared/services/http-interceptors";
 
     RouterModule,
     AppRouting,
-    AuthModule
+    AuthModule,
+    SocketIoModule.forRoot({ url: environment.apiUrl, options: {} })
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]

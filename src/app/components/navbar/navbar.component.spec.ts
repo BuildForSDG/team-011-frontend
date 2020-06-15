@@ -1,9 +1,12 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { NavbarComponent } from "./navbar.component";
-import { RouterTestingModule } from "@angular/router/testing";
-import { AuthService } from "src/app/auth/auth.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { environment } from "@shared/environment";
+import { IoService } from "@shared/services/io.service";
+import { SocketIoModule } from "ngx-socket-io";
+
+import { AuthService } from "../../auth/auth.service";
+import { NavbarComponent } from "./navbar.component";
 
 describe("NavbarComponent", () => {
   let component: NavbarComponent;
@@ -11,8 +14,12 @@ describe("NavbarComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientTestingModule],
-      providers: [AuthService],
+      imports: [
+        RouterTestingModule,
+        HttpClientTestingModule,
+        SocketIoModule.forRoot({ url: environment.apiUrl, options: {} })
+      ],
+      providers: [AuthService, IoService],
       declarations: [NavbarComponent]
     }).compileComponents();
   }));

@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import Notiflix from "notiflix-angular";
 
-import { NotifyService } from "../../shared/services/notify.service";
+import { Toast } from "../../shared/services/toast";
 import { AuthService } from "../auth.service";
 import { authConstants } from "../constants";
 
@@ -35,7 +35,7 @@ export class EmailVerifyComponent implements OnInit {
       const { emailConfirmKey } = authConstants;
       this.router.navigate(["/account/login"], { queryParams: { [emailConfirmKey]: false } });
       Notiflix.Loading.Remove();
-      NotifyService.notify({
+      Toast.notify({
         message: "Your email has been verified. You may now login",
         title: "<strong>Congratulations</strong>",
         icon: "check",

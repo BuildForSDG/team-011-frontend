@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { NotifyService } from "@shared/services/notify.service";
+import { Toast } from "@shared/services/toast";
 import { Observable, of, throwError } from "rxjs";
 import { catchError, share, tap, map } from "rxjs/operators";
 
@@ -50,7 +50,7 @@ export class ProfileComponent implements OnInit {
 
   onSubmit() {
     if (this.profileForm.invalid) return;
-    NotifyService.dismissAll();
+    Toast.dismissAll();
     this.isUpdating = true;
     const input: UpdateUserDto = this.profileForm.value;
     const inputDto = this.file ? this.toFormData({ ...input, profileImage: this.file }) : input;
@@ -63,7 +63,7 @@ export class ProfileComponent implements OnInit {
         this.isUpdating = false;
         this.fileName = null;
         this.file = null;
-        NotifyService.notify({
+        Toast.notify({
           message: "Profile updated successfully",
           notifyType: "success",
           icon: "check"

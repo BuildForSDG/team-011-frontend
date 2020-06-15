@@ -1,13 +1,15 @@
 import { Component, OnInit } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { PagedRes } from "@shared/DTOs/paged-response.dto";
 import { LocalStoreService } from "@shared/services/local-store.service";
-import { NotifyService } from "@shared/services/notify.service";
+import { Toast } from "@shared/services/toast";
 import { PaginationInstance } from "ngx-pagination";
-import { Observable } from "rxjs";
-import { share, tap } from "rxjs/operators";
+import { Observable, throwError } from "rxjs";
+import { catchError, share, tap } from "rxjs/operators";
 
 import { AuthService, CurrentUser } from "../auth/auth.service";
-import { LandDto, LandStatus, PagedRes } from "../land/land.dto";
+import { LandStatus } from "../land/DTOs/land-request.dto";
+import { LandDto } from "../land/DTOs/land.dto";
 import { LandService } from "../land/land.service";
 
 @Component({
@@ -28,6 +30,7 @@ export class MarketplaceComponent implements OnInit {
   LandStatus = LandStatus;
   paystackRef: string;
   cachedPagedLandDto: PagedRes<LandDto>;
+  isSendingRequest: boolean;
   constructor(
     private landService: LandService,
     private modalService: NgbModal,
@@ -54,19 +57,31 @@ export class MarketplaceComponent implements OnInit {
     this.modalService.open(landInfo, { centered: true });
   };
   onClickLandSendReqBtn = (land: LandDto) => {
-    NotifyService.dismissAll();
-    this.landService.createLandRequest(land.id).subscribe(res => {
-      const index = this.cachedPagedLandDto.items.indexOf(land);
-      this.cachedPagedLandDto.items[index].requests.push({ createdBy: this.currentUser.userId, ...res });
-      NotifyService.notify({
-        from: "top",
-        align: "right",
-        message: "Request sent to Landowner",
-        notifyType: "success",
-        icon: "send",
-        delay: 3
+    Toast.dismissAll();
+    this.isSendingRequest = true;
+    this.landService
+      .createLandRequest(land.id)
+      .pipe(
+        tap(res => {
+          this.isSendingRequest = false;
+          const index = this.cachedPagedLandDto.items.indexOf(land);
+          this.cachedPagedLandDto.items[index].requests.push({ createdBy: this.currentUser.userId, ...res });
+        }),
+        catchError(error => {
+          this.isSendingRequest = false;
+          return throwError(error);
+        })
+      )
+      .subscribe(res => {
+        Toast.notify({
+          from: "top",
+          align: "right",
+          message: "Request sent to Landowner",
+          notifyType: "success",
+          icon: "send",
+          delay: 3
+        });
       });
-    });
   };
   checkLandRequestStatus = (requests: any) => {
     const result = requests.filter((request: any) => request.createdBy === this.currentUser.userId);

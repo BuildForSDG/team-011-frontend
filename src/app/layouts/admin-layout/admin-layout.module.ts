@@ -13,6 +13,7 @@ import { NgxSkeletonLoaderModule } from "ngx-skeleton-loader";
 
 import { DashboardComponent } from "../../../app/dashboard/dashboard.component";
 import { environment } from "../../../environments/environment";
+import { NavbarComponent } from "../../components/navbar/navbar.component";
 import { LandComponent } from "../../land/land.component";
 import { MarketplaceComponent } from "../../marketplace/marketplace.component";
 import { TransactionsComponent } from "../../transactions/transactions.component";
@@ -34,6 +35,7 @@ import { AdminLayoutRouting } from "./admin.routing";
     NgxPaginationModule,
     NgxSkeletonLoaderModule,
     Angular4PaystackModule.forRoot(environment.paystackPublicKey)
-  ]
+  ],
+  providers: [NavbarComponent]
 })
 export class AdminLayoutModule {}
